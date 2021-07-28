@@ -1,13 +1,16 @@
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:quotation/module_guard.dart';
 import 'package:quotation/src/screens/Login/login_screen.dart';
 import 'package:quotation/src/screens/Signup/signup_screen.dart';
-// import 'package:quotation/src/screens/call_sample/call_sample.dart';
 import 'package:quotation/src/screens/home/home_modular.dart';
 import 'package:quotation/src/screens/welcome/welcome_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppModule extends Module {
   @override
-  final List<Bind> binds = [];
+  List<Bind> get binds => [
+    AsyncBind((i)=> SharedPreferences.getInstance()),
+  ];
 
   @override
   final List<ModularRoute> routes = [

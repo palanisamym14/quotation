@@ -7,9 +7,8 @@ import 'home_screen.dart';
 
 class HomeModule extends Module {
   @override
-  // final List<Bind> binds = [
-  //   Bind.singleton((i) => HomeBloc()),
-  // ];
+  @override
+  List<Bind> get binds => [];
 
   @override
   final List<ModularRoute> routes = [

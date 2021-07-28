@@ -20,6 +20,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             accountEmail: new Text("palanisamym14@email.com"),
             //Current avatar
             currentAccountPicture: new CircleAvatar(
+              backgroundColor: Colors.green,
               backgroundImage: new AssetImage("assets/images/main_bottom.png"),
             ),
             onDetailsPressed: () {},
@@ -32,19 +33,32 @@ class _CustomDrawerState extends State<CustomDrawer> {
           ),
           ListTile(
             leading: new CircleAvatar(
-              child: new Icon(Icons.dashboard),
+              backgroundColor: Colors.green,
+              child: new Icon(
+                Icons.dashboard_sharp,
+                color: Colors.white,
+              ),
             ),
             title: Text("Dashboard"),
           ),
           Expanded(child: Container()),
           ListTile(
             leading: new CircleAvatar(
-              child: new Icon(Icons.logout_outlined),
+              backgroundColor: Colors.green,
+              child: new Icon(
+                Icons.settings_sharp,
+                color: Colors.white,
+              ),
             ),
             title: new Text("Settings"),
-          ),ListTile(
+          ),
+          ListTile(
             leading: new CircleAvatar(
-              child: new Icon(Icons.logout_outlined),
+              backgroundColor: Colors.green,
+              child: new Icon(
+                Icons.logout_rounded,
+                color: Colors.white,
+              ),
             ),
             title: new Text("Logout"),
           )

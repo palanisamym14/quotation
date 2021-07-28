@@ -4,6 +4,11 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:quotation/src/components/drawer.dart';
 
+final padding = EdgeInsets.symmetric(horizontal: 18, vertical: 12);
+double gap = 10;
+List<String> routes = ['home', 'schedule', 'favourite', 'analysis'];
+List<Color> colors = [Colors.purple, Colors.pink, Colors.purple, Colors.teal];
+
 class BottomNavBar extends StatefulWidget {
   final Widget? body;
   BottomNavBar({this.body});
@@ -14,17 +19,13 @@ class BottomNavBar extends StatefulWidget {
 class _BottomNavBarState extends State<BottomNavBar> {
   int _selectedIndex = 0;
   @override
+  void initState() {
+    super.initState();
+    Modular.to.navigate(routes[0]);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    int badge = 0;
-    final padding = EdgeInsets.symmetric(horizontal: 18, vertical: 12);
-    double gap = 10;
-    List<String> routes = ['home', 'schedule', 'favourite', 'analysis'];
-    List<Color> colors = [
-      Colors.purple,
-      Colors.pink,
-      Colors.purple,
-      Colors.teal
-    ];
     return Scaffold(
       backgroundColor: Colors.white,
       body: this.widget.body,

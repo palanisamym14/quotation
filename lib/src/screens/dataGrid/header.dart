@@ -10,6 +10,7 @@ class DataGridHeader extends StatefulWidget {
 }
 
 class _DataGridHeaderState extends State<DataGridHeader> {
+  Map<String, dynamic> companyDetail = {};
   List<Map<String, dynamic>> columns = [
     {
       "type": "text",
@@ -86,16 +87,25 @@ class _DataGridHeaderState extends State<DataGridHeader> {
                   })
             ],
           ),
-          Text("CompanyName"),
-          Text("Address"),
-          Text("Phone"),
+          new ListView.builder(
+              shrinkWrap: true,
+              itemCount: columns.length,
+              itemBuilder: (context, index) {
+                var val = companyDetail[columns[index]["_key"]];
+                return val == null
+                    ? Container(
+                        height: 0,
+                        width: 0,
+                      )
+                    : Text(val);
+              })
         ],
       ),
     ));
   }
 
   void _navigateAndDisplaySelection(BuildContext context) async {
-    Map<String, dynamic> val = {};
+    Map<String, dynamic> val = companyDetail;
     // print("_val");
     print(val);
     final result = await Navigator.push(
@@ -103,13 +113,15 @@ class _DataGridHeaderState extends State<DataGridHeader> {
       // Create the SelectionScreen in the next step.
       MaterialPageRoute(
         builder: (context) => AddItemForm(
-          columns:
-              columns.where((element) => element["allowAddScreen"]).toList(),
-          initValues: val,
-          header:"Add Address"
-        ),
+            columns:
+                columns.where((element) => element["allowAddScreen"]).toList(),
+            initValues: val,
+            header: "Add Address"),
       ),
     );
     print(result);
+    setState(() {
+      companyDetail = result;
+    });
   }
 }
