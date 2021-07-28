@@ -13,6 +13,7 @@ class _DataGridState extends State<DataGrid> {
   List<Map<String, dynamic>> rowData = [];
   List<Map<String, dynamic>> columns = [
     {
+      "type": "index",
       "label": "S NO",
       "_key": "sno",
       "width": "30",
@@ -23,6 +24,7 @@ class _DataGridState extends State<DataGrid> {
       "keyboardType": TextInputType.text,
     },
     {
+      "type": "text",
       "label": "Description",
       "_key": "description",
       "width": "30",
@@ -33,6 +35,7 @@ class _DataGridState extends State<DataGrid> {
       "keyboardType": TextInputType.text,
     },
     {
+      "type": "text",
       "label": "Quantity",
       "_key": "quantity",
       "width": "30",
@@ -43,6 +46,7 @@ class _DataGridState extends State<DataGrid> {
       "keyboardType": TextInputType.number,
     },
     {
+      "type": "text",
       "label": "Unit price ",
       "_key": "price",
       "width": "30",
@@ -53,6 +57,7 @@ class _DataGridState extends State<DataGrid> {
       "keyboardType": TextInputType.number,
     },
     {
+      "type": "text",
       "label": "Total price",
       "_key": "totalPrice",
       "width": "30",
@@ -81,6 +86,8 @@ class _DataGridState extends State<DataGrid> {
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: DataTable(
+            headingRowColor:
+            MaterialStateColor.resolveWith((states) => Colors.green.withOpacity(0.3)),
             columns: List.generate(columns.length, (index) {
               return DataColumn(
                 label: Expanded(
@@ -93,26 +100,15 @@ class _DataGridState extends State<DataGrid> {
             }),
             rows: List.generate(rowData.length, (idx) {
               return DataRow(
+                  color: MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                        // Even rows will have a grey color.
+                        if (idx % 2 == 0)
+                          return Colors.green.withOpacity(0.1);
+                        return Colors.green.withOpacity(0.2); // Use default value for other states and odd rows.
+                      }),
                   cells: List.generate(columns.length, (index) {
-                var _key = columns[index]["_key"];
-                return DataCell(columns[index]["type"] == "action"
-                    ? Row(
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.edit),
-                            onPressed: () {},
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () {},
-                          ),
-                        ],
-                      )
-                    : Align(
-                        alignment: columns[index]["textAlign"],
-                        child: Text(
-                          rowData[idx][_key] == null ? '' : rowData[idx][_key],
-                        )));
+                return DataCell(_dataCell(idx, columns[index] , rowData[idx]));
               }));
             }),
             headingRowHeight: 50.0,
@@ -172,6 +168,39 @@ class _DataGridState extends State<DataGrid> {
     );
   }
 
+  _dataCell(rowIdx, column, item) {
+    var _key = column["_key"];
+    var type = column["type"];
+    print(column);
+
+    print(type);
+    switch (type) {
+      case "action":
+        return Row(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () {},
+            ),
+          ],
+        );
+      case "index":
+        return Align(
+            alignment: column["textAlign"],
+            child: Text((rowIdx + 1).toString()));
+      default:
+        return Align(
+            alignment: column["textAlign"],
+            child: Text(
+              item[_key] == null ? '' : item[_key],
+            ));
+    }
+  }
+
   void _navigateAndDisplaySelection(BuildContext context) async {
     // Navigator.push returns a Future that completes after calling
     // Navigator.pop on the Selection Screen.
@@ -184,8 +213,6 @@ class _DataGridState extends State<DataGrid> {
                   .where((element) => element["allowAddScreen"])
                   .toList())),
     );
-    print("result");
-    print(result);
     setState(() {
       rowData.add(result);
     });
