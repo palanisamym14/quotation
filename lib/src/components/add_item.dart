@@ -4,8 +4,10 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 // import 'package:intl/intl.dart';
 
 class AddItemForm extends StatefulWidget {
-  List<Map<String, dynamic>>? columns;
-  AddItemForm({this.columns});
+  final List<Map<String, dynamic>>? columns;
+  Map<String, dynamic> initValues;
+  final String header;
+  AddItemForm({this.columns, required this.initValues, required this.header});
 
   @override
   AddItemFormState createState() {
@@ -23,7 +25,7 @@ class AddItemFormState extends State<AddItemForm> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Add Item'),
+          title: Text(widget.header, textAlign: TextAlign.center),
         ),
         body: Center(
           child: Padding(
@@ -35,12 +37,7 @@ class AddItemFormState extends State<AddItemForm> {
                     key: _formKey,
                     // enabled: false,
                     autovalidateMode: AutovalidateMode.disabled,
-                    initialValue: {
-                      'movie_rating': 5,
-                      'best_language': 'Dart',
-                      'age': '13',
-                      'gender': 'Male'
-                    },
+                    initialValue: widget.initValues,
                     skipDisabled: true,
                     child: Column(
                       children: <Widget>[
@@ -57,16 +54,20 @@ class AddItemFormState extends State<AddItemForm> {
                                   labelText: widget.columns![index]["label"],
                                 ),
                                 onChanged: (val) {},
-                                validator: widget.columns![index]
-                                            ["keyboardType"] ==
-                                        TextInputType.number
-                                    ? FormBuilderValidators.compose([
-                                        FormBuilderValidators.required(context),
-                                        FormBuilderValidators.numeric(context),
-                                      ])
-                                    : FormBuilderValidators.compose([
-                                        FormBuilderValidators.required(context),
-                                      ]),
+                                validator: widget.columns![index]["isRequired"]
+                                    ? widget.columns![index]["keyboardType"] ==
+                                            TextInputType.number
+                                        ? FormBuilderValidators.compose([
+                                            FormBuilderValidators.required(
+                                                context),
+                                            FormBuilderValidators.numeric(
+                                                context),
+                                          ])
+                                        : FormBuilderValidators.compose([
+                                            FormBuilderValidators.required(
+                                                context),
+                                          ])
+                                    : FormBuilderValidators.compose([]),
                                 keyboardType: widget.columns![index]
                                     ["keyboardType"],
                                 textInputAction: TextInputAction.next,

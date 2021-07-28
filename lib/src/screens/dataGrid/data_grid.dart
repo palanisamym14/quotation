@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:quotation/src/components/add_item.dart';
 import 'package:quotation/src/components/custom_text_form.dart';
-import 'package:quotation/src/utils/random_string.dart';
+import 'header.dart';
 
 class DataGrid extends StatefulWidget {
   const DataGrid({Key? key}) : super(key: key);
@@ -24,6 +24,7 @@ class _DataGridState extends State<DataGrid> {
       "textAlign": Alignment.center,
       "allowAddScreen": false,
       "keyboardType": TextInputType.text,
+      "isRequired": true,
     },
     {
       "type": "text",
@@ -35,6 +36,7 @@ class _DataGridState extends State<DataGrid> {
       "textAlign": Alignment.centerLeft,
       "allowAddScreen": true,
       "keyboardType": TextInputType.text,
+      "isRequired": true,
     },
     {
       "type": "text",
@@ -46,6 +48,7 @@ class _DataGridState extends State<DataGrid> {
       "textAlign": Alignment.centerLeft,
       "allowAddScreen": true,
       "keyboardType": TextInputType.number,
+      "isRequired": true,
     },
     {
       "type": "text",
@@ -57,6 +60,7 @@ class _DataGridState extends State<DataGrid> {
       "textAlign": Alignment.centerRight,
       "allowAddScreen": true,
       "keyboardType": TextInputType.number,
+      "isRequired": true,
     },
     {
       "type": "text",
@@ -68,6 +72,7 @@ class _DataGridState extends State<DataGrid> {
       "textAlign": Alignment.centerRight,
       "allowAddScreen": true,
       "keyboardType": TextInputType.number,
+      "isRequired": true,
     },
     {
       "type": "action",
@@ -85,12 +90,16 @@ class _DataGridState extends State<DataGrid> {
     "discount": 0.00,
     "netPay": 0.00
   };
+  Map<String, String> stringParams = {
+    "description": '',
+  };
 
   @override
   Widget build(BuildContext context) {
     return ListView(
       shrinkWrap: true,
       children: <Widget>[
+        DataGridHeader(),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: DataTable(
@@ -117,7 +126,7 @@ class _DataGridState extends State<DataGrid> {
                   }),
                   cells: List.generate(columns.length, (index) {
                     return DataCell(
-                        _dataCell(idx, columns[index], rowData[idx]));
+                        _dataCell(context, idx, columns[index], rowData[idx]));
                   }));
             }),
             headingRowHeight: 50.0,
@@ -126,10 +135,10 @@ class _DataGridState extends State<DataGrid> {
         ),
         Row(
           children: [
-            IconButton(
+            new IconButton(
               icon: const Icon(Icons.add),
               onPressed: () {
-                _navigateAndDisplaySelection(context);
+                _navigateAndDisplaySelection(context, stringParams, -1);
               },
             ),
           ],
@@ -202,7 +211,7 @@ class _DataGridState extends State<DataGrid> {
     }
   }
 
-  _dataCell(rowIdx, column, item) {
+  _dataCell(BuildContext context, rowIdx, column, item) {
     var _key = column["_key"];
     var type = column["type"];
     switch (type) {
@@ -211,7 +220,9 @@ class _DataGridState extends State<DataGrid> {
           children: [
             IconButton(
               icon: const Icon(Icons.edit),
-              onPressed: () {},
+              onPressed: () {
+                _navigateAndDisplaySelection(context, item, rowIdx);
+              },
             ),
             IconButton(
               icon: const Icon(Icons.delete),
@@ -232,25 +243,36 @@ class _DataGridState extends State<DataGrid> {
     }
   }
 
-  void _navigateAndDisplaySelection(BuildContext context) async {
-    // Navigator.push returns a Future that completes after calling
-    // Navigator.pop on the Selection Screen.
+  void _navigateAndDisplaySelection(BuildContext context, val, idx) async {
+    // Map<String, dynamic> _val = Map<String, dynamic>.from(val);
+    // print("_val");
+    print(val);
     final result = await Navigator.push(
       context,
       // Create the SelectionScreen in the next step.
       MaterialPageRoute(
-          builder: (context) => AddItemForm(
-              columns: columns
-                  .where((element) => element["allowAddScreen"])
-                  .toList())),
+        builder: (context) => AddItemForm(
+          columns:
+              columns.where((element) => element["allowAddScreen"]).toList(),
+          initValues: val,
+          header: "Add Item",
+        ),
+      ),
     );
-    setState(() {
-      rowData.add(result);
-    });
-    onFooterValueChanged(
-        rowData
-            .map((e) => double.parse(e["totalPrice"]))
-            .reduce((a, b) => a + b).toString(),
-        "grandTotal");
+    if (result != null) {
+      setState(() {
+        if (idx == -1) {
+          rowData.add(result);
+        } else {
+          rowData[idx] = result;
+        }
+      });
+      onFooterValueChanged(
+          rowData
+              .map((e) => double.parse(e["totalPrice"]))
+              .reduce((a, b) => a + b)
+              .toString(),
+          "grandTotal");
+    }
   }
 }
