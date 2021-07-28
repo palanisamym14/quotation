@@ -75,3 +75,10 @@ String randomMerge(String a, String b) {
   mergedCodeUnits.shuffle();
   return String.fromCharCodes(mergedCodeUnits);
 }*/
+
+bool isNumeric(String result) {
+  if (result == null) {
+    return false;
+  }
+  return double.tryParse(result) != null;
+}

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:quotation/src/components/add_item.dart';
 import 'package:quotation/src/components/custom_text_form.dart';
+import 'package:quotation/src/utils/random_string.dart';
 
 class DataGrid extends StatefulWidget {
   const DataGrid({Key? key}) : super(key: key);
@@ -183,19 +184,27 @@ class _DataGridState extends State<DataGrid> {
   }
 
   onFooterValueChanged(val, key) {
-    print(val);
-    print(key);
+    var tempVal = val;
+    tempVal = double.parse(val);
     setState(() {
-      footerValue.update(key, (value) => double.parse(val));
+      footerValue.update(key, (value) => tempVal);
     });
+    if (key == "grandTotal") {
+      setState(() {
+        footerValue.update(
+            "netPay", (value) => tempVal - footerValue["discount"]);
+      });
+    } else if (key == "discount") {
+      setState(() {
+        footerValue.update(
+            "netPay", (value) => footerValue["grandTotal"] - tempVal);
+      });
+    }
   }
 
   _dataCell(rowIdx, column, item) {
     var _key = column["_key"];
     var type = column["type"];
-    print(column);
-
-    print(type);
     switch (type) {
       case "action":
         return Row(
@@ -238,5 +247,10 @@ class _DataGridState extends State<DataGrid> {
     setState(() {
       rowData.add(result);
     });
+    onFooterValueChanged(
+        rowData
+            .map((e) => double.parse(e["totalPrice"]))
+            .reduce((a, b) => a + b).toString(),
+        "grandTotal");
   }
 }

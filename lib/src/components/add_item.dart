@@ -23,7 +23,7 @@ class AddItemFormState extends State<AddItemForm> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Pick an option'),
+          title: const Text('Add Item'),
         ),
         body: Center(
           child: Padding(
