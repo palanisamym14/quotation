@@ -16,8 +16,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
         children: <Widget>[
           //Set User Information Username Avatar
           UserAccountsDrawerHeader(
-            accountName: new Text("Nicholas"),
-            accountEmail: new Text("nigulasi@email.com"),
+            accountName: new Text("Palani"),
+            accountEmail: new Text("palanisamym14@email.com"),
             //Current avatar
             currentAccountPicture: new CircleAvatar(
               backgroundImage: new AssetImage("assets/images/main_bottom.png"),
@@ -32,21 +32,21 @@ class _CustomDrawerState extends State<CustomDrawer> {
           ),
           ListTile(
             leading: new CircleAvatar(
-              child: new Icon(Icons.color_lens),
+              child: new Icon(Icons.dashboard),
             ),
-            title: Text("personalized dress up"),
+            title: Text("Dashboard"),
           ),
+          Expanded(child: Container()),
           ListTile(
             leading: new CircleAvatar(
-              child: new Icon(Icons.photo),
+              child: new Icon(Icons.logout_outlined),
             ),
-            title: Text("My Album"),
-          ),
-          ListTile(
+            title: new Text("Settings"),
+          ),ListTile(
             leading: new CircleAvatar(
-              child: new Icon(Icons.wifi),
+              child: new Icon(Icons.logout_outlined),
             ),
-            title: new Text("wifi"),
+            title: new Text("Logout"),
           )
         ],
       ),
