@@ -73,7 +73,7 @@ class _DataGridHeaderState extends State<DataGridHeader> {
           Row(
             children: [
               Text(
-                'To Address1 ',
+                'Customer Details ',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               IconButton(

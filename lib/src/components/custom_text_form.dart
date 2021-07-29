@@ -20,15 +20,16 @@ class _CustomEditFormState extends State<CustomEditForm> {
   @override
   Widget build(BuildContext context) {
     return new InkWell(
-        onDoubleTap: () async {
-          var result = await asyncInputDialog(context,
-              double.parse((widget.value).toStringAsFixed(2)).toString());
-          setState(() {
-            editable = !editable;
-            widget.callback(result, widget.keyName);
-          });
-        },
-        child: Text(double.parse((widget.value).toStringAsFixed(2)).toString(),
-            textAlign: TextAlign.right));
+      onDoubleTap: () async {
+        var result = await asyncInputDialog(context,
+            double.parse((widget.value).toStringAsFixed(2)).toString());
+        setState(() {
+          editable = !editable;
+          widget.callback(result, widget.keyName);
+        });
+      },
+      child: Text(double.parse((widget.value).toStringAsFixed(2)).toString(),
+          textAlign: TextAlign.right),
+    );
   }
 }

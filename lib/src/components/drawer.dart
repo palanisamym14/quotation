@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_modular/flutter_modular.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:flutter/widgets.dart';
+import 'package:quotation/src/screens/company_details/company_details.dart';
 
 class CustomDrawer extends StatefulWidget {
   @override
@@ -39,9 +38,34 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 color: Colors.white,
               ),
             ),
-            title: Text("Dashboard"),
+            title: Text("Company Detail"),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CompanyDetailsScreen(),
+                ),
+              );
+            },
           ),
-          Expanded(child: Container()),
+          ListTile(
+            leading: new CircleAvatar(
+              backgroundColor: Colors.green,
+              child: new Icon(
+                Icons.dashboard_sharp,
+                color: Colors.white,
+              ),
+            ),
+            title: Text("Dashboard"),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CompanyDetailsScreen(),
+                ),
+              );
+            },
+          ),
           ListTile(
             leading: new CircleAvatar(
               backgroundColor: Colors.green,

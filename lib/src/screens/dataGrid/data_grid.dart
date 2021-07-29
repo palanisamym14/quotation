@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:quotation/src/components/add_item.dart';
 import 'package:quotation/src/components/custom_text_form.dart';
+import 'package:quotation/src/screens/dataGrid/data_action.dart';
 import 'header.dart';
 
 class DataGrid extends StatefulWidget {
@@ -187,7 +188,8 @@ class _DataGridState extends State<DataGrid> {
               ],
             ),
           ),
-        )
+        ),
+        DataGridAction(),
       ],
     );
   }

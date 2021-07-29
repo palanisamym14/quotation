@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:quotation/src/components/profile_image.dart';
 // import 'package:intl/intl.dart';
 
 class AddItemForm extends StatefulWidget {
@@ -19,7 +20,7 @@ class AddItemFormState extends State<AddItemForm> {
   bool autoValidate = true;
   final _formKey = GlobalKey<FormBuilderState>();
 
-  final ValueChanged _onChanged = (val) => print(val);
+  // final ValueChanged _onChanged = (val) => print(val);
 
   @override
   Widget build(BuildContext context) {
@@ -46,32 +47,7 @@ class AddItemFormState extends State<AddItemForm> {
                             shrinkWrap: true,
                             itemCount: widget.columns?.length,
                             itemBuilder: (context, index) {
-                              return FormBuilderTextField(
-                                autovalidateMode:
-                                    AutovalidateMode.onUserInteraction,
-                                name: widget.columns![index]["_key"],
-                                decoration: InputDecoration(
-                                  labelText: widget.columns![index]["label"],
-                                ),
-                                onChanged: (val) {},
-                                validator: widget.columns![index]["isRequired"]
-                                    ? widget.columns![index]["keyboardType"] ==
-                                            TextInputType.number
-                                        ? FormBuilderValidators.compose([
-                                            FormBuilderValidators.required(
-                                                context),
-                                            FormBuilderValidators.numeric(
-                                                context),
-                                          ])
-                                        : FormBuilderValidators.compose([
-                                            FormBuilderValidators.required(
-                                                context),
-                                          ])
-                                    : FormBuilderValidators.compose([]),
-                                keyboardType: widget.columns![index]
-                                    ["keyboardType"],
-                                textInputAction: TextInputAction.next,
-                              );
+                              return getFormField(widget.columns![index]);
                             })
                       ],
                     ),
@@ -119,5 +95,46 @@ class AddItemFormState extends State<AddItemForm> {
             ),
           ),
         ));
+  }
+
+  getFormField(Map<String, dynamic> column) {
+    final type = column["type"];
+    switch (type) {
+      case "text":
+        return FormBuilderTextField(
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          name: column["_key"],
+          decoration: InputDecoration(
+            labelText: column["label"],
+          ),
+          onChanged: (val) {},
+          validator: column["isRequired"]
+              ? column["keyboardType"] == TextInputType.number
+                  ? FormBuilderValidators.compose([
+                      FormBuilderValidators.required(context),
+                      FormBuilderValidators.numeric(context),
+                    ])
+                  : FormBuilderValidators.compose([
+                      FormBuilderValidators.required(context),
+                    ])
+              : FormBuilderValidators.compose([]),
+          keyboardType: column["keyboardType"],
+          textInputAction: TextInputAction.next,
+        );
+      case "profile":
+      case "image":
+        return Text('Default'); //ProfileImage(imagePath: "");
+      case "list":
+        return Text('Default');
+      default:
+        return FormBuilderTextField(
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          name: column["_key"],
+          decoration: InputDecoration(
+            labelText: column["label"],
+          ),
+          onChanged: (val) {},
+        );
+    }
   }
 }
