@@ -14,9 +14,9 @@ class _AppWidgetState extends State<AppWidget> {
   }
 
   @override
-  initState() {
+  void initState() {
     super.initState();
-    fetchGraphql();
+    // fetchGraphql();
     AppLog("ALL");
   }
 
