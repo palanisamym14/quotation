@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:quotation/src/screens/company_details/company_details.dart';
@@ -8,6 +9,20 @@ class CustomDrawer extends StatefulWidget {
 }
 
 class _CustomDrawerState extends State<CustomDrawer> {
+  User? user;
+  Future<void> getCurrentUser() async {
+    User? _user = FirebaseAuth.instance.currentUser;
+    setState(() {
+      user = _user;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState()
+    getCurrentUser();
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Drawer(

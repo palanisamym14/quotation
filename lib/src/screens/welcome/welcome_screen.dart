@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
 const users = const {
   'dribbble@gmail.com': '12345',
@@ -17,7 +18,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Duration get loginTime => Duration(milliseconds: 2250);
 
   Future<String> _authUser(LoginData data) {
-    print('Name: ${data.name}, Password: ${data.password}');
     return Future.delayed(loginTime).then((_) {
       if (!users.containsKey(data.name)) {
         return 'User not exists';
@@ -30,12 +30,34 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   Future<String> _authLogin(LoginData data) async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+              email: data.name, password: data.password);
+      print(userCredential);
+      return "";
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+      }
+      return "";
+    } catch (e) {
+      print(e);
+      return (e.toString());
+    }
+  }
+
+
+  Future<String> _authSignUp(LoginData data) async {
     print('Name:${data.name}');
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
-              email: data.name, password: data.password);
+          email: data.name, password: data.password);
       print(userCredential);
+      Modular.to.navigate('dashboard/home');
       return "";
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -73,7 +95,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     return FlutterLogin(
       title: 'Quotation',
       onLogin: _authLogin,
-      onSignup: _authUser,
+      onSignup: _authSignUp,
       loginProviders: <LoginProvider>[
         LoginProvider(
           icon: Icons.phone,
@@ -101,6 +123,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         //   builder: (context) => DashboardScreen(),
         // ));
         print("login Complete");
+        Modular.to.navigate('dashboard/home');
       },
       onRecoverPassword: _recoverPassword,
     );

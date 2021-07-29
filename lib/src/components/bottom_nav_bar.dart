@@ -6,7 +6,7 @@ import 'package:quotation/src/components/drawer.dart';
 
 final padding = EdgeInsets.symmetric(horizontal: 18, vertical: 12);
 double gap = 10;
-List<String> routes = ['home', 'schedule', 'favourite', 'analysis'];
+List<String> routes = ['dashboard/home', 'dashboard/schedule', 'dashboard/favourite', 'dashboard/analysis'];
 List<Color> colors = [Colors.purple, Colors.pink, Colors.purple, Colors.teal];
 
 class BottomNavBar extends StatefulWidget {

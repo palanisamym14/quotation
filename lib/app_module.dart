@@ -12,7 +12,7 @@ class AppModule extends Module {
 
   @override
   final List<ModularRoute> routes = [
-    // ModuleRoute(Modular.initialRoute, module: HomeModule()),
+    ModuleRoute('/dashboard', module: HomeModule()),
     ChildRoute(Modular.initialRoute, child: (_, __) => WelcomeScreen()),
     ChildRoute('/welcome', child: (_, __) => WelcomeScreen()),
     // ChildRoute('/details', child: (_, args) => CallSample({host:''})),
