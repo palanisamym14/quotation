@@ -1,14 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:quotation/src/components/profile_image.dart';
+
 // import 'package:intl/intl.dart';
+typedef void SignalingStateCallback(dynamic data);
 
 class AddItemForm extends StatefulWidget {
   final List<Map<String, dynamic>>? columns;
   Map<String, dynamic> initValues;
   final String header;
-  AddItemForm({this.columns, required this.initValues, required this.header});
+  final String actionLabel;
+  final bool isCallBack;
+  final SignalingStateCallback? callBack;
+  AddItemForm(
+      {this.columns,
+      required this.initValues,
+      required this.header,
+      this.isCallBack =false,
+      this.callBack,
+      this.actionLabel = 'Submit'});
 
   @override
   AddItemFormState createState() {
@@ -60,16 +70,19 @@ class AddItemFormState extends State<AddItemForm> {
                           onPressed: () {
                             if (_formKey.currentState?.saveAndValidate() ??
                                 false) {
-                              print(_formKey.currentState?.value);
-                              Navigator.pop(
-                                  context, _formKey.currentState?.value);
+                              if (widget.isCallBack) {
+                                widget.callBack!(_formKey.currentState?.value);
+                              } else {
+                                Navigator.pop(
+                                    context, _formKey.currentState?.value);
+                              }
                             } else {
                               print(_formKey.currentState?.value);
                               print('validation failed');
                             }
                           },
-                          child: const Text(
-                            'Submit',
+                          child: Text(
+                            widget.actionLabel,
                             style: TextStyle(color: Colors.white),
                           ),
                         ),

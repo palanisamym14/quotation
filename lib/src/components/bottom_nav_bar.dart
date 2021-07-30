@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -6,7 +7,7 @@ import 'package:quotation/src/components/drawer.dart';
 
 final padding = EdgeInsets.symmetric(horizontal: 18, vertical: 12);
 double gap = 10;
-List<String> routes = ['dashboard/home', 'dashboard/schedule', 'dashboard/favourite', 'dashboard/analysis'];
+List<String> routes = ['home', 'schedule', 'favourite', 'analysis'];
 List<Color> colors = [Colors.purple, Colors.pink, Colors.purple, Colors.teal];
 
 class BottomNavBar extends StatefulWidget {
@@ -21,7 +22,15 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   void initState() {
     super.initState();
-    Modular.to.navigate(routes[0]);
+      final FirebaseAuth _auth = FirebaseAuth.instance;
+      User? user = _auth.currentUser;
+      print(user);
+      print("user");
+      if (user != null) {
+        Modular.to.navigate(routes[0]);
+      }else{
+        Modular.to.navigate('login');
+      }
   }
 
   @override

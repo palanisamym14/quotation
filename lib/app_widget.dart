@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,10 +15,22 @@ class _AppWidgetState extends State<AppWidget> {
     await initConnection();
   }
 
+  Future<void> isUserLoggedIn() async {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    User? user = _auth.currentUser;
+    print(user);
+    print("user");
+    // user = _auth.currentUser;
+    if (user != null) {
+      Modular.to.navigate('dashboard/home');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     // fetchGraphql();
+    isUserLoggedIn();
     AppLog("ALL");
   }
 

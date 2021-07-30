@@ -3,6 +3,7 @@ import 'package:flutter_login/flutter_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 const users = const {
   'dribbble@gmail.com': '12345',
@@ -49,15 +50,19 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     }
   }
 
-
   Future<String> _authSignUp(LoginData data) async {
-    print('Name:${data.name}');
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
-          email: data.name, password: data.password);
-      print(userCredential);
-      Modular.to.navigate('dashboard/home');
+              email: data.name, password: data.password);
+      CollectionReference users =
+          FirebaseFirestore.instance.collection('users');
+      await users.add({
+        "id": userCredential.user!.uid,
+        "uid": userCredential.user!.uid,
+        "type": 0,
+        "email": userCredential.user!.email
+      });
       return "";
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -87,15 +92,21 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   void initState() {
     super.initState();
-    // Firebase.initializeApp();
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    User? user = _auth.currentUser;
+    if (user != null) {
+      Modular.to.navigate('/');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return FlutterLogin(
       title: 'Quotation',
+      logo: 'assets/images/logo_white.png',
       onLogin: _authLogin,
       onSignup: _authSignUp,
+      titleTag: "Thanks for sign up",
       loginProviders: <LoginProvider>[
         LoginProvider(
           icon: Icons.phone,
@@ -119,11 +130,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         ),
       ],
       onSubmitAnimationCompleted: () {
-        // Navigator.of(context).pushReplacement(MaterialPageRoute(
-        //   builder: (context) => DashboardScreen(),
-        // ));
         print("login Complete");
-        Modular.to.navigate('dashboard/home');
+        Modular.to.navigate('/');
       },
       onRecoverPassword: _recoverPassword,
     );
