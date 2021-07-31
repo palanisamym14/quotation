@@ -24,9 +24,7 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
 
   Future<void> updateCompany(data) async {
     User? user = FirebaseAuth.instance.currentUser;
-    CollectionReference company =
-        FirebaseFirestore.instance.collection("company");
-    company.doc(user!.uid).set(data);
+    new CompanyRepo().updateCompany(data);
     Navigator.pop(context, true);
   }
 

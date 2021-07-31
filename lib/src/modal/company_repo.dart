@@ -5,7 +5,16 @@ final auth = FirebaseFirestore.instance;
 
 class CompanyRepo {
   Future<Map<String, dynamic>> getCompany() async {
-    DocumentSnapshot company = await auth.collection("company").doc(userId).get();
-    return company.data() as Map<String, dynamic>;
+    DocumentSnapshot company =
+        await auth.collection("company").doc(userId).get();
+    var data = company.data();
+    return data == null ? {} : data as Map<String, dynamic>;
+  }
+
+  Future<Map<String, dynamic>> updateCompany(data) {
+    CollectionReference company =
+        FirebaseFirestore.instance.collection("company");
+    company.doc(userId).set(data);
+    return data;
   }
 }

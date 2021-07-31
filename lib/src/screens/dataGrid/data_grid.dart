@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:quotation/src/components/add_item.dart';
 import 'package:quotation/src/components/custom_text_form.dart';
 import 'package:quotation/src/screens/dataGrid/data_action.dart';
+import 'package:quotation/src/screens/dataGrid/grid_constant.draft.dart';
 import 'header.dart';
 
 class DataGrid extends StatefulWidget {
@@ -14,78 +15,7 @@ class DataGrid extends StatefulWidget {
 
 class _DataGridState extends State<DataGrid> {
   List<Map<String, dynamic>> rowData = [];
-  List<Map<String, dynamic>> columns = [
-    {
-      "type": "index",
-      "label": "S NO",
-      "_key": "sno",
-      "width": "30",
-      "isVisible": true,
-      "labelAlign": "center",
-      "textAlign": Alignment.center,
-      "allowAddScreen": false,
-      "keyboardType": TextInputType.text,
-      "isRequired": true,
-    },
-    {
-      "type": "text",
-      "label": "Description",
-      "_key": "description",
-      "width": "30",
-      "isVisible": true,
-      "labelAlign": "center",
-      "textAlign": Alignment.centerLeft,
-      "allowAddScreen": true,
-      "keyboardType": TextInputType.text,
-      "isRequired": true,
-    },
-    {
-      "type": "text",
-      "label": "Quantity",
-      "_key": "quantity",
-      "width": "30",
-      "isVisible": true,
-      "labelAlign": "center",
-      "textAlign": Alignment.centerLeft,
-      "allowAddScreen": true,
-      "keyboardType": TextInputType.number,
-      "isRequired": true,
-    },
-    {
-      "type": "text",
-      "label": "Unit price ",
-      "_key": "price",
-      "width": "30",
-      "isVisible": true,
-      "labelAlign": "center",
-      "textAlign": Alignment.centerRight,
-      "allowAddScreen": true,
-      "keyboardType": TextInputType.number,
-      "isRequired": true,
-    },
-    {
-      "type": "text",
-      "label": "Total price",
-      "_key": "totalPrice",
-      "width": "30",
-      "isVisible": true,
-      "labelAlign": "center",
-      "textAlign": Alignment.centerRight,
-      "allowAddScreen": true,
-      "keyboardType": TextInputType.number,
-      "isRequired": true,
-    },
-    {
-      "type": "action",
-      "isVisible": true,
-      "label": "Action",
-      "width": "30",
-      "labelAlign": "center",
-      "textAlign": Alignment.centerRight,
-      "allowAddScreen": false,
-    }
-  ];
-
+  List<Map<String, dynamic>> columns = gridColumns;
   Map<String, dynamic> footerValue = {
     "grandTotal": 0.00,
     "discount": 0.00,
@@ -189,7 +119,10 @@ class _DataGridState extends State<DataGrid> {
             ),
           ),
         ),
-        DataGridAction(),
+        DataGridAction(
+          columns: columns,
+          data: rowData,
+        ),
       ],
     );
   }
