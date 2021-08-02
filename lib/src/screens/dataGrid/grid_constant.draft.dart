@@ -83,3 +83,54 @@ final List<Map<String, dynamic>> gridColumns = [
     "canPrint": false,
   }
 ];
+
+final List<Map<String, dynamic>> headerColumns = [
+  {
+    "type": "text",
+    "label": "Company Name",
+    "_key": "companyName",
+    "width": "30",
+    "isVisible": true,
+    "labelAlign": "center",
+    "textAlign": Alignment.centerLeft,
+    "allowAddScreen": true,
+    "keyboardType": TextInputType.text,
+    "isRequired": true,
+  },
+  {
+    "type": "text",
+    "label": "Address Line1",
+    "_key": "addressLine1",
+    "width": "30",
+    "isVisible": true,
+    "labelAlign": "center",
+    "textAlign": Alignment.centerLeft,
+    "allowAddScreen": true,
+    "keyboardType": TextInputType.text,
+    "isRequired": false
+  },
+  {
+    "type": "text",
+    "label": "Address Line2",
+    "_key": "addressLine2",
+    "width": "30",
+    "isVisible": true,
+    "labelAlign": "center",
+    "textAlign": Alignment.centerLeft,
+    "allowAddScreen": true,
+    "keyboardType": TextInputType.text,
+    "isRequired": false
+  },
+  {
+    "type": "text",
+    "label": "Mobile",
+    "_key": "mobile",
+    "width": "30",
+    "isVisible": true,
+    "labelAlign": "center",
+    "textAlign": Alignment.centerLeft,
+    "allowAddScreen": true,
+    "keyboardType": TextInputType.text,
+    "isRequired": false
+  }
+];

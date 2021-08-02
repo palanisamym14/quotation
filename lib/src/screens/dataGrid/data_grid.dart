@@ -16,6 +16,7 @@ class DataGrid extends StatefulWidget {
 class _DataGridState extends State<DataGrid> {
   List<Map<String, dynamic>> rowData = [];
   List<Map<String, dynamic>> columns = gridColumns;
+  Map<String, dynamic> companyDetail = {};
   Map<String, dynamic> footerValue = {
     "grandTotal": 0.00,
     "discount": 0.00,
@@ -24,13 +25,20 @@ class _DataGridState extends State<DataGrid> {
   Map<String, String> stringParams = {
     "description": '',
   };
+  Future<void> updateCompanyAddress(data) async {
+    setState(() {
+      companyDetail = data as Map<String, dynamic>;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return ListView(
       shrinkWrap: true,
       children: <Widget>[
-        DataGridHeader(),
+        DataGridHeader(
+            companyDetail: companyDetail,
+            onHeaderDataChange: updateCompanyAddress),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: DataTable(
@@ -122,6 +130,7 @@ class _DataGridState extends State<DataGrid> {
         DataGridAction(
           columns: columns,
           data: rowData,
+          header: companyDetail,
         ),
       ],
     );

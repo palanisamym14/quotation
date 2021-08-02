@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:quotation/src/components/pdf_invoice_template.dart';
+import 'package:quotation/src/modal/data_print.dart';
 import 'package:quotation/src/screens/company_details/company_constant.dart';
+import 'package:quotation/src/screens/dataGrid/grid_constant.draft.dart';
 
 class DataGridAction extends StatefulWidget {
   final List<Map<String, dynamic>> columns;
   final List<Map<String, dynamic>> data;
-  const DataGridAction({Key? key, required this.data, required this.columns})
+  final Map<String, dynamic> header;
+
+  const DataGridAction(
+      {Key? key,
+      required this.data,
+      required this.columns,
+      required this.header})
       : super(key: key);
 
   @override
@@ -38,10 +46,18 @@ class _DataGridActionState extends State<DataGridAction> {
 
   onPressed() async {
     print(widget.columns);
-    await new InvoicePdf().generatePDF(
-        widget.columns
-            .where((element) => element["canPrint"] ?? false)
-            .toList(),
-        widget.data);
+    PrintResponseModal printResponseModal = new PrintResponseModal();
+    printResponseModal.columns = widget.columns
+        .where((element) => element["canPrint"] ?? false)
+        .toList();
+    printResponseModal.data = widget.data;
+    print(widget.header);
+    print("widget.header");
+    printResponseModal.header.to = headerColumns
+        .map((e) => (widget.header[e['_key']]).toString())
+        .toList();
+    print(printResponseModal.header.to);
+
+    await new InvoicePdf().generatePDF(printResponseModal);
   }
 }

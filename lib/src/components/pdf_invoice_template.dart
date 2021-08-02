@@ -1,29 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:quotation/src/components/save_file.dart';
+import 'package:quotation/src/modal/data_print.dart';
+import 'package:quotation/src/utils/util.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 ///Local import
 
 /// Render pdf of invoice
 class InvoicePdf {
-  Future<bool> generatePDF(List<Map<String, dynamic>> columns,
-      List<Map<String, dynamic>> data) async {
-    print(columns);
+  Future<bool> generatePDF(PrintResponseModal printResponseModal) async {
     //Create a PDF document.
     final PdfDocument document = PdfDocument();
     //Add page to the PDF
     final PdfPage page = document.pages.add();
     //Get page client size
     final Size pageSize = page.getClientSize();
+    Color hColor = Colors.green[300] ?? Colors.green;
     //Draw rectangle
     page.graphics.drawRectangle(
         bounds: Rect.fromLTWH(0, 0, pageSize.width, pageSize.height),
-        pen: PdfPen(PdfColor(142, 170, 219, 255)));
+        pen: PdfPen(customPDFColor(hColor)));
     //Generate PDF grid.
-    final PdfGrid grid = _getGrid(columns, data);
+    final PdfGrid grid = _getGrid(printResponseModal);
     //Draw the header section by creating text element
-    final PdfLayoutResult result = _drawHeader(page, pageSize, grid);
+    final PdfLayoutResult result =
+        _drawHeader(page, pageSize, grid, printResponseModal);
     //Draw grid
     _drawGrid(page, grid, result);
     //Add invoice footer
@@ -37,55 +39,41 @@ class InvoicePdf {
   }
 
   //Draws the invoice header
-  PdfLayoutResult _drawHeader(PdfPage page, Size pageSize, PdfGrid grid) {
+  PdfLayoutResult _drawHeader(PdfPage page, Size pageSize, PdfGrid grid,
+      PrintResponseModal printResponseModal) {
     //Draw rectangle
+    Color hColor = Colors.green[300] ?? Colors.green;
     page.graphics.drawRectangle(
-        brush: PdfSolidBrush(PdfColor(91, 126, 215, 255)),
-        bounds: Rect.fromLTWH(0, 0, pageSize.width - 115, 90));
+        brush: PdfSolidBrush(customPDFColor(hColor)),
+        bounds: Rect.fromLTWH(0, 0, pageSize.width, 40));
     //Draw string
     page.graphics.drawString(
-        'INVOICE', PdfStandardFont(PdfFontFamily.helvetica, 30),
+        'INVOICE', PdfStandardFont(PdfFontFamily.helvetica, 18),
         brush: PdfBrushes.white,
-        bounds: Rect.fromLTWH(25, 0, pageSize.width - 115, 90),
+        bounds: Rect.fromLTWH(10, 0, pageSize.width, 43),
         format: PdfStringFormat(lineAlignment: PdfVerticalAlignment.middle));
-    page.graphics.drawRectangle(
-        bounds: Rect.fromLTWH(400, 0, pageSize.width - 400, 90),
-        brush: PdfSolidBrush(PdfColor(65, 104, 205)));
-    page.graphics.drawString(r'$' + _getTotalAmount(grid).toString(),
-        PdfStandardFont(PdfFontFamily.helvetica, 18),
-        bounds: Rect.fromLTWH(400, 0, pageSize.width - 400, 100),
-        brush: PdfBrushes.white,
-        format: PdfStringFormat(
-            alignment: PdfTextAlignment.center,
-            lineAlignment: PdfVerticalAlignment.middle));
     final PdfFont contentFont = PdfStandardFont(PdfFontFamily.helvetica, 9);
     //Draw string
-    page.graphics.drawString('Amount', contentFont,
-        brush: PdfBrushes.white,
-        bounds: Rect.fromLTWH(400, 0, pageSize.width - 400, 33),
-        format: PdfStringFormat(
-            alignment: PdfTextAlignment.center,
-            lineAlignment: PdfVerticalAlignment.bottom));
-    //Create data foramt and convert it to text.
+    //Create data format and convert it to text.
     final DateFormat format = DateFormat.yMMMMd('en_US');
-    final String invoiceNumber = 'Invoice Number: 2058557939\r\n\r\nDate: ' +
-        format.format(DateTime.now());
-    final Size contentSize = contentFont.measureString(invoiceNumber);
-    const String address =
-        'Bill To: \r\n\r\nAbraham Swearegin, \r\n\r\nUnited States, California, San Mateo, \r\n\r\n9920 BridgePointe Parkway, \r\n\r\n9365550136';
+    final String invoiceNumber =
+        '\r\n\r\nDate: ' + format.format(DateTime.now());
+    // final Size contentSize = contentFont.measureString(invoiceNumber);
+    Header headerData = printResponseModal.header;
+    final String address = 'Bill To: \r\n\r\n' + headerData.to.join("\r\n\r\n");
+    final Size contentSize = contentFont.measureString(address);
     PdfTextElement(text: invoiceNumber, font: contentFont).draw(
         page: page,
-        bounds: Rect.fromLTWH(pageSize.width - (contentSize.width + 30), 120,
-            contentSize.width + 30, pageSize.height - 120));
+        bounds: Rect.fromLTWH(pageSize.width - (contentSize.width + 30), 60,
+            contentSize.width + 30, contentSize.height + 30));
     return PdfTextElement(text: address, font: contentFont).draw(
         page: page,
-        bounds: Rect.fromLTWH(30, 120,
-            pageSize.width - (contentSize.width + 30), pageSize.height - 120))!;
+        bounds: Rect.fromLTWH(30, 60, pageSize.width - (contentSize.width + 30),
+            contentSize.height + 30))!;
   }
 
   //Draws the grid
   void _drawGrid(PdfPage page, PdfGrid grid, PdfLayoutResult result) {
-    print('draw');
     Rect? totalPriceCellBounds;
     Rect? quantityCellBounds;
     //Invoke the beginCellLayout event.
@@ -99,7 +87,7 @@ class InvoicePdf {
     };
     //Draw the PDF grid and get the result.
     result = grid.draw(
-        page: page, bounds: Rect.fromLTWH(0, result.bounds.bottom + 40, 0, 0))!;
+        page: page, bounds: Rect.fromLTWH(0, result.bounds.bottom, 0, 0))!;
     //Draw grand total.
     page.graphics.drawString('Grand Total',
         PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.bold),
@@ -123,31 +111,39 @@ class InvoicePdf {
         PdfPen(PdfColor(142, 170, 219, 255), dashStyle: PdfDashStyle.custom);
     linePen.dashPattern = <double>[3, 3];
     //Draw line
-    page.graphics.drawLine(linePen, Offset(0, pageSize.height - 100),
-        Offset(pageSize.width, pageSize.height - 100));
-    const String footerContent =
-        '800 Interchange Blvd.\r\n\r\nSuite 2501, Austin, TX 78721\r\n\r\nAny Questions? support@adventure-works.com';
+    // page.graphics.drawLine(linePen, Offset(0, pageSize.height - 20),
+    //     Offset(pageSize.width, pageSize.height - 20));
+    const String footerContent = 'zeroFee.com';
     //Added 30 as a margin for the layout
     page.graphics.drawString(
         footerContent, PdfStandardFont(PdfFontFamily.helvetica, 9),
         format: PdfStringFormat(alignment: PdfTextAlignment.right),
-        bounds: Rect.fromLTWH(pageSize.width - 30, pageSize.height - 70, 0, 0));
+        bounds: Rect.fromLTWH(pageSize.width - 30, pageSize.height - 20, 0, 0));
   }
 
   //Create PDF grid and return
-  PdfGrid _getGrid(
-      List<Map<String, dynamic>> columns, List<Map<String, dynamic>> data) {
+  PdfGrid _getGrid(PrintResponseModal printResponseModal) {
+    List<Map<String, dynamic>> columns = printResponseModal.columns;
+    List<Map<String, dynamic>> data = printResponseModal.data;
     //Create a PDF grid
     final PdfGrid grid = PdfGrid();
+    // grid.applyBuiltInStyle(PdfGridBuiltInStyle.listTable4Accent5);
     //Secify the columns count to the grid.
     grid.columns.add(count: columns.length);
     //Create the header row of the grid.
     final PdfGridRow headerRow = grid.headers.add(1)[0];
     //Set style
-    headerRow.style.backgroundBrush = PdfSolidBrush(PdfColor(68, 114, 196));
-    headerRow.style.textBrush = PdfBrushes.white;
+    Color hColor = Colors.green[300] ?? Colors.green;
+    headerRow.style.backgroundBrush =
+        PdfBrushes.green; // PdfSolidBrush(customPDFColor(hColor));
+    headerRow.style.textBrush = PdfBrushes.black;
+    PdfColor pdfColor = customPDFColor(hColor);
+    PdfPen pdfPen = new PdfPen(pdfColor);
     columns.asMap().forEach((index, element) {
       headerRow.cells[index].value = element['label'];
+      headerRow.cells[index].style.backgroundBrush = PdfSolidBrush(pdfColor);
+      headerRow.cells[index].style.borders =
+          PdfBorders(left: pdfPen, right: pdfPen, top: pdfPen, bottom: pdfPen);
       print(element['label']);
     });
     // headerRow.cells[0].value = 'Product Id';
@@ -157,7 +153,6 @@ class InvoicePdf {
       rowIndex += 1;
       _addProducts(columns, rowData, rowIndex, grid);
     }
-    grid.applyBuiltInStyle(PdfGridBuiltInStyle.listTable4Accent5);
     grid.columns[1].width = 200;
     for (int i = 0; i < headerRow.cells.count; i++) {
       headerRow.cells[i].style.cellPadding =
@@ -187,9 +182,9 @@ class InvoicePdf {
         print(element['_key']);
         row.cells[index].value = (rowIdx + 1).toString();
       } else {
-        row.cells[index].value = rowData[element['_key']] ?? 'HHH';
+        row.cells[index].value = rowData[element['_key']] ?? '---';
       }
-      row.cells[0].stringFormat.alignment = element['PdfTextAlignment'];
+      row.cells[0].stringFormat.alignment = element['pdfTextAlignment'];
     });
   }
 

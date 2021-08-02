@@ -1,66 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:quotation/src/components/add_item.dart';
+import 'package:quotation/src/screens/dataGrid/grid_constant.draft.dart';
+
+typedef void SignalingStateCallback(dynamic data);
 
 class DataGridHeader extends StatefulWidget {
-  const DataGridHeader({Key? key}) : super(key: key);
+  final Map<String, dynamic> companyDetail;
+  final SignalingStateCallback onHeaderDataChange;
 
+  const DataGridHeader(
+      {Key? key, required this.companyDetail, required this.onHeaderDataChange})
+      : super(key: key);
   @override
   _DataGridHeaderState createState() => _DataGridHeaderState();
 }
 
 class _DataGridHeaderState extends State<DataGridHeader> {
-  Map<String, dynamic> companyDetail = {};
-  List<Map<String, dynamic>> columns = [
-    {
-      "type": "text",
-      "label": "Company Name",
-      "_key": "companyName",
-      "width": "30",
-      "isVisible": true,
-      "labelAlign": "center",
-      "textAlign": Alignment.centerLeft,
-      "allowAddScreen": true,
-      "keyboardType": TextInputType.text,
-      "isRequired": true,
-    },
-    {
-      "type": "text",
-      "label": "Address Line1",
-      "_key": "addressLine1",
-      "width": "30",
-      "isVisible": true,
-      "labelAlign": "center",
-      "textAlign": Alignment.centerLeft,
-      "allowAddScreen": true,
-      "keyboardType": TextInputType.text,
-      "isRequired": false
-    },
-    {
-      "type": "text",
-      "label": "Address Line2",
-      "_key": "addressLine2",
-      "width": "30",
-      "isVisible": true,
-      "labelAlign": "center",
-      "textAlign": Alignment.centerLeft,
-      "allowAddScreen": true,
-      "keyboardType": TextInputType.text,
-      "isRequired": false
-    },
-    {
-      "type": "text",
-      "label": "Mobile",
-      "_key": "mobile",
-      "width": "30",
-      "isVisible": true,
-      "labelAlign": "center",
-      "textAlign": Alignment.centerLeft,
-      "allowAddScreen": true,
-      "keyboardType": TextInputType.text,
-      "isRequired": false
-    }
-  ];
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -89,9 +45,9 @@ class _DataGridHeaderState extends State<DataGridHeader> {
           ),
           new ListView.builder(
               shrinkWrap: true,
-              itemCount: columns.length,
+              itemCount: headerColumns.length,
               itemBuilder: (context, index) {
-                var val = companyDetail[columns[index]["_key"]];
+                var val = widget.companyDetail[headerColumns[index]["_key"]];
                 return val == null
                     ? Container(
                         height: 0,
@@ -105,7 +61,7 @@ class _DataGridHeaderState extends State<DataGridHeader> {
   }
 
   void _navigateAndDisplaySelection(BuildContext context) async {
-    Map<String, dynamic> val = companyDetail;
+    Map<String, dynamic> val = widget.companyDetail;
     // print("_val");
     print(val);
     final result = await Navigator.push(
@@ -113,15 +69,15 @@ class _DataGridHeaderState extends State<DataGridHeader> {
       // Create the SelectionScreen in the next step.
       MaterialPageRoute(
         builder: (context) => AddItemForm(
-            columns:
-                columns.where((element) => element["allowAddScreen"]).toList(),
+            columns: headerColumns
+                .where((element) => element["allowAddScreen"])
+                .toList(),
             initValues: val,
             header: "Add Address"),
       ),
     );
-    print(result);
     setState(() {
-      companyDetail = result;
+      widget.onHeaderDataChange(result);
     });
   }
 }
