@@ -134,3 +134,42 @@ final List<Map<String, dynamic>> headerColumns = [
     "isRequired": false
   }
 ];
+
+final List<Map<String, dynamic>> footerColumns = [
+  {
+    "type": "text",
+    "label": "Grand Total",
+    "_key": "grandTotal",
+    "width": "30",
+    "isVisible": true,
+    "labelAlign": "center",
+    "textAlign": Alignment.centerLeft,
+    "allowAddScreen": true,
+    "keyboardType": TextInputType.text,
+    "isRequired": true,
+  },
+  {
+    "type": "text",
+    "label": "discount",
+    "_key": "discount",
+    "width": "30",
+    "isVisible": true,
+    "labelAlign": "center",
+    "textAlign": Alignment.centerLeft,
+    "allowAddScreen": true,
+    "keyboardType": TextInputType.text,
+    "isRequired": false
+  },
+  {
+    "type": "text",
+    "label": "Net Pay",
+    "_key": "grandTotal",
+    "width": "30",
+    "isVisible": true,
+    "labelAlign": "center",
+    "textAlign": Alignment.centerLeft,
+    "allowAddScreen": true,
+    "keyboardType": TextInputType.text,
+    "isRequired": false
+  }
+];

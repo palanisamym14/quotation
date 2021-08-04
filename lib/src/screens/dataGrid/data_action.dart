@@ -4,17 +4,20 @@ import 'package:quotation/src/components/pdf_invoice_template.dart';
 import 'package:quotation/src/modal/data_print.dart';
 import 'package:quotation/src/screens/company_details/company_constant.dart';
 import 'package:quotation/src/screens/dataGrid/grid_constant.draft.dart';
+import 'package:quotation/src/utils/util.dart';
 
 class DataGridAction extends StatefulWidget {
   final List<Map<String, dynamic>> columns;
   final List<Map<String, dynamic>> data;
   final Map<String, dynamic> header;
+  final Map<String, dynamic> footer;
 
   const DataGridAction(
       {Key? key,
       required this.data,
       required this.columns,
-      required this.header})
+      required this.header,
+      required this.footer})
       : super(key: key);
 
   @override
@@ -31,11 +34,11 @@ class _DataGridActionState extends State<DataGridAction> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextButton.icon(
-                onPressed: onPressed,
+                onPressed: () => onPressed(context),
                 icon: const Icon(Icons.save),
                 label: Text("Save")),
             TextButton.icon(
-                onPressed: onPressed,
+                onPressed: () => onPressed(context),
                 icon: const Icon(Icons.print),
                 label: Text("Print"))
           ],
@@ -44,15 +47,13 @@ class _DataGridActionState extends State<DataGridAction> {
     );
   }
 
-  onPressed() async {
+  onPressed(BuildContext context) async {
     print(widget.columns);
     PrintResponseModal printResponseModal = new PrintResponseModal();
     printResponseModal.columns = widget.columns
         .where((element) => element["canPrint"] ?? false)
         .toList();
     printResponseModal.data = widget.data;
-    print(widget.header);
-    print("widget.header");
     List<String> to = [];
     headerColumns.forEach((ele) {
       var val = widget.header[ele['_key']];
@@ -61,7 +62,20 @@ class _DataGridActionState extends State<DataGridAction> {
       }
     });
     printResponseModal.header.to = to;
-    print(printResponseModal.header.to);
+    List<Map<String, dynamic>> _footer = [];
+    footerColumns.forEach((ele) {
+      var val = widget.footer[ele['_key']];
+      if (val != null && val != '') {
+        _footer.add({
+          "key": ele['_key'],
+          "label": ele['label'],
+          "value": currency(context, val).value
+        });
+      }
+    });
+
+    printResponseModal.footer = _footer;
+    print(printResponseModal.footer);
     await new InvoicePdf().generatePDF(printResponseModal);
   }
 }

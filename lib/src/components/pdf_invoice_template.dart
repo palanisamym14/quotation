@@ -27,7 +27,7 @@ class InvoicePdf {
     final PdfLayoutResult result =
         _drawHeader(page, pageSize, grid, printResponseModal);
     //Draw grid
-    _drawGrid(page, grid, result);
+    _drawGrid(page, grid, result, printResponseModal);
     //Add invoice footer
     _drawFooter(page, pageSize);
     //Save and dispose the document.
@@ -73,7 +73,9 @@ class InvoicePdf {
   }
 
   //Draws the grid
-  void _drawGrid(PdfPage page, PdfGrid grid, PdfLayoutResult result) {
+  void _drawGrid(PdfPage page, PdfGrid grid, PdfLayoutResult result,
+      PrintResponseModal printResponseModal) {
+    List<Map<String, dynamic>> footer = printResponseModal.footer;
     Rect? totalPriceCellBounds;
     Rect? quantityCellBounds;
     //Invoke the beginCellLayout event.
@@ -89,20 +91,24 @@ class InvoicePdf {
     result = grid.draw(
         page: page, bounds: Rect.fromLTWH(0, result.bounds.bottom, 0, 0))!;
     //Draw grand total.
-    page.graphics.drawString('Grand Total',
-        PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.bold),
-        bounds: Rect.fromLTWH(
-            quantityCellBounds!.left,
-            result.bounds.bottom + 10,
-            quantityCellBounds!.width,
-            quantityCellBounds!.height));
-    page.graphics.drawString(_getTotalAmount(grid).toString(),
-        PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.bold),
-        bounds: Rect.fromLTWH(
-            totalPriceCellBounds!.left,
-            result.bounds.bottom + 10,
-            totalPriceCellBounds!.width,
-            totalPriceCellBounds!.height));
+
+    print(footer);
+    footer.asMap().forEach((index, element) {
+      page.graphics.drawString(element["label"] ?? '',
+          PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.regular),
+          bounds: Rect.fromLTWH(
+              quantityCellBounds!.left,
+              result.bounds.bottom + (index * 10) + 10,
+              quantityCellBounds!.width,
+              quantityCellBounds!.height));
+      page.graphics.drawString(element["value"],
+          PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.regular),
+          bounds: Rect.fromLTWH(
+              totalPriceCellBounds!.left,
+              result.bounds.bottom + (index * 10) + 10,
+              totalPriceCellBounds!.width,
+              totalPriceCellBounds!.height));
+    });
   }
 
   //Draw the invoice footer data.

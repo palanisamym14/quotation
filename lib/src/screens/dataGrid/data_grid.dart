@@ -134,6 +134,7 @@ class _DataGridState extends State<DataGrid> {
           columns: columns,
           data: rowData,
           header: companyDetail,
+          footer: footerValue,
         ),
       ],
     );

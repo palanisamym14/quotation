@@ -28,7 +28,24 @@ class AddItemForm extends StatefulWidget {
 
 class AddItemFormState extends State<AddItemForm> {
   bool autoValidate = true;
-  final _formKey = GlobalKey<FormBuilderState>();
+  final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
+  dynamic getFormValue(GlobalKey<FormBuilderState> form, String field) {
+    if(form.currentState!.fields.containsKey(field) == false)
+      return null;
+    else {
+       // !["currentState"]["value"];
+      return form.currentState!.fields[field];
+    }
+  }
+
+  void setFormValue(GlobalKey<FormBuilderState> form, String field, dynamic value) {
+    if(form == null || form.currentState!.fields.containsKey(field) == false)
+      return;
+
+    setState(() {
+      // form.currentState?.setAttributeValue(field, value);
+    });
+  }
 
   // final ValueChanged _onChanged = (val) => print(val);
 
@@ -120,7 +137,9 @@ class AddItemFormState extends State<AddItemForm> {
           decoration: InputDecoration(
             labelText: column["label"],
           ),
-          onChanged: (val) {},
+          onChanged: (val) {
+            getFormValue(_formKey, "totalPrice");
+          },
           validator: column["isRequired"]
               ? column["keyboardType"] == TextInputType.number
                   ? FormBuilderValidators.compose([
