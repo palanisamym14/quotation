@@ -161,7 +161,6 @@ class _DataGridState extends State<DataGrid> {
   _dataCell(BuildContext context, rowIdx, column, item) {
     var _key = column["_key"];
     var type = column["type"];
-    print(type);
     switch (type) {
       case "action":
         return Row(

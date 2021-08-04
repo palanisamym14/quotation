@@ -13,20 +13,20 @@ CustomNumberFormat currency(context, number) {
   NumberFormat format = NumberFormat.simpleCurrency(locale: locale.toString());
   final oCcy = new NumberFormat("#,##0.00", locale.toString());
   var val = '0';
-  // switch (number.runtimeType) {
-  //   case String:
-  //     val = number;
-  //     // val = number.contains(validCharacters)
-  //     //     ? "${oCcy.format(int.parse(number))}"
-  //     //     : "${oCcy.format(double.parse(number))}";
-  //     break;
-  //   case double:
-  //     val = "${oCcy.format(double.parse(number))}";
-  //     break;
-  //   default:
-  //     val = "${oCcy.format(number)}";
-  //     break;
-  // }
+  switch (number.runtimeType) {
+    case String:
+      val = number;
+      val = number.contains(validCharacters)
+          ? "${oCcy.format(int.parse(number))}"
+          : "${oCcy.format(double.parse(number))}";
+      break;
+    case double:
+      val = "${oCcy.format(double.parse(number))}";
+      break;
+    default:
+      val = "${oCcy.format(number)}";
+      break;
+  }
   print("val");
   print(val);
   CustomNumberFormat payload = new CustomNumberFormat();
