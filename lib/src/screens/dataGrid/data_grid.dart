@@ -4,6 +4,7 @@ import 'package:quotation/src/components/add_item.dart';
 import 'package:quotation/src/components/custom_text_form.dart';
 import 'package:quotation/src/screens/dataGrid/data_action.dart';
 import 'package:quotation/src/screens/dataGrid/grid_constant.draft.dart';
+import 'package:quotation/src/utils/util.dart';
 import 'header.dart';
 
 class DataGrid extends StatefulWidget {
@@ -27,7 +28,9 @@ class _DataGridState extends State<DataGrid> {
   };
   Future<void> updateCompanyAddress(data) async {
     setState(() {
-      companyDetail = data as Map<String, dynamic>;
+      if(data!=null) {
+        companyDetail = data as Map<String, dynamic>;
+      }
     });
   }
 
@@ -158,6 +161,7 @@ class _DataGridState extends State<DataGrid> {
   _dataCell(BuildContext context, rowIdx, column, item) {
     var _key = column["_key"];
     var type = column["type"];
+    print(type);
     switch (type) {
       case "action":
         return Row(
@@ -178,6 +182,10 @@ class _DataGridState extends State<DataGrid> {
         return Align(
             alignment: column["textAlign"],
             child: Text((rowIdx + 1).toString()));
+      case "currency":
+        return Align(
+            alignment: column["textAlign"],
+            child: Text(currency(context, item[_key]).value));
       default:
         return Align(
             alignment: column["textAlign"],

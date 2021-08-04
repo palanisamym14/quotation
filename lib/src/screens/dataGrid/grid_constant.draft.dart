@@ -45,7 +45,7 @@ final List<Map<String, dynamic>> gridColumns = [
     "pdfTextAlignment": PdfTextAlignment.left
   },
   {
-    "type": "text",
+    "type": "currency",
     "label": "Unit price ",
     "_key": "price",
     "width": "30",
@@ -59,7 +59,7 @@ final List<Map<String, dynamic>> gridColumns = [
     "pdfTextAlignment": PdfTextAlignment.right
   },
   {
-    "type": "text",
+    "type": "currency",
     "label": "Total price",
     "_key": "totalPrice",
     "width": "30",

@@ -134,17 +134,17 @@ class InvoicePdf {
     final PdfGridRow headerRow = grid.headers.add(1)[0];
     //Set style
     Color hColor = Colors.green[300] ?? Colors.green;
-    headerRow.style.backgroundBrush =
-        PdfBrushes.green; // PdfSolidBrush(customPDFColor(hColor));
+    headerRow.style.backgroundBrush = PdfSolidBrush(customPDFColor(hColor));
     headerRow.style.textBrush = PdfBrushes.black;
     PdfColor pdfColor = customPDFColor(hColor);
     PdfPen pdfPen = new PdfPen(pdfColor);
     columns.asMap().forEach((index, element) {
       headerRow.cells[index].value = element['label'];
-      headerRow.cells[index].style.backgroundBrush = PdfSolidBrush(pdfColor);
+      // headerRow.cells[index].style.backgroundBrush = PdfSolidBrush(pdfColor);
       headerRow.cells[index].style.borders =
           PdfBorders(left: pdfPen, right: pdfPen, top: pdfPen, bottom: pdfPen);
       print(element['label']);
+      headerRow.cells[index].stringFormat.alignment = PdfTextAlignment.center;
     });
     // headerRow.cells[0].value = 'Product Id';
     // headerRow.cells[0].stringFormat.alignment = PdfTextAlignment.center;
@@ -177,6 +177,12 @@ class InvoicePdf {
       Map<String, dynamic> rowData, int rowIdx, PdfGrid grid) {
     print(rowIdx);
     final PdfGridRow row = grid.rows.add();
+    Color hColor = (rowIdx % 2 == 0 ? Colors.green[200] : Colors.green[50]) ??
+        Colors.green;
+    row.style.textBrush = PdfBrushes.black;
+    PdfColor pdfColor = customPDFColor(hColor);
+    PdfPen pdfPen = new PdfPen(pdfColor);
+    row.style.backgroundBrush = PdfSolidBrush(pdfColor);
     columns.asMap().forEach((index, element) {
       if (element['_key'] == 'sno') {
         print(element['_key']);
@@ -184,7 +190,9 @@ class InvoicePdf {
       } else {
         row.cells[index].value = rowData[element['_key']] ?? '---';
       }
-      row.cells[0].stringFormat.alignment = element['pdfTextAlignment'];
+      row.cells[index].style.borders =
+          PdfBorders(left: pdfPen, right: pdfPen, top: pdfPen, bottom: pdfPen);
+      row.cells[index].stringFormat.alignment = element['pdfTextAlignment'];
     });
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:quotation/src/components/add_item.dart';
 import 'package:quotation/src/screens/dataGrid/grid_constant.draft.dart';
+// import 'package:quotation/src/utils/util.dart';
 
 typedef void SignalingStateCallback(dynamic data);
 
@@ -17,6 +18,23 @@ class DataGridHeader extends StatefulWidget {
 }
 
 class _DataGridHeaderState extends State<DataGridHeader> {
+  List<String> addressDetails = [];
+  @override
+  void initState() {
+    print("widget.companyDetail");
+    print(widget.companyDetail);
+    // headerValuesChange(widget.companyDetail);
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    print("widget.didChangeDependencies");
+    print(widget.companyDetail);
+    headerValuesChange(widget.companyDetail);
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -45,15 +63,10 @@ class _DataGridHeaderState extends State<DataGridHeader> {
           ),
           new ListView.builder(
               shrinkWrap: true,
-              itemCount: headerColumns.length,
+              itemCount: addressDetails.length,
               itemBuilder: (context, index) {
-                var val = widget.companyDetail[headerColumns[index]["_key"]];
-                return val == null
-                    ? Container(
-                        height: 0,
-                        width: 0,
-                      )
-                    : Text(val);
+                var val = addressDetails[index];
+                return Text(val);
               })
         ],
       ),
@@ -78,6 +91,21 @@ class _DataGridHeaderState extends State<DataGridHeader> {
     );
     setState(() {
       widget.onHeaderDataChange(result);
+      headerValuesChange(result);
+    });
+  }
+
+  void headerValuesChange(Map<String, dynamic> companyDetail) {
+    List<String> to = [];
+    print(companyDetail);
+    headerColumns.forEach((ele) {
+      var val = companyDetail[ele['_key']];
+      if (val != null && val != '') {
+        to.add(val.toString());
+      }
+    });
+    setState(() {
+      this.addressDetails = to;
     });
   }
 }

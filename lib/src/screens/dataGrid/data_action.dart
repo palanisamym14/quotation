@@ -53,11 +53,15 @@ class _DataGridActionState extends State<DataGridAction> {
     printResponseModal.data = widget.data;
     print(widget.header);
     print("widget.header");
-    printResponseModal.header.to = headerColumns
-        .map((e) => (widget.header[e['_key']]).toString())
-        .toList();
+    List<String> to = [];
+    headerColumns.forEach((ele) {
+      var val = widget.header[ele['_key']];
+      if (val != null && val != '') {
+        to.add(val);
+      }
+    });
+    printResponseModal.header.to = to;
     print(printResponseModal.header.to);
-
     await new InvoicePdf().generatePDF(printResponseModal);
   }
 }
