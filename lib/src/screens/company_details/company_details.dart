@@ -2,6 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:quotation/database.dart';
+import 'package:quotation/database/entity/product.dart';
+import 'package:quotation/database/repo/product_repo.dart';
 import 'package:quotation/src/components/add_item.dart';
 import 'package:quotation/src/components/spinner_body.dart';
 import 'package:quotation/src/modal/company_repo.dart';
@@ -23,8 +26,15 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
   bool isLoaded = false;
 
   Future<void> updateCompany(data) async {
-    User? user = FirebaseAuth.instance.currentUser;
-    new CompanyRepo().updateCompany(data);
+
+    ProductRepo productRepo = new ProductRepo();
+    // await productRepo.insert();
+    await productRepo.find();
+    // await personDao.insertPerson(person);
+    // final result = await personDao.findPersonById(1);
+    // print(result);
+    // User? user = FirebaseAuth.instance.currentUser;
+    // new CompanyRepo().updateCompany(data);
     Navigator.pop(context, true);
   }
 
