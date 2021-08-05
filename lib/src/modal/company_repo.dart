@@ -17,4 +17,5 @@ class CompanyRepo {
     company.doc(userId).set(data);
     return data;
   }
+
 }

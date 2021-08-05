@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:quotation/src/modal/logging.dart';
-import 'package:quotation/src/utils/graphql_client.dart';
+// import 'package:quotation/src/utils/graphql_client.dart';
 
 class AppWidget extends StatefulWidget {
   _AppWidgetState createState() => new _AppWidgetState();
@@ -12,7 +12,7 @@ class AppWidget extends StatefulWidget {
 
 class _AppWidgetState extends State<AppWidget> {
   fetchGraphql() async {
-    await initConnection();
+    // await initConnection();
   }
 
   Future<void> isUserLoggedIn() async {
