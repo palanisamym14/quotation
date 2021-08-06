@@ -155,6 +155,70 @@ class TableCompany extends SqfEntityTableBase {
     return _instance = _instance ?? TableCompany();
   }
 }
+
+// Quotation TABLE
+class TableQuotation extends SqfEntityTableBase {
+  TableQuotation() {
+    // declare properties of EntityTable
+    tableName = 'quotation';
+    primaryKeyName = 'id';
+    primaryKeyType = PrimaryKeyType.integer_auto_incremental;
+    useSoftDeleting = true;
+    // when useSoftDeleting is true, creates a field named 'isDeleted' on the table, and set to '1' this field when item deleted (does not hard delete)
+
+    // declare fields
+    fields = [
+      SqfEntityFieldBase('productId', DbType.text,
+          isUnique: false, isNotNull: false, isIndex: false),
+      SqfEntityFieldBase('quantity', DbType.text,
+          isUnique: false, isNotNull: false, isIndex: false),
+      SqfEntityFieldBase('price', DbType.text,
+          isUnique: false, isNotNull: false, isIndex: false),
+      SqfEntityFieldBase('totalPrice', DbType.text,
+          isUnique: false, isNotNull: false, isIndex: false),
+      SqfEntityFieldBase('order', DbType.integer,
+          defaultValue: 0, isUnique: false, isNotNull: false, isIndex: false),
+      SqfEntityFieldBase('quotationId', DbType.text,
+          isUnique: false, isNotNull: false, isIndex: false),
+    ];
+    super.init();
+  }
+  static SqfEntityTableBase? _instance;
+  static SqfEntityTableBase get getInstance {
+    return _instance = _instance ?? TableQuotation();
+  }
+}
+
+// Customer TABLE
+class TableCustomer extends SqfEntityTableBase {
+  TableCustomer() {
+    // declare properties of EntityTable
+    tableName = 'customer';
+    primaryKeyName = 'id';
+    primaryKeyType = PrimaryKeyType.integer_auto_incremental;
+    useSoftDeleting = true;
+    // when useSoftDeleting is true, creates a field named 'isDeleted' on the table, and set to '1' this field when item deleted (does not hard delete)
+
+    // declare fields
+    fields = [
+      SqfEntityFieldBase('companyName', DbType.text,
+          isUnique: false, isNotNull: false, isIndex: false),
+      SqfEntityFieldBase('addressLine1', DbType.text,
+          defaultValue: '', isUnique: false, isNotNull: false, isIndex: false),
+      SqfEntityFieldBase('addressLine2', DbType.text,
+          defaultValue: '', isUnique: false, isNotNull: false, isIndex: false),
+      SqfEntityFieldBase('mobile', DbType.text,
+          defaultValue: '', isUnique: false, isNotNull: false, isIndex: false),
+      SqfEntityFieldBase('email', DbType.text,
+          defaultValue: '', isUnique: false, isNotNull: false, isIndex: false),
+    ];
+    super.init();
+  }
+  static SqfEntityTableBase? _instance;
+  static SqfEntityTableBase get getInstance {
+    return _instance = _instance ?? TableCustomer();
+  }
+}
 // END TABLES
 
 // BEGIN SEQUENCES
@@ -187,6 +251,8 @@ class MyDbModel extends SqfEntityModelProvider {
       TableProduct.getInstance,
       TableItem.getInstance,
       TableCompany.getInstance,
+      TableQuotation.getInstance,
+      TableCustomer.getInstance,
     ];
 
     sequences = [
@@ -4212,6 +4278,2401 @@ class CompanyManager extends SqfEntityProvider {
 }
 
 //endregion CompanyManager
+// region Quotation
+class Quotation {
+  Quotation(
+      {this.id,
+      this.productId,
+      this.quantity,
+      this.price,
+      this.totalPrice,
+      this.order,
+      this.quotationId,
+      this.isDeleted}) {
+    _setDefaultValues();
+  }
+  Quotation.withFields(this.productId, this.quantity, this.price,
+      this.totalPrice, this.order, this.quotationId, this.isDeleted) {
+    _setDefaultValues();
+  }
+  Quotation.withId(this.id, this.productId, this.quantity, this.price,
+      this.totalPrice, this.order, this.quotationId, this.isDeleted) {
+    _setDefaultValues();
+  }
+  // fromMap v2.0
+  Quotation.fromMap(Map<String, dynamic> o, {bool setDefaultValues = true}) {
+    if (setDefaultValues) {
+      _setDefaultValues();
+    }
+    id = int.tryParse(o['id'].toString());
+    if (o['productId'] != null) {
+      productId = o['productId'].toString();
+    }
+    if (o['quantity'] != null) {
+      quantity = o['quantity'].toString();
+    }
+    if (o['price'] != null) {
+      price = o['price'].toString();
+    }
+    if (o['totalPrice'] != null) {
+      totalPrice = o['totalPrice'].toString();
+    }
+    if (o['order'] != null) {
+      order = int.tryParse(o['order'].toString());
+    }
+    if (o['quotationId'] != null) {
+      quotationId = o['quotationId'].toString();
+    }
+    isDeleted = o['isDeleted'] != null
+        ? o['isDeleted'] == 1 || o['isDeleted'] == true
+        : null;
+  }
+  // FIELDS (Quotation)
+  int? id;
+  String? productId;
+  String? quantity;
+  String? price;
+  String? totalPrice;
+  int? order;
+  String? quotationId;
+  bool? isDeleted;
+
+  BoolResult? saveResult;
+  // end FIELDS (Quotation)
+
+  static const bool _softDeleteActivated = true;
+  QuotationManager? __mnQuotation;
+
+  QuotationManager get _mnQuotation {
+    return __mnQuotation = __mnQuotation ?? QuotationManager();
+  }
+
+  // METHODS
+  Map<String, dynamic> toMap(
+      {bool forQuery = false, bool forJson = false, bool forView = false}) {
+    final map = <String, dynamic>{};
+    if (id != null) {
+      map['id'] = id;
+    }
+    if (productId != null) {
+      map['productId'] = productId;
+    }
+
+    if (quantity != null) {
+      map['quantity'] = quantity;
+    }
+
+    if (price != null) {
+      map['price'] = price;
+    }
+
+    if (totalPrice != null) {
+      map['totalPrice'] = totalPrice;
+    }
+
+    if (order != null) {
+      map['order'] = order;
+    }
+
+    if (quotationId != null) {
+      map['quotationId'] = quotationId;
+    }
+
+    if (isDeleted != null) {
+      map['isDeleted'] = forQuery ? (isDeleted! ? 1 : 0) : isDeleted;
+    }
+
+    return map;
+  }
+
+  Future<Map<String, dynamic>> toMapWithChildren(
+      [bool forQuery = false,
+      bool forJson = false,
+      bool forView = false]) async {
+    final map = <String, dynamic>{};
+    if (id != null) {
+      map['id'] = id;
+    }
+    if (productId != null) {
+      map['productId'] = productId;
+    }
+
+    if (quantity != null) {
+      map['quantity'] = quantity;
+    }
+
+    if (price != null) {
+      map['price'] = price;
+    }
+
+    if (totalPrice != null) {
+      map['totalPrice'] = totalPrice;
+    }
+
+    if (order != null) {
+      map['order'] = order;
+    }
+
+    if (quotationId != null) {
+      map['quotationId'] = quotationId;
+    }
+
+    if (isDeleted != null) {
+      map['isDeleted'] = forQuery ? (isDeleted! ? 1 : 0) : isDeleted;
+    }
+
+    return map;
+  }
+
+  /// This method returns Json String [Quotation]
+  String toJson() {
+    return json.encode(toMap(forJson: true));
+  }
+
+  /// This method returns Json String [Quotation]
+  Future<String> toJsonWithChilds() async {
+    return json.encode(await toMapWithChildren(false, true));
+  }
+
+  List<dynamic> toArgs() {
+    return [
+      productId,
+      quantity,
+      price,
+      totalPrice,
+      order,
+      quotationId,
+      isDeleted
+    ];
+  }
+
+  List<dynamic> toArgsWithIds() {
+    return [
+      id,
+      productId,
+      quantity,
+      price,
+      totalPrice,
+      order,
+      quotationId,
+      isDeleted
+    ];
+  }
+
+  static Future<List<Quotation>?> fromWebUrl(Uri uri,
+      {Map<String, String>? headers}) async {
+    try {
+      final response = await http.get(uri, headers: headers);
+      return await fromJson(response.body);
+    } catch (e) {
+      print(
+          'SQFENTITY ERROR Quotation.fromWebUrl: ErrorMessage: ${e.toString()}');
+      return null;
+    }
+  }
+
+  Future<http.Response> postUrl(Uri uri, {Map<String, String>? headers}) {
+    return http.post(uri, headers: headers, body: toJson());
+  }
+
+  static Future<List<Quotation>> fromJson(String jsonBody) async {
+    final Iterable list = await json.decode(jsonBody) as Iterable;
+    var objList = <Quotation>[];
+    try {
+      objList = list
+          .map((quotation) =>
+              Quotation.fromMap(quotation as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      print(
+          'SQFENTITY ERROR Quotation.fromJson: ErrorMessage: ${e.toString()}');
+    }
+    return objList;
+  }
+
+  static Future<List<Quotation>> fromMapList(List<dynamic> data,
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields,
+      bool setDefaultValues = true}) async {
+    final List<Quotation> objList = <Quotation>[];
+    loadedFields = loadedFields ?? [];
+    for (final map in data) {
+      final obj = Quotation.fromMap(map as Map<String, dynamic>,
+          setDefaultValues: setDefaultValues);
+
+      objList.add(obj);
+    }
+    return objList;
+  }
+
+  /// returns Quotation by ID if exist, otherwise returns null
+  ///
+  /// Primary Keys: int? id
+  ///
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  ///
+  /// ex: getById(preload:true) -> Loads all related objects
+  ///
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  ///
+  /// ex: getById(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  ///
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  ///
+  /// <returns>returns Quotation if exist, otherwise returns null
+  Future<Quotation?> getById(int? id,
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    if (id == null) {
+      return null;
+    }
+    Quotation? obj;
+    final data = await _mnQuotation.getById([id]);
+    if (data.length != 0) {
+      obj = Quotation.fromMap(data[0] as Map<String, dynamic>);
+    } else {
+      obj = null;
+    }
+    return obj;
+  }
+
+  /// Saves the (Quotation) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
+
+  /// <returns>Returns id
+  Future<int?> save() async {
+    if (id == null || id == 0) {
+      id = await _mnQuotation.insert(this);
+    } else {
+      // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
+      await _mnQuotation.update(this);
+    }
+
+    return id;
+  }
+
+  /// saveAs Quotation. Returns a new Primary Key value of Quotation
+
+  /// <returns>Returns a new Primary Key value of Quotation
+  Future<int?> saveAs() async {
+    id = null;
+
+    return save();
+  }
+
+  /// saveAll method saves the sent List<Quotation> as a bulk in one transaction
+  ///
+  /// Returns a <List<BoolResult>>
+  static Future<List<dynamic>> saveAll(List<Quotation> quotations) async {
+    // final results = _mnQuotation.saveAll('INSERT OR REPLACE INTO quotation (id,productId, quantity, price, totalPrice, order, quotationId,isDeleted)  VALUES (?,?,?,?,?,?,?,?)',quotations);
+    // return results; removed in sqfentity_gen 1.3.0+6
+    await MyDbModel().batchStart();
+    for (final obj in quotations) {
+      await obj.save();
+    }
+    //    return MyDbModel().batchCommit();
+    final result = await MyDbModel().batchCommit();
+    for (int i = 0; i < quotations.length; i++) {
+      if (quotations[i].id == null) {
+        quotations[i].id = result![i] as int;
+      }
+    }
+
+    return result!;
+  }
+
+  /// Updates if the record exists, otherwise adds a new row
+
+  /// <returns>Returns id
+
+  Future<int?> upsert() async {
+    try {
+      final result = await _mnQuotation.rawInsert(
+          'INSERT OR REPLACE INTO quotation (id,productId, quantity, price, totalPrice, order, quotationId,isDeleted)  VALUES (?,?,?,?,?,?,?,?)',
+          [
+            id,
+            productId,
+            quantity,
+            price,
+            totalPrice,
+            order,
+            quotationId,
+            isDeleted
+          ]);
+      if (result! > 0) {
+        saveResult = BoolResult(
+            success: true,
+            successMessage: 'Quotation id=$id updated successfully');
+      } else {
+        saveResult = BoolResult(
+            success: false, errorMessage: 'Quotation id=$id did not update');
+      }
+      return id;
+    } catch (e) {
+      saveResult = BoolResult(
+          success: false,
+          errorMessage: 'Quotation Save failed. Error: ${e.toString()}');
+      return null;
+    }
+  }
+
+  /// inserts or replaces the sent List<<Quotation>> as a bulk in one transaction.
+  ///
+  /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
+  ///
+  /// Returns a BoolCommitResult
+  Future<BoolCommitResult> upsertAll(List<Quotation> quotations) async {
+    final results = await _mnQuotation.rawInsertAll(
+        'INSERT OR REPLACE INTO quotation (id,productId, quantity, price, totalPrice, order, quotationId,isDeleted)  VALUES (?,?,?,?,?,?,?,?)',
+        quotations);
+    return results;
+  }
+
+  /// Deletes Quotation
+
+  /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
+
+  Future<BoolResult> delete([bool hardDelete = false]) async {
+    print('SQFENTITIY: delete Quotation invoked (id=$id)');
+    if (!_softDeleteActivated || hardDelete || isDeleted!) {
+      return _mnQuotation
+          .delete(QueryParams(whereString: 'id=?', whereArguments: [id]));
+    } else {
+      return _mnQuotation.updateBatch(
+          QueryParams(whereString: 'id=?', whereArguments: [id]),
+          {'isDeleted': 1});
+    }
+  }
+
+  /// Recover Quotation>
+
+  /// <returns>BoolResult res.success=Recovered, not res.success=Can not recovered
+  Future<BoolResult> recover([bool recoverChilds = true]) async {
+    print('SQFENTITIY: recover Quotation invoked (id=$id)');
+    {
+      return _mnQuotation.updateBatch(
+          QueryParams(whereString: 'id=?', whereArguments: [id]),
+          {'isDeleted': 0});
+    }
+  }
+
+  QuotationFilterBuilder select(
+      {List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return QuotationFilterBuilder(this)
+      .._getIsDeleted = getIsDeleted == true
+      ..qparams.selectColumns = columnsToSelect;
+  }
+
+  QuotationFilterBuilder distinct(
+      {List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return QuotationFilterBuilder(this)
+      .._getIsDeleted = getIsDeleted == true
+      ..qparams.selectColumns = columnsToSelect
+      ..qparams.distinct = true;
+  }
+
+  void _setDefaultValues() {
+    order = order ?? 0;
+    isDeleted = isDeleted ?? false;
+  }
+  // END METHODS
+  // BEGIN CUSTOM CODE
+  /*
+      you can define customCode property of your SqfEntityTable constant. For example:
+      const tablePerson = SqfEntityTable(
+      tableName: 'person',
+      primaryKeyName: 'id',
+      primaryKeyType: PrimaryKeyType.integer_auto_incremental,
+      fields: [
+        SqfEntityField('firstName', DbType.text),
+        SqfEntityField('lastName', DbType.text),
+      ],
+      customCode: '''
+       String fullName()
+       { 
+         return '$firstName $lastName';
+       }
+      ''');
+     */
+  // END CUSTOM CODE
+}
+// endregion quotation
+
+// region QuotationField
+class QuotationField extends SearchCriteria {
+  QuotationField(this.quotationFB);
+  // { param = DbParameter(); }
+  DbParameter param = DbParameter();
+  String _waitingNot = '';
+  QuotationFilterBuilder quotationFB;
+
+  QuotationField get not {
+    _waitingNot = ' NOT ';
+    return this;
+  }
+
+  QuotationFilterBuilder equals(dynamic pValue) {
+    param.expression = '=';
+    quotationFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, quotationFB.parameters, param, SqlSyntax.EQuals,
+            quotationFB._addedBlocks)
+        : setCriteria(pValue, quotationFB.parameters, param,
+            SqlSyntax.NotEQuals, quotationFB._addedBlocks);
+    _waitingNot = '';
+    quotationFB._addedBlocks.needEndBlock![quotationFB._blockIndex] =
+        quotationFB._addedBlocks.retVal;
+    return quotationFB;
+  }
+
+  QuotationFilterBuilder equalsOrNull(dynamic pValue) {
+    param.expression = '=';
+    quotationFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, quotationFB.parameters, param,
+            SqlSyntax.EQualsOrNull, quotationFB._addedBlocks)
+        : setCriteria(pValue, quotationFB.parameters, param,
+            SqlSyntax.NotEQualsOrNull, quotationFB._addedBlocks);
+    _waitingNot = '';
+    quotationFB._addedBlocks.needEndBlock![quotationFB._blockIndex] =
+        quotationFB._addedBlocks.retVal;
+    return quotationFB;
+  }
+
+  QuotationFilterBuilder isNull() {
+    quotationFB._addedBlocks = setCriteria(
+        0,
+        quotationFB.parameters,
+        param,
+        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot),
+        quotationFB._addedBlocks);
+    _waitingNot = '';
+    quotationFB._addedBlocks.needEndBlock![quotationFB._blockIndex] =
+        quotationFB._addedBlocks.retVal;
+    return quotationFB;
+  }
+
+  QuotationFilterBuilder contains(dynamic pValue) {
+    if (pValue != null) {
+      quotationFB._addedBlocks = setCriteria(
+          '%${pValue.toString()}%',
+          quotationFB.parameters,
+          param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
+          quotationFB._addedBlocks);
+      _waitingNot = '';
+      quotationFB._addedBlocks.needEndBlock![quotationFB._blockIndex] =
+          quotationFB._addedBlocks.retVal;
+    }
+    return quotationFB;
+  }
+
+  QuotationFilterBuilder startsWith(dynamic pValue) {
+    if (pValue != null) {
+      quotationFB._addedBlocks = setCriteria(
+          '${pValue.toString()}%',
+          quotationFB.parameters,
+          param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
+          quotationFB._addedBlocks);
+      _waitingNot = '';
+      quotationFB._addedBlocks.needEndBlock![quotationFB._blockIndex] =
+          quotationFB._addedBlocks.retVal;
+      quotationFB._addedBlocks.needEndBlock![quotationFB._blockIndex] =
+          quotationFB._addedBlocks.retVal;
+    }
+    return quotationFB;
+  }
+
+  QuotationFilterBuilder endsWith(dynamic pValue) {
+    if (pValue != null) {
+      quotationFB._addedBlocks = setCriteria(
+          '%${pValue.toString()}',
+          quotationFB.parameters,
+          param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
+          quotationFB._addedBlocks);
+      _waitingNot = '';
+      quotationFB._addedBlocks.needEndBlock![quotationFB._blockIndex] =
+          quotationFB._addedBlocks.retVal;
+    }
+    return quotationFB;
+  }
+
+  QuotationFilterBuilder between(dynamic pFirst, dynamic pLast) {
+    if (pFirst != null && pLast != null) {
+      quotationFB._addedBlocks = setCriteria(
+          pFirst,
+          quotationFB.parameters,
+          param,
+          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot),
+          quotationFB._addedBlocks,
+          pLast);
+    } else if (pFirst != null) {
+      if (_waitingNot != '') {
+        quotationFB._addedBlocks = setCriteria(pFirst, quotationFB.parameters,
+            param, SqlSyntax.LessThan, quotationFB._addedBlocks);
+      } else {
+        quotationFB._addedBlocks = setCriteria(pFirst, quotationFB.parameters,
+            param, SqlSyntax.GreaterThanOrEquals, quotationFB._addedBlocks);
+      }
+    } else if (pLast != null) {
+      if (_waitingNot != '') {
+        quotationFB._addedBlocks = setCriteria(pLast, quotationFB.parameters,
+            param, SqlSyntax.GreaterThan, quotationFB._addedBlocks);
+      } else {
+        quotationFB._addedBlocks = setCriteria(pLast, quotationFB.parameters,
+            param, SqlSyntax.LessThanOrEquals, quotationFB._addedBlocks);
+      }
+    }
+    _waitingNot = '';
+    quotationFB._addedBlocks.needEndBlock![quotationFB._blockIndex] =
+        quotationFB._addedBlocks.retVal;
+    return quotationFB;
+  }
+
+  QuotationFilterBuilder greaterThan(dynamic pValue) {
+    param.expression = '>';
+    quotationFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, quotationFB.parameters, param,
+            SqlSyntax.GreaterThan, quotationFB._addedBlocks)
+        : setCriteria(pValue, quotationFB.parameters, param,
+            SqlSyntax.LessThanOrEquals, quotationFB._addedBlocks);
+    _waitingNot = '';
+    quotationFB._addedBlocks.needEndBlock![quotationFB._blockIndex] =
+        quotationFB._addedBlocks.retVal;
+    return quotationFB;
+  }
+
+  QuotationFilterBuilder lessThan(dynamic pValue) {
+    param.expression = '<';
+    quotationFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, quotationFB.parameters, param, SqlSyntax.LessThan,
+            quotationFB._addedBlocks)
+        : setCriteria(pValue, quotationFB.parameters, param,
+            SqlSyntax.GreaterThanOrEquals, quotationFB._addedBlocks);
+    _waitingNot = '';
+    quotationFB._addedBlocks.needEndBlock![quotationFB._blockIndex] =
+        quotationFB._addedBlocks.retVal;
+    return quotationFB;
+  }
+
+  QuotationFilterBuilder greaterThanOrEquals(dynamic pValue) {
+    param.expression = '>=';
+    quotationFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, quotationFB.parameters, param,
+            SqlSyntax.GreaterThanOrEquals, quotationFB._addedBlocks)
+        : setCriteria(pValue, quotationFB.parameters, param, SqlSyntax.LessThan,
+            quotationFB._addedBlocks);
+    _waitingNot = '';
+    quotationFB._addedBlocks.needEndBlock![quotationFB._blockIndex] =
+        quotationFB._addedBlocks.retVal;
+    return quotationFB;
+  }
+
+  QuotationFilterBuilder lessThanOrEquals(dynamic pValue) {
+    param.expression = '<=';
+    quotationFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, quotationFB.parameters, param,
+            SqlSyntax.LessThanOrEquals, quotationFB._addedBlocks)
+        : setCriteria(pValue, quotationFB.parameters, param,
+            SqlSyntax.GreaterThan, quotationFB._addedBlocks);
+    _waitingNot = '';
+    quotationFB._addedBlocks.needEndBlock![quotationFB._blockIndex] =
+        quotationFB._addedBlocks.retVal;
+    return quotationFB;
+  }
+
+  QuotationFilterBuilder inValues(dynamic pValue) {
+    quotationFB._addedBlocks = setCriteria(
+        pValue,
+        quotationFB.parameters,
+        param,
+        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot),
+        quotationFB._addedBlocks);
+    _waitingNot = '';
+    quotationFB._addedBlocks.needEndBlock![quotationFB._blockIndex] =
+        quotationFB._addedBlocks.retVal;
+    return quotationFB;
+  }
+}
+// endregion QuotationField
+
+// region QuotationFilterBuilder
+class QuotationFilterBuilder extends SearchCriteria {
+  QuotationFilterBuilder(Quotation obj) {
+    whereString = '';
+    groupByList = <String>[];
+    _addedBlocks.needEndBlock!.add(false);
+    _addedBlocks.waitingStartBlock!.add(false);
+    _obj = obj;
+  }
+  AddedBlocks _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
+  int _blockIndex = 0;
+  List<DbParameter> parameters = <DbParameter>[];
+  List<String> orderByList = <String>[];
+  Quotation? _obj;
+  QueryParams qparams = QueryParams();
+  int _pagesize = 0;
+  int _page = 0;
+
+  /// put the sql keyword 'AND'
+  QuotationFilterBuilder get and {
+    if (parameters.isNotEmpty) {
+      parameters[parameters.length - 1].wOperator = ' AND ';
+    }
+    return this;
+  }
+
+  /// put the sql keyword 'OR'
+  QuotationFilterBuilder get or {
+    if (parameters.isNotEmpty) {
+      parameters[parameters.length - 1].wOperator = ' OR ';
+    }
+    return this;
+  }
+
+  /// open parentheses
+  QuotationFilterBuilder get startBlock {
+    _addedBlocks.waitingStartBlock!.add(true);
+    _addedBlocks.needEndBlock!.add(false);
+    _blockIndex++;
+    if (_blockIndex > 1) {
+      _addedBlocks.needEndBlock![_blockIndex - 1] = true;
+    }
+    return this;
+  }
+
+  /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
+  QuotationFilterBuilder where(String? whereCriteria,
+      {dynamic parameterValue}) {
+    if (whereCriteria != null && whereCriteria != '') {
+      final DbParameter param = DbParameter(
+          columnName: parameterValue == null ? null : '',
+          hasParameter: parameterValue != null);
+      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param,
+          '($whereCriteria)', _addedBlocks);
+      _addedBlocks.needEndBlock![_blockIndex] = _addedBlocks.retVal;
+    }
+    return this;
+  }
+
+  /// page = page number,
+  ///
+  /// pagesize = row(s) per page
+  QuotationFilterBuilder page(int page, int pagesize) {
+    if (page > 0) {
+      _page = page;
+    }
+    if (pagesize > 0) {
+      _pagesize = pagesize;
+    }
+    return this;
+  }
+
+  /// int count = LIMIT
+  QuotationFilterBuilder top(int count) {
+    if (count > 0) {
+      _pagesize = count;
+    }
+    return this;
+  }
+
+  /// close parentheses
+  QuotationFilterBuilder get endBlock {
+    if (_addedBlocks.needEndBlock![_blockIndex]) {
+      parameters[parameters.length - 1].whereString += ' ) ';
+    }
+    _addedBlocks.needEndBlock!.removeAt(_blockIndex);
+    _addedBlocks.waitingStartBlock!.removeAt(_blockIndex);
+    _blockIndex--;
+    return this;
+  }
+
+  /// argFields might be String or List<String>.
+  ///
+  /// Example 1: argFields='name, date'
+  ///
+  /// Example 2: argFields = ['name', 'date']
+  QuotationFilterBuilder orderBy(dynamic argFields) {
+    if (argFields != null) {
+      if (argFields is String) {
+        orderByList.add(argFields);
+      } else {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
+            orderByList.add(' $s ');
+          }
+        }
+      }
+    }
+    return this;
+  }
+
+  /// argFields might be String or List<String>.
+  ///
+  /// Example 1: argFields='field1, field2'
+  ///
+  /// Example 2: argFields = ['field1', 'field2']
+  QuotationFilterBuilder orderByDesc(dynamic argFields) {
+    if (argFields != null) {
+      if (argFields is String) {
+        orderByList.add('$argFields desc ');
+      } else {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
+            orderByList.add(' $s desc ');
+          }
+        }
+      }
+    }
+    return this;
+  }
+
+  /// argFields might be String or List<String>.
+  ///
+  /// Example 1: argFields='field1, field2'
+  ///
+  /// Example 2: argFields = ['field1', 'field2']
+  QuotationFilterBuilder groupBy(dynamic argFields) {
+    if (argFields != null) {
+      if (argFields is String) {
+        groupByList.add(' $argFields ');
+      } else {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
+            groupByList.add(' $s ');
+          }
+        }
+      }
+    }
+    return this;
+  }
+
+  /// argFields might be String or List<String>.
+  ///
+  /// Example 1: argFields='name, date'
+  ///
+  /// Example 2: argFields = ['name', 'date']
+  QuotationFilterBuilder having(dynamic argFields) {
+    if (argFields != null) {
+      if (argFields is String) {
+        havingList.add(argFields);
+      } else {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
+            havingList.add(' $s ');
+          }
+        }
+      }
+    }
+    return this;
+  }
+
+  QuotationField setField(
+      QuotationField? field, String colName, DbType dbtype) {
+    return QuotationField(this)
+      ..param = DbParameter(
+          dbType: dbtype,
+          columnName: colName,
+          wStartBlock: _addedBlocks.waitingStartBlock![_blockIndex]);
+  }
+
+  QuotationField? _id;
+  QuotationField get id {
+    return _id = setField(_id, 'id', DbType.integer);
+  }
+
+  QuotationField? _productId;
+  QuotationField get productId {
+    return _productId = setField(_productId, 'productId', DbType.text);
+  }
+
+  QuotationField? _quantity;
+  QuotationField get quantity {
+    return _quantity = setField(_quantity, 'quantity', DbType.text);
+  }
+
+  QuotationField? _price;
+  QuotationField get price {
+    return _price = setField(_price, 'price', DbType.text);
+  }
+
+  QuotationField? _totalPrice;
+  QuotationField get totalPrice {
+    return _totalPrice = setField(_totalPrice, 'totalPrice', DbType.text);
+  }
+
+  QuotationField? _order;
+  QuotationField get order {
+    return _order = setField(_order, 'order', DbType.integer);
+  }
+
+  QuotationField? _quotationId;
+  QuotationField get quotationId {
+    return _quotationId = setField(_quotationId, 'quotationId', DbType.text);
+  }
+
+  QuotationField? _isDeleted;
+  QuotationField get isDeleted {
+    return _isDeleted = setField(_isDeleted, 'isDeleted', DbType.bool);
+  }
+
+  bool _getIsDeleted = false;
+
+  void _buildParameters() {
+    if (_page > 0 && _pagesize > 0) {
+      qparams
+        ..limit = _pagesize
+        ..offset = (_page - 1) * _pagesize;
+    } else {
+      qparams
+        ..limit = _pagesize
+        ..offset = _page;
+    }
+    for (DbParameter param in parameters) {
+      if (param.columnName != null) {
+        if (param.value is List && !param.hasParameter) {
+          param.value = param.dbType == DbType.text || param.value[0] is String
+              ? '\'${param.value.join('\',\'')}\''
+              : param.value.join(',');
+          whereString += param.whereString
+              .replaceAll('{field}', param.columnName!)
+              .replaceAll('?', param.value.toString());
+          param.value = null;
+        } else {
+          if (param.value is Map<String, dynamic> &&
+              param.value['sql'] != null) {
+            param
+              ..whereString = param.whereString
+                  .replaceAll('?', param.value['sql'].toString())
+              ..dbType = DbType.integer
+              ..value = param.value['args'];
+          }
+          whereString +=
+              param.whereString.replaceAll('{field}', param.columnName!);
+        }
+        if (!param.whereString.contains('?')) {
+        } else {
+          switch (param.dbType) {
+            case DbType.bool:
+              param.value = param.value == null
+                  ? null
+                  : param.value == true
+                      ? 1
+                      : 0;
+              param.value2 = param.value2 == null
+                  ? null
+                  : param.value2 == true
+                      ? 1
+                      : 0;
+              break;
+            case DbType.date:
+            case DbType.datetime:
+            case DbType.datetimeUtc:
+              param.value = param.value == null
+                  ? null
+                  : (param.value as DateTime).millisecondsSinceEpoch;
+              param.value2 = param.value2 == null
+                  ? null
+                  : (param.value2 as DateTime).millisecondsSinceEpoch;
+              break;
+            default:
+          }
+          if (param.value != null) {
+            if (param.value is List) {
+              for (var p in param.value) {
+                whereArguments.add(p);
+              }
+            } else {
+              whereArguments.add(param.value);
+            }
+          }
+          if (param.value2 != null) {
+            whereArguments.add(param.value2);
+          }
+        }
+      } else {
+        whereString += param.whereString;
+      }
+    }
+    if (Quotation._softDeleteActivated) {
+      if (whereString != '') {
+        whereString =
+            '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
+      } else if (!_getIsDeleted) {
+        whereString = 'ifnull(isDeleted,0)=0';
+      }
+    }
+
+    if (whereString != '') {
+      qparams.whereString = whereString;
+    }
+    qparams
+      ..whereArguments = whereArguments
+      ..groupBy = groupByList.join(',')
+      ..orderBy = orderByList.join(',')
+      ..having = havingList.join(',');
+  }
+
+  /// Deletes List<Quotation> bulk by query
+  ///
+  /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
+  Future<BoolResult> delete([bool hardDelete = false]) async {
+    _buildParameters();
+    var r = BoolResult(success: false);
+
+    if (Quotation._softDeleteActivated && !hardDelete) {
+      r = await _obj!._mnQuotation.updateBatch(qparams, {'isDeleted': 1});
+    } else {
+      r = await _obj!._mnQuotation.delete(qparams);
+    }
+    return r;
+  }
+
+  /// Recover List<Quotation> bulk by query
+  Future<BoolResult> recover() async {
+    _getIsDeleted = true;
+    _buildParameters();
+    print('SQFENTITIY: recover Quotation bulk invoked');
+    return _obj!._mnQuotation.updateBatch(qparams, {'isDeleted': 0});
+  }
+
+  /// using:
+  ///
+  /// update({'fieldName': Value})
+  ///
+  /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
+  Future<BoolResult> update(Map<String, dynamic> values) {
+    _buildParameters();
+    if (qparams.limit! > 0 || qparams.offset! > 0) {
+      qparams.whereString =
+          'id IN (SELECT id from quotation ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
+    }
+    return _obj!._mnQuotation.updateBatch(qparams, values);
+  }
+
+  /// This method always returns Quotation Obj if exist, otherwise returns null
+  ///
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  ///
+  /// ex: toSingle(preload:true) -> Loads all related objects
+  ///
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  ///
+  /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  ///
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  ///
+  /// <returns>List<Quotation>
+  Future<Quotation?> toSingle(
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    _pagesize = 1;
+    _buildParameters();
+    final objFuture = _obj!._mnQuotation.toList(qparams);
+    final data = await objFuture;
+    Quotation? obj;
+    if (data.isNotEmpty) {
+      obj = Quotation.fromMap(data[0] as Map<String, dynamic>);
+    } else {
+      obj = null;
+    }
+    return obj;
+  }
+
+  /// This method returns int. [Quotation]
+  ///
+  /// <returns>int
+  Future<int> toCount([VoidCallback Function(int c)? quotationCount]) async {
+    _buildParameters();
+    qparams.selectColumns = ['COUNT(1) AS CNT'];
+    final quotationsFuture = await _obj!._mnQuotation.toList(qparams);
+    final int count = quotationsFuture[0]['CNT'] as int;
+    if (quotationCount != null) {
+      quotationCount(count);
+    }
+    return count;
+  }
+
+  /// This method returns List<Quotation> [Quotation]
+  ///
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  ///
+  /// ex: toList(preload:true) -> Loads all related objects
+  ///
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  ///
+  /// ex: toList(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  ///
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  ///
+  /// <returns>List<Quotation>
+  Future<List<Quotation>> toList(
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    final data = await toMapList();
+    final List<Quotation> quotationsData = await Quotation.fromMapList(data,
+        preload: preload,
+        preloadFields: preloadFields,
+        loadParents: loadParents,
+        loadedFields: loadedFields,
+        setDefaultValues: qparams.selectColumns == null);
+    return quotationsData;
+  }
+
+  /// This method returns Json String [Quotation]
+  Future<String> toJson() async {
+    final list = <dynamic>[];
+    final data = await toList();
+    for (var o in data) {
+      list.add(o.toMap(forJson: true));
+    }
+    return json.encode(list);
+  }
+
+  /// This method returns Json String. [Quotation]
+  Future<String> toJsonWithChilds() async {
+    final list = <dynamic>[];
+    final data = await toList();
+    for (var o in data) {
+      list.add(await o.toMapWithChildren(false, true));
+    }
+    return json.encode(list);
+  }
+
+  /// This method returns List<dynamic>. [Quotation]
+  ///
+  /// <returns>List<dynamic>
+  Future<List<dynamic>> toMapList() async {
+    _buildParameters();
+    return await _obj!._mnQuotation.toList(qparams);
+  }
+
+  /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [Quotation]
+  ///
+  /// retVal['sql'] = SQL statement string, retVal['args'] = whereArguments List<dynamic>;
+  ///
+  /// <returns>List<String>
+  Map<String, dynamic> toListPrimaryKeySQL([bool buildParameters = true]) {
+    final Map<String, dynamic> _retVal = <String, dynamic>{};
+    if (buildParameters) {
+      _buildParameters();
+    }
+    _retVal['sql'] = 'SELECT `id` FROM quotation WHERE ${qparams.whereString}';
+    _retVal['args'] = qparams.whereArguments;
+    return _retVal;
+  }
+
+  /// This method returns Primary Key List<int>.
+  /// <returns>List<int>
+  Future<List<int>> toListPrimaryKey([bool buildParameters = true]) async {
+    if (buildParameters) {
+      _buildParameters();
+    }
+    final List<int> idData = <int>[];
+    qparams.selectColumns = ['id'];
+    final idFuture = await _obj!._mnQuotation.toList(qparams);
+
+    final int count = idFuture.length;
+    for (int i = 0; i < count; i++) {
+      idData.add(idFuture[i]['id'] as int);
+    }
+    return idData;
+  }
+
+  /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [Quotation]
+  ///
+  /// Sample usage: (see EXAMPLE 4.2 at https://github.com/hhtokpinar/sqfEntity#group-by)
+  Future<List<dynamic>> toListObject() async {
+    _buildParameters();
+
+    final objectFuture = _obj!._mnQuotation.toList(qparams);
+
+    final List<dynamic> objectsData = <dynamic>[];
+    final data = await objectFuture;
+    final int count = data.length;
+    for (int i = 0; i < count; i++) {
+      objectsData.add(data[i]);
+    }
+    return objectsData;
+  }
+
+  /// Returns List<String> for selected first column
+  ///
+  /// Sample usage: await Quotation.select(columnsToSelect: ['columnName']).toListString()
+  Future<List<String>> toListString(
+      [VoidCallback Function(List<String> o)? listString]) async {
+    _buildParameters();
+
+    final objectFuture = _obj!._mnQuotation.toList(qparams);
+
+    final List<String> objectsData = <String>[];
+    final data = await objectFuture;
+    final int count = data.length;
+    for (int i = 0; i < count; i++) {
+      objectsData.add(data[i][qparams.selectColumns![0]].toString());
+    }
+    if (listString != null) {
+      listString(objectsData);
+    }
+    return objectsData;
+  }
+}
+// endregion QuotationFilterBuilder
+
+// region QuotationFields
+class QuotationFields {
+  static TableField? _fId;
+  static TableField get id {
+    return _fId = _fId ?? SqlSyntax.setField(_fId, 'id', DbType.integer);
+  }
+
+  static TableField? _fProductId;
+  static TableField get productId {
+    return _fProductId = _fProductId ??
+        SqlSyntax.setField(_fProductId, 'productId', DbType.text);
+  }
+
+  static TableField? _fQuantity;
+  static TableField get quantity {
+    return _fQuantity =
+        _fQuantity ?? SqlSyntax.setField(_fQuantity, 'quantity', DbType.text);
+  }
+
+  static TableField? _fPrice;
+  static TableField get price {
+    return _fPrice =
+        _fPrice ?? SqlSyntax.setField(_fPrice, 'price', DbType.text);
+  }
+
+  static TableField? _fTotalPrice;
+  static TableField get totalPrice {
+    return _fTotalPrice = _fTotalPrice ??
+        SqlSyntax.setField(_fTotalPrice, 'totalPrice', DbType.text);
+  }
+
+  static TableField? _fOrder;
+  static TableField get order {
+    return _fOrder =
+        _fOrder ?? SqlSyntax.setField(_fOrder, 'order', DbType.integer);
+  }
+
+  static TableField? _fQuotationId;
+  static TableField get quotationId {
+    return _fQuotationId = _fQuotationId ??
+        SqlSyntax.setField(_fQuotationId, 'quotationId', DbType.text);
+  }
+
+  static TableField? _fIsDeleted;
+  static TableField get isDeleted {
+    return _fIsDeleted = _fIsDeleted ??
+        SqlSyntax.setField(_fIsDeleted, 'isDeleted', DbType.integer);
+  }
+}
+// endregion QuotationFields
+
+//region QuotationManager
+class QuotationManager extends SqfEntityProvider {
+  QuotationManager()
+      : super(MyDbModel(),
+            tableName: _tableName,
+            primaryKeyList: _primaryKeyList,
+            whereStr: _whereStr);
+  static final String _tableName = 'quotation';
+  static final List<String> _primaryKeyList = ['id'];
+  static final String _whereStr = 'id=?';
+}
+
+//endregion QuotationManager
+// region Customer
+class Customer {
+  Customer(
+      {this.id,
+      this.companyName,
+      this.addressLine1,
+      this.addressLine2,
+      this.mobile,
+      this.email,
+      this.isDeleted}) {
+    _setDefaultValues();
+  }
+  Customer.withFields(this.companyName, this.addressLine1, this.addressLine2,
+      this.mobile, this.email, this.isDeleted) {
+    _setDefaultValues();
+  }
+  Customer.withId(this.id, this.companyName, this.addressLine1,
+      this.addressLine2, this.mobile, this.email, this.isDeleted) {
+    _setDefaultValues();
+  }
+  // fromMap v2.0
+  Customer.fromMap(Map<String, dynamic> o, {bool setDefaultValues = true}) {
+    if (setDefaultValues) {
+      _setDefaultValues();
+    }
+    id = int.tryParse(o['id'].toString());
+    if (o['companyName'] != null) {
+      companyName = o['companyName'].toString();
+    }
+    if (o['addressLine1'] != null) {
+      addressLine1 = o['addressLine1'].toString();
+    }
+    if (o['addressLine2'] != null) {
+      addressLine2 = o['addressLine2'].toString();
+    }
+    if (o['mobile'] != null) {
+      mobile = o['mobile'].toString();
+    }
+    if (o['email'] != null) {
+      email = o['email'].toString();
+    }
+    isDeleted = o['isDeleted'] != null
+        ? o['isDeleted'] == 1 || o['isDeleted'] == true
+        : null;
+  }
+  // FIELDS (Customer)
+  int? id;
+  String? companyName;
+  String? addressLine1;
+  String? addressLine2;
+  String? mobile;
+  String? email;
+  bool? isDeleted;
+
+  BoolResult? saveResult;
+  // end FIELDS (Customer)
+
+  static const bool _softDeleteActivated = true;
+  CustomerManager? __mnCustomer;
+
+  CustomerManager get _mnCustomer {
+    return __mnCustomer = __mnCustomer ?? CustomerManager();
+  }
+
+  // METHODS
+  Map<String, dynamic> toMap(
+      {bool forQuery = false, bool forJson = false, bool forView = false}) {
+    final map = <String, dynamic>{};
+    if (id != null) {
+      map['id'] = id;
+    }
+    if (companyName != null) {
+      map['companyName'] = companyName;
+    }
+
+    if (addressLine1 != null) {
+      map['addressLine1'] = addressLine1;
+    }
+
+    if (addressLine2 != null) {
+      map['addressLine2'] = addressLine2;
+    }
+
+    if (mobile != null) {
+      map['mobile'] = mobile;
+    }
+
+    if (email != null) {
+      map['email'] = email;
+    }
+
+    if (isDeleted != null) {
+      map['isDeleted'] = forQuery ? (isDeleted! ? 1 : 0) : isDeleted;
+    }
+
+    return map;
+  }
+
+  Future<Map<String, dynamic>> toMapWithChildren(
+      [bool forQuery = false,
+      bool forJson = false,
+      bool forView = false]) async {
+    final map = <String, dynamic>{};
+    if (id != null) {
+      map['id'] = id;
+    }
+    if (companyName != null) {
+      map['companyName'] = companyName;
+    }
+
+    if (addressLine1 != null) {
+      map['addressLine1'] = addressLine1;
+    }
+
+    if (addressLine2 != null) {
+      map['addressLine2'] = addressLine2;
+    }
+
+    if (mobile != null) {
+      map['mobile'] = mobile;
+    }
+
+    if (email != null) {
+      map['email'] = email;
+    }
+
+    if (isDeleted != null) {
+      map['isDeleted'] = forQuery ? (isDeleted! ? 1 : 0) : isDeleted;
+    }
+
+    return map;
+  }
+
+  /// This method returns Json String [Customer]
+  String toJson() {
+    return json.encode(toMap(forJson: true));
+  }
+
+  /// This method returns Json String [Customer]
+  Future<String> toJsonWithChilds() async {
+    return json.encode(await toMapWithChildren(false, true));
+  }
+
+  List<dynamic> toArgs() {
+    return [companyName, addressLine1, addressLine2, mobile, email, isDeleted];
+  }
+
+  List<dynamic> toArgsWithIds() {
+    return [
+      id,
+      companyName,
+      addressLine1,
+      addressLine2,
+      mobile,
+      email,
+      isDeleted
+    ];
+  }
+
+  static Future<List<Customer>?> fromWebUrl(Uri uri,
+      {Map<String, String>? headers}) async {
+    try {
+      final response = await http.get(uri, headers: headers);
+      return await fromJson(response.body);
+    } catch (e) {
+      print(
+          'SQFENTITY ERROR Customer.fromWebUrl: ErrorMessage: ${e.toString()}');
+      return null;
+    }
+  }
+
+  Future<http.Response> postUrl(Uri uri, {Map<String, String>? headers}) {
+    return http.post(uri, headers: headers, body: toJson());
+  }
+
+  static Future<List<Customer>> fromJson(String jsonBody) async {
+    final Iterable list = await json.decode(jsonBody) as Iterable;
+    var objList = <Customer>[];
+    try {
+      objList = list
+          .map((customer) => Customer.fromMap(customer as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      print('SQFENTITY ERROR Customer.fromJson: ErrorMessage: ${e.toString()}');
+    }
+    return objList;
+  }
+
+  static Future<List<Customer>> fromMapList(List<dynamic> data,
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields,
+      bool setDefaultValues = true}) async {
+    final List<Customer> objList = <Customer>[];
+    loadedFields = loadedFields ?? [];
+    for (final map in data) {
+      final obj = Customer.fromMap(map as Map<String, dynamic>,
+          setDefaultValues: setDefaultValues);
+
+      objList.add(obj);
+    }
+    return objList;
+  }
+
+  /// returns Customer by ID if exist, otherwise returns null
+  ///
+  /// Primary Keys: int? id
+  ///
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  ///
+  /// ex: getById(preload:true) -> Loads all related objects
+  ///
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  ///
+  /// ex: getById(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  ///
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  ///
+  /// <returns>returns Customer if exist, otherwise returns null
+  Future<Customer?> getById(int? id,
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    if (id == null) {
+      return null;
+    }
+    Customer? obj;
+    final data = await _mnCustomer.getById([id]);
+    if (data.length != 0) {
+      obj = Customer.fromMap(data[0] as Map<String, dynamic>);
+    } else {
+      obj = null;
+    }
+    return obj;
+  }
+
+  /// Saves the (Customer) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
+
+  /// <returns>Returns id
+  Future<int?> save() async {
+    if (id == null || id == 0) {
+      id = await _mnCustomer.insert(this);
+    } else {
+      // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
+      await _mnCustomer.update(this);
+    }
+
+    return id;
+  }
+
+  /// saveAs Customer. Returns a new Primary Key value of Customer
+
+  /// <returns>Returns a new Primary Key value of Customer
+  Future<int?> saveAs() async {
+    id = null;
+
+    return save();
+  }
+
+  /// saveAll method saves the sent List<Customer> as a bulk in one transaction
+  ///
+  /// Returns a <List<BoolResult>>
+  static Future<List<dynamic>> saveAll(List<Customer> customers) async {
+    // final results = _mnCustomer.saveAll('INSERT OR REPLACE INTO customer (id,companyName, addressLine1, addressLine2, mobile, email,isDeleted)  VALUES (?,?,?,?,?,?,?)',customers);
+    // return results; removed in sqfentity_gen 1.3.0+6
+    await MyDbModel().batchStart();
+    for (final obj in customers) {
+      await obj.save();
+    }
+    //    return MyDbModel().batchCommit();
+    final result = await MyDbModel().batchCommit();
+    for (int i = 0; i < customers.length; i++) {
+      if (customers[i].id == null) {
+        customers[i].id = result![i] as int;
+      }
+    }
+
+    return result!;
+  }
+
+  /// Updates if the record exists, otherwise adds a new row
+
+  /// <returns>Returns id
+
+  Future<int?> upsert() async {
+    try {
+      final result = await _mnCustomer.rawInsert(
+          'INSERT OR REPLACE INTO customer (id,companyName, addressLine1, addressLine2, mobile, email,isDeleted)  VALUES (?,?,?,?,?,?,?)',
+          [
+            id,
+            companyName,
+            addressLine1,
+            addressLine2,
+            mobile,
+            email,
+            isDeleted
+          ]);
+      if (result! > 0) {
+        saveResult = BoolResult(
+            success: true,
+            successMessage: 'Customer id=$id updated successfully');
+      } else {
+        saveResult = BoolResult(
+            success: false, errorMessage: 'Customer id=$id did not update');
+      }
+      return id;
+    } catch (e) {
+      saveResult = BoolResult(
+          success: false,
+          errorMessage: 'Customer Save failed. Error: ${e.toString()}');
+      return null;
+    }
+  }
+
+  /// inserts or replaces the sent List<<Customer>> as a bulk in one transaction.
+  ///
+  /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
+  ///
+  /// Returns a BoolCommitResult
+  Future<BoolCommitResult> upsertAll(List<Customer> customers) async {
+    final results = await _mnCustomer.rawInsertAll(
+        'INSERT OR REPLACE INTO customer (id,companyName, addressLine1, addressLine2, mobile, email,isDeleted)  VALUES (?,?,?,?,?,?,?)',
+        customers);
+    return results;
+  }
+
+  /// Deletes Customer
+
+  /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
+
+  Future<BoolResult> delete([bool hardDelete = false]) async {
+    print('SQFENTITIY: delete Customer invoked (id=$id)');
+    if (!_softDeleteActivated || hardDelete || isDeleted!) {
+      return _mnCustomer
+          .delete(QueryParams(whereString: 'id=?', whereArguments: [id]));
+    } else {
+      return _mnCustomer.updateBatch(
+          QueryParams(whereString: 'id=?', whereArguments: [id]),
+          {'isDeleted': 1});
+    }
+  }
+
+  /// Recover Customer>
+
+  /// <returns>BoolResult res.success=Recovered, not res.success=Can not recovered
+  Future<BoolResult> recover([bool recoverChilds = true]) async {
+    print('SQFENTITIY: recover Customer invoked (id=$id)');
+    {
+      return _mnCustomer.updateBatch(
+          QueryParams(whereString: 'id=?', whereArguments: [id]),
+          {'isDeleted': 0});
+    }
+  }
+
+  CustomerFilterBuilder select(
+      {List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return CustomerFilterBuilder(this)
+      .._getIsDeleted = getIsDeleted == true
+      ..qparams.selectColumns = columnsToSelect;
+  }
+
+  CustomerFilterBuilder distinct(
+      {List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return CustomerFilterBuilder(this)
+      .._getIsDeleted = getIsDeleted == true
+      ..qparams.selectColumns = columnsToSelect
+      ..qparams.distinct = true;
+  }
+
+  void _setDefaultValues() {
+    addressLine1 = addressLine1 ?? '';
+    addressLine2 = addressLine2 ?? '';
+    mobile = mobile ?? '';
+    email = email ?? '';
+    isDeleted = isDeleted ?? false;
+  }
+  // END METHODS
+  // BEGIN CUSTOM CODE
+  /*
+      you can define customCode property of your SqfEntityTable constant. For example:
+      const tablePerson = SqfEntityTable(
+      tableName: 'person',
+      primaryKeyName: 'id',
+      primaryKeyType: PrimaryKeyType.integer_auto_incremental,
+      fields: [
+        SqfEntityField('firstName', DbType.text),
+        SqfEntityField('lastName', DbType.text),
+      ],
+      customCode: '''
+       String fullName()
+       { 
+         return '$firstName $lastName';
+       }
+      ''');
+     */
+  // END CUSTOM CODE
+}
+// endregion customer
+
+// region CustomerField
+class CustomerField extends SearchCriteria {
+  CustomerField(this.customerFB);
+  // { param = DbParameter(); }
+  DbParameter param = DbParameter();
+  String _waitingNot = '';
+  CustomerFilterBuilder customerFB;
+
+  CustomerField get not {
+    _waitingNot = ' NOT ';
+    return this;
+  }
+
+  CustomerFilterBuilder equals(dynamic pValue) {
+    param.expression = '=';
+    customerFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, customerFB.parameters, param, SqlSyntax.EQuals,
+            customerFB._addedBlocks)
+        : setCriteria(pValue, customerFB.parameters, param, SqlSyntax.NotEQuals,
+            customerFB._addedBlocks);
+    _waitingNot = '';
+    customerFB._addedBlocks.needEndBlock![customerFB._blockIndex] =
+        customerFB._addedBlocks.retVal;
+    return customerFB;
+  }
+
+  CustomerFilterBuilder equalsOrNull(dynamic pValue) {
+    param.expression = '=';
+    customerFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, customerFB.parameters, param,
+            SqlSyntax.EQualsOrNull, customerFB._addedBlocks)
+        : setCriteria(pValue, customerFB.parameters, param,
+            SqlSyntax.NotEQualsOrNull, customerFB._addedBlocks);
+    _waitingNot = '';
+    customerFB._addedBlocks.needEndBlock![customerFB._blockIndex] =
+        customerFB._addedBlocks.retVal;
+    return customerFB;
+  }
+
+  CustomerFilterBuilder isNull() {
+    customerFB._addedBlocks = setCriteria(
+        0,
+        customerFB.parameters,
+        param,
+        SqlSyntax.IsNULL.replaceAll(SqlSyntax.notKeyword, _waitingNot),
+        customerFB._addedBlocks);
+    _waitingNot = '';
+    customerFB._addedBlocks.needEndBlock![customerFB._blockIndex] =
+        customerFB._addedBlocks.retVal;
+    return customerFB;
+  }
+
+  CustomerFilterBuilder contains(dynamic pValue) {
+    if (pValue != null) {
+      customerFB._addedBlocks = setCriteria(
+          '%${pValue.toString()}%',
+          customerFB.parameters,
+          param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
+          customerFB._addedBlocks);
+      _waitingNot = '';
+      customerFB._addedBlocks.needEndBlock![customerFB._blockIndex] =
+          customerFB._addedBlocks.retVal;
+    }
+    return customerFB;
+  }
+
+  CustomerFilterBuilder startsWith(dynamic pValue) {
+    if (pValue != null) {
+      customerFB._addedBlocks = setCriteria(
+          '${pValue.toString()}%',
+          customerFB.parameters,
+          param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
+          customerFB._addedBlocks);
+      _waitingNot = '';
+      customerFB._addedBlocks.needEndBlock![customerFB._blockIndex] =
+          customerFB._addedBlocks.retVal;
+      customerFB._addedBlocks.needEndBlock![customerFB._blockIndex] =
+          customerFB._addedBlocks.retVal;
+    }
+    return customerFB;
+  }
+
+  CustomerFilterBuilder endsWith(dynamic pValue) {
+    if (pValue != null) {
+      customerFB._addedBlocks = setCriteria(
+          '%${pValue.toString()}',
+          customerFB.parameters,
+          param,
+          SqlSyntax.Contains.replaceAll(SqlSyntax.notKeyword, _waitingNot),
+          customerFB._addedBlocks);
+      _waitingNot = '';
+      customerFB._addedBlocks.needEndBlock![customerFB._blockIndex] =
+          customerFB._addedBlocks.retVal;
+    }
+    return customerFB;
+  }
+
+  CustomerFilterBuilder between(dynamic pFirst, dynamic pLast) {
+    if (pFirst != null && pLast != null) {
+      customerFB._addedBlocks = setCriteria(
+          pFirst,
+          customerFB.parameters,
+          param,
+          SqlSyntax.Between.replaceAll(SqlSyntax.notKeyword, _waitingNot),
+          customerFB._addedBlocks,
+          pLast);
+    } else if (pFirst != null) {
+      if (_waitingNot != '') {
+        customerFB._addedBlocks = setCriteria(pFirst, customerFB.parameters,
+            param, SqlSyntax.LessThan, customerFB._addedBlocks);
+      } else {
+        customerFB._addedBlocks = setCriteria(pFirst, customerFB.parameters,
+            param, SqlSyntax.GreaterThanOrEquals, customerFB._addedBlocks);
+      }
+    } else if (pLast != null) {
+      if (_waitingNot != '') {
+        customerFB._addedBlocks = setCriteria(pLast, customerFB.parameters,
+            param, SqlSyntax.GreaterThan, customerFB._addedBlocks);
+      } else {
+        customerFB._addedBlocks = setCriteria(pLast, customerFB.parameters,
+            param, SqlSyntax.LessThanOrEquals, customerFB._addedBlocks);
+      }
+    }
+    _waitingNot = '';
+    customerFB._addedBlocks.needEndBlock![customerFB._blockIndex] =
+        customerFB._addedBlocks.retVal;
+    return customerFB;
+  }
+
+  CustomerFilterBuilder greaterThan(dynamic pValue) {
+    param.expression = '>';
+    customerFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, customerFB.parameters, param,
+            SqlSyntax.GreaterThan, customerFB._addedBlocks)
+        : setCriteria(pValue, customerFB.parameters, param,
+            SqlSyntax.LessThanOrEquals, customerFB._addedBlocks);
+    _waitingNot = '';
+    customerFB._addedBlocks.needEndBlock![customerFB._blockIndex] =
+        customerFB._addedBlocks.retVal;
+    return customerFB;
+  }
+
+  CustomerFilterBuilder lessThan(dynamic pValue) {
+    param.expression = '<';
+    customerFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, customerFB.parameters, param, SqlSyntax.LessThan,
+            customerFB._addedBlocks)
+        : setCriteria(pValue, customerFB.parameters, param,
+            SqlSyntax.GreaterThanOrEquals, customerFB._addedBlocks);
+    _waitingNot = '';
+    customerFB._addedBlocks.needEndBlock![customerFB._blockIndex] =
+        customerFB._addedBlocks.retVal;
+    return customerFB;
+  }
+
+  CustomerFilterBuilder greaterThanOrEquals(dynamic pValue) {
+    param.expression = '>=';
+    customerFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, customerFB.parameters, param,
+            SqlSyntax.GreaterThanOrEquals, customerFB._addedBlocks)
+        : setCriteria(pValue, customerFB.parameters, param, SqlSyntax.LessThan,
+            customerFB._addedBlocks);
+    _waitingNot = '';
+    customerFB._addedBlocks.needEndBlock![customerFB._blockIndex] =
+        customerFB._addedBlocks.retVal;
+    return customerFB;
+  }
+
+  CustomerFilterBuilder lessThanOrEquals(dynamic pValue) {
+    param.expression = '<=';
+    customerFB._addedBlocks = _waitingNot == ''
+        ? setCriteria(pValue, customerFB.parameters, param,
+            SqlSyntax.LessThanOrEquals, customerFB._addedBlocks)
+        : setCriteria(pValue, customerFB.parameters, param,
+            SqlSyntax.GreaterThan, customerFB._addedBlocks);
+    _waitingNot = '';
+    customerFB._addedBlocks.needEndBlock![customerFB._blockIndex] =
+        customerFB._addedBlocks.retVal;
+    return customerFB;
+  }
+
+  CustomerFilterBuilder inValues(dynamic pValue) {
+    customerFB._addedBlocks = setCriteria(
+        pValue,
+        customerFB.parameters,
+        param,
+        SqlSyntax.IN.replaceAll(SqlSyntax.notKeyword, _waitingNot),
+        customerFB._addedBlocks);
+    _waitingNot = '';
+    customerFB._addedBlocks.needEndBlock![customerFB._blockIndex] =
+        customerFB._addedBlocks.retVal;
+    return customerFB;
+  }
+}
+// endregion CustomerField
+
+// region CustomerFilterBuilder
+class CustomerFilterBuilder extends SearchCriteria {
+  CustomerFilterBuilder(Customer obj) {
+    whereString = '';
+    groupByList = <String>[];
+    _addedBlocks.needEndBlock!.add(false);
+    _addedBlocks.waitingStartBlock!.add(false);
+    _obj = obj;
+  }
+  AddedBlocks _addedBlocks = AddedBlocks(<bool>[], <bool>[]);
+  int _blockIndex = 0;
+  List<DbParameter> parameters = <DbParameter>[];
+  List<String> orderByList = <String>[];
+  Customer? _obj;
+  QueryParams qparams = QueryParams();
+  int _pagesize = 0;
+  int _page = 0;
+
+  /// put the sql keyword 'AND'
+  CustomerFilterBuilder get and {
+    if (parameters.isNotEmpty) {
+      parameters[parameters.length - 1].wOperator = ' AND ';
+    }
+    return this;
+  }
+
+  /// put the sql keyword 'OR'
+  CustomerFilterBuilder get or {
+    if (parameters.isNotEmpty) {
+      parameters[parameters.length - 1].wOperator = ' OR ';
+    }
+    return this;
+  }
+
+  /// open parentheses
+  CustomerFilterBuilder get startBlock {
+    _addedBlocks.waitingStartBlock!.add(true);
+    _addedBlocks.needEndBlock!.add(false);
+    _blockIndex++;
+    if (_blockIndex > 1) {
+      _addedBlocks.needEndBlock![_blockIndex - 1] = true;
+    }
+    return this;
+  }
+
+  /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
+  CustomerFilterBuilder where(String? whereCriteria, {dynamic parameterValue}) {
+    if (whereCriteria != null && whereCriteria != '') {
+      final DbParameter param = DbParameter(
+          columnName: parameterValue == null ? null : '',
+          hasParameter: parameterValue != null);
+      _addedBlocks = setCriteria(parameterValue ?? 0, parameters, param,
+          '($whereCriteria)', _addedBlocks);
+      _addedBlocks.needEndBlock![_blockIndex] = _addedBlocks.retVal;
+    }
+    return this;
+  }
+
+  /// page = page number,
+  ///
+  /// pagesize = row(s) per page
+  CustomerFilterBuilder page(int page, int pagesize) {
+    if (page > 0) {
+      _page = page;
+    }
+    if (pagesize > 0) {
+      _pagesize = pagesize;
+    }
+    return this;
+  }
+
+  /// int count = LIMIT
+  CustomerFilterBuilder top(int count) {
+    if (count > 0) {
+      _pagesize = count;
+    }
+    return this;
+  }
+
+  /// close parentheses
+  CustomerFilterBuilder get endBlock {
+    if (_addedBlocks.needEndBlock![_blockIndex]) {
+      parameters[parameters.length - 1].whereString += ' ) ';
+    }
+    _addedBlocks.needEndBlock!.removeAt(_blockIndex);
+    _addedBlocks.waitingStartBlock!.removeAt(_blockIndex);
+    _blockIndex--;
+    return this;
+  }
+
+  /// argFields might be String or List<String>.
+  ///
+  /// Example 1: argFields='name, date'
+  ///
+  /// Example 2: argFields = ['name', 'date']
+  CustomerFilterBuilder orderBy(dynamic argFields) {
+    if (argFields != null) {
+      if (argFields is String) {
+        orderByList.add(argFields);
+      } else {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
+            orderByList.add(' $s ');
+          }
+        }
+      }
+    }
+    return this;
+  }
+
+  /// argFields might be String or List<String>.
+  ///
+  /// Example 1: argFields='field1, field2'
+  ///
+  /// Example 2: argFields = ['field1', 'field2']
+  CustomerFilterBuilder orderByDesc(dynamic argFields) {
+    if (argFields != null) {
+      if (argFields is String) {
+        orderByList.add('$argFields desc ');
+      } else {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
+            orderByList.add(' $s desc ');
+          }
+        }
+      }
+    }
+    return this;
+  }
+
+  /// argFields might be String or List<String>.
+  ///
+  /// Example 1: argFields='field1, field2'
+  ///
+  /// Example 2: argFields = ['field1', 'field2']
+  CustomerFilterBuilder groupBy(dynamic argFields) {
+    if (argFields != null) {
+      if (argFields is String) {
+        groupByList.add(' $argFields ');
+      } else {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
+            groupByList.add(' $s ');
+          }
+        }
+      }
+    }
+    return this;
+  }
+
+  /// argFields might be String or List<String>.
+  ///
+  /// Example 1: argFields='name, date'
+  ///
+  /// Example 2: argFields = ['name', 'date']
+  CustomerFilterBuilder having(dynamic argFields) {
+    if (argFields != null) {
+      if (argFields is String) {
+        havingList.add(argFields);
+      } else {
+        for (String? s in argFields as List<String?>) {
+          if (s!.isNotEmpty) {
+            havingList.add(' $s ');
+          }
+        }
+      }
+    }
+    return this;
+  }
+
+  CustomerField setField(CustomerField? field, String colName, DbType dbtype) {
+    return CustomerField(this)
+      ..param = DbParameter(
+          dbType: dbtype,
+          columnName: colName,
+          wStartBlock: _addedBlocks.waitingStartBlock![_blockIndex]);
+  }
+
+  CustomerField? _id;
+  CustomerField get id {
+    return _id = setField(_id, 'id', DbType.integer);
+  }
+
+  CustomerField? _companyName;
+  CustomerField get companyName {
+    return _companyName = setField(_companyName, 'companyName', DbType.text);
+  }
+
+  CustomerField? _addressLine1;
+  CustomerField get addressLine1 {
+    return _addressLine1 = setField(_addressLine1, 'addressLine1', DbType.text);
+  }
+
+  CustomerField? _addressLine2;
+  CustomerField get addressLine2 {
+    return _addressLine2 = setField(_addressLine2, 'addressLine2', DbType.text);
+  }
+
+  CustomerField? _mobile;
+  CustomerField get mobile {
+    return _mobile = setField(_mobile, 'mobile', DbType.text);
+  }
+
+  CustomerField? _email;
+  CustomerField get email {
+    return _email = setField(_email, 'email', DbType.text);
+  }
+
+  CustomerField? _isDeleted;
+  CustomerField get isDeleted {
+    return _isDeleted = setField(_isDeleted, 'isDeleted', DbType.bool);
+  }
+
+  bool _getIsDeleted = false;
+
+  void _buildParameters() {
+    if (_page > 0 && _pagesize > 0) {
+      qparams
+        ..limit = _pagesize
+        ..offset = (_page - 1) * _pagesize;
+    } else {
+      qparams
+        ..limit = _pagesize
+        ..offset = _page;
+    }
+    for (DbParameter param in parameters) {
+      if (param.columnName != null) {
+        if (param.value is List && !param.hasParameter) {
+          param.value = param.dbType == DbType.text || param.value[0] is String
+              ? '\'${param.value.join('\',\'')}\''
+              : param.value.join(',');
+          whereString += param.whereString
+              .replaceAll('{field}', param.columnName!)
+              .replaceAll('?', param.value.toString());
+          param.value = null;
+        } else {
+          if (param.value is Map<String, dynamic> &&
+              param.value['sql'] != null) {
+            param
+              ..whereString = param.whereString
+                  .replaceAll('?', param.value['sql'].toString())
+              ..dbType = DbType.integer
+              ..value = param.value['args'];
+          }
+          whereString +=
+              param.whereString.replaceAll('{field}', param.columnName!);
+        }
+        if (!param.whereString.contains('?')) {
+        } else {
+          switch (param.dbType) {
+            case DbType.bool:
+              param.value = param.value == null
+                  ? null
+                  : param.value == true
+                      ? 1
+                      : 0;
+              param.value2 = param.value2 == null
+                  ? null
+                  : param.value2 == true
+                      ? 1
+                      : 0;
+              break;
+            case DbType.date:
+            case DbType.datetime:
+            case DbType.datetimeUtc:
+              param.value = param.value == null
+                  ? null
+                  : (param.value as DateTime).millisecondsSinceEpoch;
+              param.value2 = param.value2 == null
+                  ? null
+                  : (param.value2 as DateTime).millisecondsSinceEpoch;
+              break;
+            default:
+          }
+          if (param.value != null) {
+            if (param.value is List) {
+              for (var p in param.value) {
+                whereArguments.add(p);
+              }
+            } else {
+              whereArguments.add(param.value);
+            }
+          }
+          if (param.value2 != null) {
+            whereArguments.add(param.value2);
+          }
+        }
+      } else {
+        whereString += param.whereString;
+      }
+    }
+    if (Customer._softDeleteActivated) {
+      if (whereString != '') {
+        whereString =
+            '${!_getIsDeleted ? 'ifnull(isDeleted,0)=0 AND' : ''} ($whereString)';
+      } else if (!_getIsDeleted) {
+        whereString = 'ifnull(isDeleted,0)=0';
+      }
+    }
+
+    if (whereString != '') {
+      qparams.whereString = whereString;
+    }
+    qparams
+      ..whereArguments = whereArguments
+      ..groupBy = groupByList.join(',')
+      ..orderBy = orderByList.join(',')
+      ..having = havingList.join(',');
+  }
+
+  /// Deletes List<Customer> bulk by query
+  ///
+  /// <returns>BoolResult res.success=Deleted, not res.success=Can not deleted
+  Future<BoolResult> delete([bool hardDelete = false]) async {
+    _buildParameters();
+    var r = BoolResult(success: false);
+
+    if (Customer._softDeleteActivated && !hardDelete) {
+      r = await _obj!._mnCustomer.updateBatch(qparams, {'isDeleted': 1});
+    } else {
+      r = await _obj!._mnCustomer.delete(qparams);
+    }
+    return r;
+  }
+
+  /// Recover List<Customer> bulk by query
+  Future<BoolResult> recover() async {
+    _getIsDeleted = true;
+    _buildParameters();
+    print('SQFENTITIY: recover Customer bulk invoked');
+    return _obj!._mnCustomer.updateBatch(qparams, {'isDeleted': 0});
+  }
+
+  /// using:
+  ///
+  /// update({'fieldName': Value})
+  ///
+  /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
+  Future<BoolResult> update(Map<String, dynamic> values) {
+    _buildParameters();
+    if (qparams.limit! > 0 || qparams.offset! > 0) {
+      qparams.whereString =
+          'id IN (SELECT id from customer ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
+    }
+    return _obj!._mnCustomer.updateBatch(qparams, values);
+  }
+
+  /// This method always returns Customer Obj if exist, otherwise returns null
+  ///
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  ///
+  /// ex: toSingle(preload:true) -> Loads all related objects
+  ///
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  ///
+  /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  ///
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  ///
+  /// <returns>List<Customer>
+  Future<Customer?> toSingle(
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    _pagesize = 1;
+    _buildParameters();
+    final objFuture = _obj!._mnCustomer.toList(qparams);
+    final data = await objFuture;
+    Customer? obj;
+    if (data.isNotEmpty) {
+      obj = Customer.fromMap(data[0] as Map<String, dynamic>);
+    } else {
+      obj = null;
+    }
+    return obj;
+  }
+
+  /// This method returns int. [Customer]
+  ///
+  /// <returns>int
+  Future<int> toCount([VoidCallback Function(int c)? customerCount]) async {
+    _buildParameters();
+    qparams.selectColumns = ['COUNT(1) AS CNT'];
+    final customersFuture = await _obj!._mnCustomer.toList(qparams);
+    final int count = customersFuture[0]['CNT'] as int;
+    if (customerCount != null) {
+      customerCount(count);
+    }
+    return count;
+  }
+
+  /// This method returns List<Customer> [Customer]
+  ///
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  ///
+  /// ex: toList(preload:true) -> Loads all related objects
+  ///
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  ///
+  /// ex: toList(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  ///
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  ///
+  /// <returns>List<Customer>
+  Future<List<Customer>> toList(
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    final data = await toMapList();
+    final List<Customer> customersData = await Customer.fromMapList(data,
+        preload: preload,
+        preloadFields: preloadFields,
+        loadParents: loadParents,
+        loadedFields: loadedFields,
+        setDefaultValues: qparams.selectColumns == null);
+    return customersData;
+  }
+
+  /// This method returns Json String [Customer]
+  Future<String> toJson() async {
+    final list = <dynamic>[];
+    final data = await toList();
+    for (var o in data) {
+      list.add(o.toMap(forJson: true));
+    }
+    return json.encode(list);
+  }
+
+  /// This method returns Json String. [Customer]
+  Future<String> toJsonWithChilds() async {
+    final list = <dynamic>[];
+    final data = await toList();
+    for (var o in data) {
+      list.add(await o.toMapWithChildren(false, true));
+    }
+    return json.encode(list);
+  }
+
+  /// This method returns List<dynamic>. [Customer]
+  ///
+  /// <returns>List<dynamic>
+  Future<List<dynamic>> toMapList() async {
+    _buildParameters();
+    return await _obj!._mnCustomer.toList(qparams);
+  }
+
+  /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [Customer]
+  ///
+  /// retVal['sql'] = SQL statement string, retVal['args'] = whereArguments List<dynamic>;
+  ///
+  /// <returns>List<String>
+  Map<String, dynamic> toListPrimaryKeySQL([bool buildParameters = true]) {
+    final Map<String, dynamic> _retVal = <String, dynamic>{};
+    if (buildParameters) {
+      _buildParameters();
+    }
+    _retVal['sql'] = 'SELECT `id` FROM customer WHERE ${qparams.whereString}';
+    _retVal['args'] = qparams.whereArguments;
+    return _retVal;
+  }
+
+  /// This method returns Primary Key List<int>.
+  /// <returns>List<int>
+  Future<List<int>> toListPrimaryKey([bool buildParameters = true]) async {
+    if (buildParameters) {
+      _buildParameters();
+    }
+    final List<int> idData = <int>[];
+    qparams.selectColumns = ['id'];
+    final idFuture = await _obj!._mnCustomer.toList(qparams);
+
+    final int count = idFuture.length;
+    for (int i = 0; i < count; i++) {
+      idData.add(idFuture[i]['id'] as int);
+    }
+    return idData;
+  }
+
+  /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [Customer]
+  ///
+  /// Sample usage: (see EXAMPLE 4.2 at https://github.com/hhtokpinar/sqfEntity#group-by)
+  Future<List<dynamic>> toListObject() async {
+    _buildParameters();
+
+    final objectFuture = _obj!._mnCustomer.toList(qparams);
+
+    final List<dynamic> objectsData = <dynamic>[];
+    final data = await objectFuture;
+    final int count = data.length;
+    for (int i = 0; i < count; i++) {
+      objectsData.add(data[i]);
+    }
+    return objectsData;
+  }
+
+  /// Returns List<String> for selected first column
+  ///
+  /// Sample usage: await Customer.select(columnsToSelect: ['columnName']).toListString()
+  Future<List<String>> toListString(
+      [VoidCallback Function(List<String> o)? listString]) async {
+    _buildParameters();
+
+    final objectFuture = _obj!._mnCustomer.toList(qparams);
+
+    final List<String> objectsData = <String>[];
+    final data = await objectFuture;
+    final int count = data.length;
+    for (int i = 0; i < count; i++) {
+      objectsData.add(data[i][qparams.selectColumns![0]].toString());
+    }
+    if (listString != null) {
+      listString(objectsData);
+    }
+    return objectsData;
+  }
+}
+// endregion CustomerFilterBuilder
+
+// region CustomerFields
+class CustomerFields {
+  static TableField? _fId;
+  static TableField get id {
+    return _fId = _fId ?? SqlSyntax.setField(_fId, 'id', DbType.integer);
+  }
+
+  static TableField? _fCompanyName;
+  static TableField get companyName {
+    return _fCompanyName = _fCompanyName ??
+        SqlSyntax.setField(_fCompanyName, 'companyName', DbType.text);
+  }
+
+  static TableField? _fAddressLine1;
+  static TableField get addressLine1 {
+    return _fAddressLine1 = _fAddressLine1 ??
+        SqlSyntax.setField(_fAddressLine1, 'addressLine1', DbType.text);
+  }
+
+  static TableField? _fAddressLine2;
+  static TableField get addressLine2 {
+    return _fAddressLine2 = _fAddressLine2 ??
+        SqlSyntax.setField(_fAddressLine2, 'addressLine2', DbType.text);
+  }
+
+  static TableField? _fMobile;
+  static TableField get mobile {
+    return _fMobile =
+        _fMobile ?? SqlSyntax.setField(_fMobile, 'mobile', DbType.text);
+  }
+
+  static TableField? _fEmail;
+  static TableField get email {
+    return _fEmail =
+        _fEmail ?? SqlSyntax.setField(_fEmail, 'email', DbType.text);
+  }
+
+  static TableField? _fIsDeleted;
+  static TableField get isDeleted {
+    return _fIsDeleted = _fIsDeleted ??
+        SqlSyntax.setField(_fIsDeleted, 'isDeleted', DbType.integer);
+  }
+}
+// endregion CustomerFields
+
+//region CustomerManager
+class CustomerManager extends SqfEntityProvider {
+  CustomerManager()
+      : super(MyDbModel(),
+            tableName: _tableName,
+            primaryKeyList: _primaryKeyList,
+            whereStr: _whereStr);
+  static final String _tableName = 'customer';
+  static final List<String> _primaryKeyList = ['id'];
+  static final String _whereStr = 'id=?';
+}
+
+//endregion CustomerManager
 /// Region SEQUENCE IdentitySequence
 class IdentitySequence {
   /// Assigns a new value when it is triggered and returns the new value
