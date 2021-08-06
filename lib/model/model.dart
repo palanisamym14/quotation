@@ -1,24 +1,19 @@
+// flutter pub run build_runner build --delete-conflicting-outputs
+
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:sqfentity/sqfentity.dart';
 import 'package:sqfentity_gen/sqfentity_gen.dart';
-import '../src/utils/helper.dart';
-// import 'view.list.dart';
 
 part 'model.g.dart';
 
-// part 'model.g.view.dart';
 const SqfEntityTable tableCompany = SqfEntityTable(
     tableName: 'company',
     primaryKeyName: 'id',
     primaryKeyType: PrimaryKeyType.integer_auto_incremental,
     useSoftDeleting: true,
-    // when useSoftDeleting is true, creates a field named 'isDeleted' on the table, and set to '1' this field when item deleted (does not hard delete)
-    modelName:
-        null, // SqfEntity will set it to TableName automatically when the modelName (class name) is null
-    // declare fields
+    modelName: "TblCompany",
     fields: [
       SqfEntityField('companyName', DbType.text),
       SqfEntityField('addressLine1', DbType.text, defaultValue: ''),
@@ -33,15 +28,81 @@ const SqfEntityTable tableCompany = SqfEntityTable(
           defaultValue: 'DateTime.now()'),
     ]);
 
+const SqfEntityTable tableQuotation = SqfEntityTable(
+    tableName: 'quotation',
+    primaryKeyName: 'id',
+    primaryKeyType: PrimaryKeyType.integer_auto_incremental,
+    useSoftDeleting: true,
+    modelName: "TblQuotation",
+    fields: [
+      SqfEntityField('productId', DbType.text),
+      SqfEntityField('quantity', DbType.text),
+      SqfEntityField('price', DbType.text),
+      SqfEntityField('totalPrice', DbType.text),
+      SqfEntityField('sequenceNo', DbType.integer),
+      SqfEntityFieldRelationship(
+        parentTable: tableQuotationHeader,
+        deleteRule: DeleteRule.CASCADE,
+        defaultValue: 1,
+      ),
+    ]);
+
+const SqfEntityTable tableQuotationHeader = SqfEntityTable(
+    tableName: 'quotationHdr',
+    primaryKeyName: 'id',
+    primaryKeyType: PrimaryKeyType.integer_auto_incremental,
+    useSoftDeleting: true,
+    modelName: "TblQuotationHeader",
+    fields: [
+      SqfEntityField('isPrinted', DbType.bool, defaultValue: false),
+      SqfEntityFieldRelationship(
+        parentTable: tableCustomerDetails,
+        deleteRule: DeleteRule.CASCADE,
+        defaultValue: 1,
+      ),
+      SqfEntityField('createdDate', DbType.datetimeUtc,
+          defaultValue: 'DateTime.now()'),
+    ]);
+
+const SqfEntityTable tableQuotationSummary = SqfEntityTable(
+    tableName: 'quotationSummary',
+    primaryKeyName: 'id',
+    primaryKeyType: PrimaryKeyType.integer_auto_incremental,
+    useSoftDeleting: true,
+    modelName: "TblQuotationSummary",
+    fields: [
+      SqfEntityFieldRelationship(
+        parentTable: tableQuotationHeader,
+        deleteRule: DeleteRule.CASCADE,
+        defaultValue: 1,
+      ),
+      SqfEntityField('grandTotal', DbType.real, defaultValue: 1),
+      SqfEntityField('discount', DbType.real, defaultValue: 0),
+      SqfEntityField('netPay', DbType.real, defaultValue: 0),
+      SqfEntityField('wages', DbType.real, defaultValue: 0),
+      SqfEntityField('transport', DbType.real, defaultValue: 0),
+    ]);
+
+const SqfEntityTable tableCustomerDetails = SqfEntityTable(
+    tableName: 'customer',
+    primaryKeyName: 'id',
+    primaryKeyType: PrimaryKeyType.integer_auto_incremental,
+    useSoftDeleting: true,
+    modelName: "TblCustomer",
+    fields: [
+      SqfEntityField('companyName', DbType.text),
+      SqfEntityField('addressLine1', DbType.text, defaultValue: ''),
+      SqfEntityField('addressLine2', DbType.text, defaultValue: ''),
+      SqfEntityField('mobile', DbType.text, defaultValue: ''),
+      SqfEntityField('email', DbType.text, defaultValue: ''),
+    ]);
+
 const SqfEntityTable tableProduct = SqfEntityTable(
     tableName: 'product',
     primaryKeyName: 'id',
     primaryKeyType: PrimaryKeyType.integer_auto_incremental,
     useSoftDeleting: true,
-    // when useSoftDeleting is true, creates a field named 'isDeleted' on the table, and set to '1' this field when item deleted (does not hard delete)
-    modelName:
-        null, // SqfEntity will set it to TableName automatically when the modelName (class name) is null
-    // declare fields
+    modelName: "TblProduct",
     fields: [
       SqfEntityField('name', DbType.text),
       SqfEntityField('isActive', DbType.bool, defaultValue: true),
@@ -52,12 +113,12 @@ const SqfEntityTable tableProduct = SqfEntityTable(
       SqfEntityField('favorite', DbType.bool, defaultValue: false),
     ]);
 
-// Define the 'tableProduct' constant as SqfEntityTable for the product table
-const tableItems = SqfEntityTable(
+const SqfEntityTable tableItems = SqfEntityTable(
     tableName: 'items',
     primaryKeyName: 'id',
     primaryKeyType: PrimaryKeyType.integer_auto_incremental,
     useSoftDeleting: true,
+    modelName: "TblItems",
     fields: [
       SqfEntityField('description', DbType.text),
       SqfEntityField('price', DbType.real, defaultValue: 0),
@@ -85,27 +146,30 @@ const seqIdentity = SqfEntitySequence(
   // startWith = 0;   /* optional. default is 0 */
 );
 
-// STEP 2: Create your Database Model constant instanced from SqfEntityModel
-// Note: SqfEntity provides support for the use of multiple databases.
-// So you can create many Database Models and use them in the application.
 @SqfEntityBuilder(myDbModel)
 const myDbModel = SqfEntityModel(
-    modelName: 'MyDbModel',
-    databaseName: 'sampleORM_v2.0.0+7.db',
+    modelName: 'DBQuotation',
+    databaseName: 'quotation.db',
     password:
         null, // You can set a password if you want to use crypted database (For more information: https://github.com/sqlcipher/sqlcipher)
     // put defined tables into the tables list.
-    databaseTables: [tableProduct, tableItems, tableCompany],
-    sequences: [seqIdentity],
-    dbVersion: 2,
+    databaseTables: [
+      tableCompany,
+      tableCustomerDetails,
+      tableProduct,
+      tableQuotationHeader,
+      tableQuotation,
+      tableQuotationSummary,
+      tableItems,
+    ],
+    dbVersion: 1,
     bundledDatabasePath: null //         'assets/sample.db'
     // This value is optional. When bundledDatabasePath is empty then
-    // EntityBase creats a new database when initializing the database
+    // EntityBase creates a new database when initializing the database
     );
 
 /* STEP 3: That's All..
 --> Go Terminal Window and run command below
     flutter pub run build_runner build --delete-conflicting-outputs
-  Note: After running the command Please check lib/model/model.g.dart and lib/model/model.g.view.dart (If formTables parameter is defined in the model)
-  Enjoy.. Huseyin TOKPINAR
+  Note: After running the command Please check lib/model/model.g.dart
 */

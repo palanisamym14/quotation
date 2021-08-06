@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:quotation/src/components/pdf_invoice_template.dart';
+import 'package:quotation/src/modal/data_grid_repo.dart';
 import 'package:quotation/src/modal/data_print.dart';
-import 'package:quotation/src/screens/company_details/company_constant.dart';
 import 'package:quotation/src/screens/dataGrid/grid_constant.draft.dart';
 import 'package:quotation/src/utils/util.dart';
 
@@ -48,7 +48,8 @@ class _DataGridActionState extends State<DataGridAction> {
   }
 
   onPressed(BuildContext context) async {
-    print(widget.columns);
+    // final path = await DBQuotation().getDatabasePath();
+    await new DataGridRepo().saveDataGrid(widget.data, widget.header, widget.footer);
     PrintResponseModal printResponseModal = new PrintResponseModal();
     printResponseModal.columns = widget.columns
         .where((element) => element["canPrint"] ?? false)

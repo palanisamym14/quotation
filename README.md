@@ -20,3 +20,13 @@ samples, guidance on mobile development, and a full API reference.
 ``` 
 flutter pub run build_runner build --delete-conflicting-outputs
 ```
+
+### SQLite
+
+```
+cd ~/Library/Android/sdk/platform-tools
+adb -s emulator-5554 root shell
+adb -s emulator-5554 shell
+cd /data/user/0/com.quotation.quotation/databases
+sqlite3 test.db
+```
