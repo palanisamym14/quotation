@@ -10,7 +10,7 @@ class DataGridRepo {
   DataGridRepo();
   Future<int?> insertCustomerData(TblCustomer customer) async {
     TblCustomer _customer = new TblCustomer(
-      companyName: customer.companyName,
+      name: customer.name,
       addressLine1: customer.addressLine1,
       addressLine2: customer.addressLine2,
       id: customer.id,
@@ -47,7 +47,7 @@ class DataGridRepo {
   Future<void> saveDataGrid(List<Map<String, dynamic>> gridData,
       Map<String, dynamic> tblCustomer, Map<String, dynamic> summary) async {
     TblCustomer _tblCustomer = new TblCustomer();
-    _tblCustomer.companyName = tblCustomer["companyName"];
+    _tblCustomer.name = tblCustomer["name"];
     _tblCustomer.mobile = tblCustomer["mobile"];
     _tblCustomer.addressLine1 = tblCustomer["addressLine1"];
     _tblCustomer.addressLine2 = tblCustomer["addressLine2"];

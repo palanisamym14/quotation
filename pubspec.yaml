@@ -33,6 +33,7 @@ dependencies:
   sqfentity: ^2.0.0
   sqfentity_gen: ^2.0.0
   sqflite: ^2.0.0+3
+  flutter_typeahead: ^3.2.0
 
 
 dev_dependencies:

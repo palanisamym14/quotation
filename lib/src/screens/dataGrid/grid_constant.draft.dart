@@ -17,7 +17,7 @@ final List<Map<String, dynamic>> gridColumns = [
     "pdfTextAlignment": PdfTextAlignment.left
   },
   {
-    "type": "text",
+    "type": "list",
     "label": "Description",
     "_key": "description",
     "width": "30",
@@ -28,7 +28,8 @@ final List<Map<String, dynamic>> gridColumns = [
     "keyboardType": TextInputType.text,
     "isRequired": true,
     "canPrint": true,
-    "pdfTextAlignment": PdfTextAlignment.left
+    "pdfTextAlignment": PdfTextAlignment.left,
+    "query": 'SELECT name, id FROM product where name like "%:input%" LIMIT 100',
   },
   {
     "type": "text",
@@ -86,9 +87,9 @@ final List<Map<String, dynamic>> gridColumns = [
 
 final List<Map<String, dynamic>> headerColumns = [
   {
-    "type": "text",
-    "label": "Company Name",
-    "_key": "companyName",
+    "type": "list",
+    "label": "Customer Name",
+    "_key": "name",
     "width": "30",
     "isVisible": true,
     "labelAlign": "center",
@@ -96,6 +97,7 @@ final List<Map<String, dynamic>> headerColumns = [
     "allowAddScreen": true,
     "keyboardType": TextInputType.text,
     "isRequired": true,
+    "query": 'SELECT name, id FROM customer where name like "%:input%" LIMIT 100',
   },
   {
     "type": "text",

@@ -4,7 +4,7 @@ import 'package:quotation/model/model.dart';
 class CompanyRepo {
   Future<void> insertOrUpdate(TblCompany data) async {
     final product = TblCompany();
-    product.companyName = data.companyName;
+    product.name = data.name;
     if(data.id != null) {
       product.id = data.id;
     }
@@ -22,7 +22,7 @@ class CompanyRepo {
 
   Future<TblCompany?> findByName(name) async {
     final product = TblCompany();
-    var result = await product.select().companyName.not.equals(name).toList();
+    var result = await product.select().name.not.equals(name).toList();
     if(result.length > 0){
       return result[0];
     }

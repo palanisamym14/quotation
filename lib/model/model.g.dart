@@ -31,7 +31,7 @@ class TableTblCompany extends SqfEntityTableBase {
 
     // declare fields
     fields = [
-      SqfEntityFieldBase('companyName', DbType.text,
+      SqfEntityFieldBase('name', DbType.text,
           isUnique: false, isNotNull: false, isIndex: false),
       SqfEntityFieldBase('addressLine1', DbType.text,
           defaultValue: '', isUnique: false, isNotNull: false, isIndex: false),
@@ -78,7 +78,7 @@ class TableTblCustomer extends SqfEntityTableBase {
 
     // declare fields
     fields = [
-      SqfEntityFieldBase('companyName', DbType.text,
+      SqfEntityFieldBase('name', DbType.text,
           isUnique: false, isNotNull: false, isIndex: false),
       SqfEntityFieldBase('addressLine1', DbType.text,
           defaultValue: '', isUnique: false, isNotNull: false, isIndex: false),
@@ -109,7 +109,7 @@ class TableTblProduct extends SqfEntityTableBase {
 
     // declare fields
     fields = [
-      SqfEntityFieldBase('name', DbType.text,
+      SqfEntityFieldBase('description', DbType.text,
           isUnique: false, isNotNull: false, isIndex: false),
       SqfEntityFieldBase('isActive', DbType.bool,
           defaultValue: true,
@@ -338,7 +338,7 @@ class DBQuotation extends SqfEntityModelProvider {
 class TblCompany {
   TblCompany(
       {this.id,
-      this.companyName,
+      this.name,
       this.addressLine1,
       this.addressLine2,
       this.mobile,
@@ -351,7 +351,7 @@ class TblCompany {
     _setDefaultValues();
   }
   TblCompany.withFields(
-      this.companyName,
+      this.name,
       this.addressLine1,
       this.addressLine2,
       this.mobile,
@@ -365,7 +365,7 @@ class TblCompany {
   }
   TblCompany.withId(
       this.id,
-      this.companyName,
+      this.name,
       this.addressLine1,
       this.addressLine2,
       this.mobile,
@@ -383,8 +383,8 @@ class TblCompany {
       _setDefaultValues();
     }
     id = int.tryParse(o['id'].toString());
-    if (o['companyName'] != null) {
-      companyName = o['companyName'].toString();
+    if (o['name'] != null) {
+      name = o['name'].toString();
     }
     if (o['addressLine1'] != null) {
       addressLine1 = o['addressLine1'].toString();
@@ -424,7 +424,7 @@ class TblCompany {
   }
   // FIELDS (TblCompany)
   int? id;
-  String? companyName;
+  String? name;
   String? addressLine1;
   String? addressLine2;
   String? mobile;
@@ -452,8 +452,8 @@ class TblCompany {
     if (id != null) {
       map['id'] = id;
     }
-    if (companyName != null) {
-      map['companyName'] = companyName;
+    if (name != null) {
+      map['name'] = name;
     }
 
     if (addressLine1 != null) {
@@ -511,8 +511,8 @@ class TblCompany {
     if (id != null) {
       map['id'] = id;
     }
-    if (companyName != null) {
-      map['companyName'] = companyName;
+    if (name != null) {
+      map['name'] = name;
     }
 
     if (addressLine1 != null) {
@@ -574,7 +574,7 @@ class TblCompany {
 
   List<dynamic> toArgs() {
     return [
-      companyName,
+      name,
       addressLine1,
       addressLine2,
       mobile,
@@ -590,7 +590,7 @@ class TblCompany {
   List<dynamic> toArgsWithIds() {
     return [
       id,
-      companyName,
+      name,
       addressLine1,
       addressLine2,
       mobile,
@@ -712,7 +712,7 @@ class TblCompany {
   ///
   /// Returns a <List<BoolResult>>
   static Future<List<dynamic>> saveAll(List<TblCompany> tblcompanies) async {
-    // final results = _mnTblCompany.saveAll('INSERT OR REPLACE INTO company (id,companyName, addressLine1, addressLine2, mobile, email, currency, logoUrl, updated, createdDate,isDeleted)  VALUES (?,?,?,?,?,?,?,?,?,?,?)',tblcompanies);
+    // final results = _mnTblCompany.saveAll('INSERT OR REPLACE INTO company (id,name, addressLine1, addressLine2, mobile, email, currency, logoUrl, updated, createdDate,isDeleted)  VALUES (?,?,?,?,?,?,?,?,?,?,?)',tblcompanies);
     // return results; removed in sqfentity_gen 1.3.0+6
     await DBQuotation().batchStart();
     for (final obj in tblcompanies) {
@@ -736,10 +736,10 @@ class TblCompany {
   Future<int?> upsert() async {
     try {
       final result = await _mnTblCompany.rawInsert(
-          'INSERT OR REPLACE INTO company (id,companyName, addressLine1, addressLine2, mobile, email, currency, logoUrl, updated, createdDate,isDeleted)  VALUES (?,?,?,?,?,?,?,?,?,?,?)',
+          'INSERT OR REPLACE INTO company (id,name, addressLine1, addressLine2, mobile, email, currency, logoUrl, updated, createdDate,isDeleted)  VALUES (?,?,?,?,?,?,?,?,?,?,?)',
           [
             id,
-            companyName,
+            name,
             addressLine1,
             addressLine2,
             mobile,
@@ -774,7 +774,7 @@ class TblCompany {
   /// Returns a BoolCommitResult
   Future<BoolCommitResult> upsertAll(List<TblCompany> tblcompanies) async {
     final results = await _mnTblCompany.rawInsertAll(
-        'INSERT OR REPLACE INTO company (id,companyName, addressLine1, addressLine2, mobile, email, currency, logoUrl, updated, createdDate,isDeleted)  VALUES (?,?,?,?,?,?,?,?,?,?,?)',
+        'INSERT OR REPLACE INTO company (id,name, addressLine1, addressLine2, mobile, email, currency, logoUrl, updated, createdDate,isDeleted)  VALUES (?,?,?,?,?,?,?,?,?,?,?)',
         tblcompanies);
     return results;
   }
@@ -1237,9 +1237,9 @@ class TblCompanyFilterBuilder extends SearchCriteria {
     return _id = setField(_id, 'id', DbType.integer);
   }
 
-  TblCompanyField? _companyName;
-  TblCompanyField get companyName {
-    return _companyName = setField(_companyName, 'companyName', DbType.text);
+  TblCompanyField? _name;
+  TblCompanyField get name {
+    return _name = setField(_name, 'name', DbType.text);
   }
 
   TblCompanyField? _addressLine1;
@@ -1604,10 +1604,9 @@ class TblCompanyFields {
     return _fId = _fId ?? SqlSyntax.setField(_fId, 'id', DbType.integer);
   }
 
-  static TableField? _fCompanyName;
-  static TableField get companyName {
-    return _fCompanyName = _fCompanyName ??
-        SqlSyntax.setField(_fCompanyName, 'companyName', DbType.text);
+  static TableField? _fName;
+  static TableField get name {
+    return _fName = _fName ?? SqlSyntax.setField(_fName, 'name', DbType.text);
   }
 
   static TableField? _fAddressLine1;
@@ -1683,7 +1682,7 @@ class TblCompanyManager extends SqfEntityProvider {
 class TblCustomer {
   TblCustomer(
       {this.id,
-      this.companyName,
+      this.name,
       this.addressLine1,
       this.addressLine2,
       this.mobile,
@@ -1691,12 +1690,12 @@ class TblCustomer {
       this.isDeleted}) {
     _setDefaultValues();
   }
-  TblCustomer.withFields(this.companyName, this.addressLine1, this.addressLine2,
+  TblCustomer.withFields(this.name, this.addressLine1, this.addressLine2,
       this.mobile, this.email, this.isDeleted) {
     _setDefaultValues();
   }
-  TblCustomer.withId(this.id, this.companyName, this.addressLine1,
-      this.addressLine2, this.mobile, this.email, this.isDeleted) {
+  TblCustomer.withId(this.id, this.name, this.addressLine1, this.addressLine2,
+      this.mobile, this.email, this.isDeleted) {
     _setDefaultValues();
   }
   // fromMap v2.0
@@ -1705,8 +1704,8 @@ class TblCustomer {
       _setDefaultValues();
     }
     id = int.tryParse(o['id'].toString());
-    if (o['companyName'] != null) {
-      companyName = o['companyName'].toString();
+    if (o['name'] != null) {
+      name = o['name'].toString();
     }
     if (o['addressLine1'] != null) {
       addressLine1 = o['addressLine1'].toString();
@@ -1726,7 +1725,7 @@ class TblCustomer {
   }
   // FIELDS (TblCustomer)
   int? id;
-  String? companyName;
+  String? name;
   String? addressLine1;
   String? addressLine2;
   String? mobile;
@@ -1770,8 +1769,8 @@ class TblCustomer {
     if (id != null) {
       map['id'] = id;
     }
-    if (companyName != null) {
-      map['companyName'] = companyName;
+    if (name != null) {
+      map['name'] = name;
     }
 
     if (addressLine1 != null) {
@@ -1805,8 +1804,8 @@ class TblCustomer {
     if (id != null) {
       map['id'] = id;
     }
-    if (companyName != null) {
-      map['companyName'] = companyName;
+    if (name != null) {
+      map['name'] = name;
     }
 
     if (addressLine1 != null) {
@@ -1849,19 +1848,11 @@ class TblCustomer {
   }
 
   List<dynamic> toArgs() {
-    return [companyName, addressLine1, addressLine2, mobile, email, isDeleted];
+    return [name, addressLine1, addressLine2, mobile, email, isDeleted];
   }
 
   List<dynamic> toArgsWithIds() {
-    return [
-      id,
-      companyName,
-      addressLine1,
-      addressLine2,
-      mobile,
-      email,
-      isDeleted
-    ];
+    return [id, name, addressLine1, addressLine2, mobile, email, isDeleted];
   }
 
   static Future<List<TblCustomer>?> fromWebUrl(Uri uri,
@@ -2008,7 +1999,7 @@ class TblCustomer {
   ///
   /// Returns a <List<BoolResult>>
   static Future<List<dynamic>> saveAll(List<TblCustomer> tblcustomers) async {
-    // final results = _mnTblCustomer.saveAll('INSERT OR REPLACE INTO customer (id,companyName, addressLine1, addressLine2, mobile, email,isDeleted)  VALUES (?,?,?,?,?,?,?)',tblcustomers);
+    // final results = _mnTblCustomer.saveAll('INSERT OR REPLACE INTO customer (id,name, addressLine1, addressLine2, mobile, email,isDeleted)  VALUES (?,?,?,?,?,?,?)',tblcustomers);
     // return results; removed in sqfentity_gen 1.3.0+6
     await DBQuotation().batchStart();
     for (final obj in tblcustomers) {
@@ -2032,16 +2023,8 @@ class TblCustomer {
   Future<int?> upsert() async {
     try {
       final result = await _mnTblCustomer.rawInsert(
-          'INSERT OR REPLACE INTO customer (id,companyName, addressLine1, addressLine2, mobile, email,isDeleted)  VALUES (?,?,?,?,?,?,?)',
-          [
-            id,
-            companyName,
-            addressLine1,
-            addressLine2,
-            mobile,
-            email,
-            isDeleted
-          ]);
+          'INSERT OR REPLACE INTO customer (id,name, addressLine1, addressLine2, mobile, email,isDeleted)  VALUES (?,?,?,?,?,?,?)',
+          [id, name, addressLine1, addressLine2, mobile, email, isDeleted]);
       if (result! > 0) {
         saveResult = BoolResult(
             success: true,
@@ -2066,7 +2049,7 @@ class TblCustomer {
   /// Returns a BoolCommitResult
   Future<BoolCommitResult> upsertAll(List<TblCustomer> tblcustomers) async {
     final results = await _mnTblCustomer.rawInsertAll(
-        'INSERT OR REPLACE INTO customer (id,companyName, addressLine1, addressLine2, mobile, email,isDeleted)  VALUES (?,?,?,?,?,?,?)',
+        'INSERT OR REPLACE INTO customer (id,name, addressLine1, addressLine2, mobile, email,isDeleted)  VALUES (?,?,?,?,?,?,?)',
         tblcustomers);
     return results;
   }
@@ -2570,9 +2553,9 @@ class TblCustomerFilterBuilder extends SearchCriteria {
     return _id = setField(_id, 'id', DbType.integer);
   }
 
-  TblCustomerField? _companyName;
-  TblCustomerField get companyName {
-    return _companyName = setField(_companyName, 'companyName', DbType.text);
+  TblCustomerField? _name;
+  TblCustomerField get name {
+    return _name = setField(_name, 'name', DbType.text);
   }
 
   TblCustomerField? _addressLine1;
@@ -2955,10 +2938,9 @@ class TblCustomerFields {
     return _fId = _fId ?? SqlSyntax.setField(_fId, 'id', DbType.integer);
   }
 
-  static TableField? _fCompanyName;
-  static TableField get companyName {
-    return _fCompanyName = _fCompanyName ??
-        SqlSyntax.setField(_fCompanyName, 'companyName', DbType.text);
+  static TableField? _fName;
+  static TableField get name {
+    return _fName = _fName ?? SqlSyntax.setField(_fName, 'name', DbType.text);
   }
 
   static TableField? _fAddressLine1;
@@ -3010,7 +2992,7 @@ class TblCustomerManager extends SqfEntityProvider {
 class TblProduct {
   TblProduct(
       {this.id,
-      this.name,
+      this.description,
       this.isActive,
       this.recentlyUsed,
       this.createdDate,
@@ -3018,11 +3000,11 @@ class TblProduct {
       this.isDeleted}) {
     _setDefaultValues();
   }
-  TblProduct.withFields(this.name, this.isActive, this.recentlyUsed,
+  TblProduct.withFields(this.description, this.isActive, this.recentlyUsed,
       this.createdDate, this.favorite, this.isDeleted) {
     _setDefaultValues();
   }
-  TblProduct.withId(this.id, this.name, this.isActive, this.recentlyUsed,
+  TblProduct.withId(this.id, this.description, this.isActive, this.recentlyUsed,
       this.createdDate, this.favorite, this.isDeleted) {
     _setDefaultValues();
   }
@@ -3032,8 +3014,8 @@ class TblProduct {
       _setDefaultValues();
     }
     id = int.tryParse(o['id'].toString());
-    if (o['name'] != null) {
-      name = o['name'].toString();
+    if (o['description'] != null) {
+      description = o['description'].toString();
     }
     if (o['isActive'] != null) {
       isActive =
@@ -3063,7 +3045,7 @@ class TblProduct {
   }
   // FIELDS (TblProduct)
   int? id;
-  String? name;
+  String? description;
   bool? isActive;
   DateTime? recentlyUsed;
   DateTime? createdDate;
@@ -3107,8 +3089,8 @@ class TblProduct {
     if (id != null) {
       map['id'] = id;
     }
-    if (name != null) {
-      map['name'] = name;
+    if (description != null) {
+      map['description'] = description;
     }
 
     if (isActive != null) {
@@ -3150,8 +3132,8 @@ class TblProduct {
     if (id != null) {
       map['id'] = id;
     }
-    if (name != null) {
-      map['name'] = name;
+    if (description != null) {
+      map['description'] = description;
     }
 
     if (isActive != null) {
@@ -3203,7 +3185,7 @@ class TblProduct {
 
   List<dynamic> toArgs() {
     return [
-      name,
+      description,
       isActive,
       recentlyUsed != null ? recentlyUsed!.millisecondsSinceEpoch : null,
       createdDate != null ? createdDate!.millisecondsSinceEpoch : null,
@@ -3215,7 +3197,7 @@ class TblProduct {
   List<dynamic> toArgsWithIds() {
     return [
       id,
-      name,
+      description,
       isActive,
       recentlyUsed != null ? recentlyUsed!.millisecondsSinceEpoch : null,
       createdDate != null ? createdDate!.millisecondsSinceEpoch : null,
@@ -3366,7 +3348,7 @@ class TblProduct {
   ///
   /// Returns a <List<BoolResult>>
   static Future<List<dynamic>> saveAll(List<TblProduct> tblproducts) async {
-    // final results = _mnTblProduct.saveAll('INSERT OR REPLACE INTO product (id,name, isActive, recentlyUsed, createdDate, favorite,isDeleted)  VALUES (?,?,?,?,?,?,?)',tblproducts);
+    // final results = _mnTblProduct.saveAll('INSERT OR REPLACE INTO product (id,description, isActive, recentlyUsed, createdDate, favorite,isDeleted)  VALUES (?,?,?,?,?,?,?)',tblproducts);
     // return results; removed in sqfentity_gen 1.3.0+6
     await DBQuotation().batchStart();
     for (final obj in tblproducts) {
@@ -3390,10 +3372,10 @@ class TblProduct {
   Future<int?> upsert() async {
     try {
       final result = await _mnTblProduct.rawInsert(
-          'INSERT OR REPLACE INTO product (id,name, isActive, recentlyUsed, createdDate, favorite,isDeleted)  VALUES (?,?,?,?,?,?,?)',
+          'INSERT OR REPLACE INTO product (id,description, isActive, recentlyUsed, createdDate, favorite,isDeleted)  VALUES (?,?,?,?,?,?,?)',
           [
             id,
-            name,
+            description,
             isActive,
             recentlyUsed != null ? recentlyUsed!.millisecondsSinceEpoch : null,
             createdDate != null ? createdDate!.millisecondsSinceEpoch : null,
@@ -3424,7 +3406,7 @@ class TblProduct {
   /// Returns a BoolCommitResult
   Future<BoolCommitResult> upsertAll(List<TblProduct> tblproducts) async {
     final results = await _mnTblProduct.rawInsertAll(
-        'INSERT OR REPLACE INTO product (id,name, isActive, recentlyUsed, createdDate, favorite,isDeleted)  VALUES (?,?,?,?,?,?,?)',
+        'INSERT OR REPLACE INTO product (id,description, isActive, recentlyUsed, createdDate, favorite,isDeleted)  VALUES (?,?,?,?,?,?,?)',
         tblproducts);
     return results;
   }
@@ -3908,9 +3890,9 @@ class TblProductFilterBuilder extends SearchCriteria {
     return _id = setField(_id, 'id', DbType.integer);
   }
 
-  TblProductField? _name;
-  TblProductField get name {
-    return _name = setField(_name, 'name', DbType.text);
+  TblProductField? _description;
+  TblProductField get description {
+    return _description = setField(_description, 'description', DbType.text);
   }
 
   TblProductField? _isActive;
@@ -4293,9 +4275,10 @@ class TblProductFields {
     return _fId = _fId ?? SqlSyntax.setField(_fId, 'id', DbType.integer);
   }
 
-  static TableField? _fName;
-  static TableField get name {
-    return _fName = _fName ?? SqlSyntax.setField(_fName, 'name', DbType.text);
+  static TableField? _fDescription;
+  static TableField get description {
+    return _fDescription = _fDescription ??
+        SqlSyntax.setField(_fDescription, 'description', DbType.text);
   }
 
   static TableField? _fIsActive;
@@ -4475,7 +4458,7 @@ class TblQuotationHeader {
       map['customerId'] = forView
           ? plTblCustomer == null
               ? customerId
-              : plTblCustomer!.companyName
+              : plTblCustomer!.name
           : customerId;
     }
 
@@ -4510,7 +4493,7 @@ class TblQuotationHeader {
       map['customerId'] = forView
           ? plTblCustomer == null
               ? customerId
-              : plTblCustomer!.companyName
+              : plTblCustomer!.name
           : customerId;
     }
 
@@ -8628,7 +8611,7 @@ class TblItems {
       map['productId'] = forView
           ? plTblProduct == null
               ? productId
-              : plTblProduct!.name
+              : plTblProduct!.description
           : productId;
     }
 
@@ -8679,7 +8662,7 @@ class TblItems {
       map['productId'] = forView
           ? plTblProduct == null
               ? productId
-              : plTblProduct!.name
+              : plTblProduct!.description
           : productId;
     }
 

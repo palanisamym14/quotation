@@ -15,7 +15,7 @@ const SqfEntityTable tableCompany = SqfEntityTable(
     useSoftDeleting: true,
     modelName: "TblCompany",
     fields: [
-      SqfEntityField('companyName', DbType.text),
+      SqfEntityField('name', DbType.text),
       SqfEntityField('addressLine1', DbType.text, defaultValue: ''),
       SqfEntityField('addressLine2', DbType.text, defaultValue: ''),
       SqfEntityField('mobile', DbType.text, defaultValue: ''),
@@ -90,7 +90,7 @@ const SqfEntityTable tableCustomerDetails = SqfEntityTable(
     useSoftDeleting: true,
     modelName: "TblCustomer",
     fields: [
-      SqfEntityField('companyName', DbType.text),
+      SqfEntityField('name', DbType.text),
       SqfEntityField('addressLine1', DbType.text, defaultValue: ''),
       SqfEntityField('addressLine2', DbType.text, defaultValue: ''),
       SqfEntityField('mobile', DbType.text, defaultValue: ''),
@@ -104,7 +104,7 @@ const SqfEntityTable tableProduct = SqfEntityTable(
     useSoftDeleting: true,
     modelName: "TblProduct",
     fields: [
-      SqfEntityField('name', DbType.text),
+      SqfEntityField('description', DbType.text),
       SqfEntityField('isActive', DbType.bool, defaultValue: true),
       SqfEntityField('recentlyUsed', DbType.datetimeUtc,
           defaultValue: 'DateTime.now()'),

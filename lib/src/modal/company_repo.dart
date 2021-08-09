@@ -11,11 +11,12 @@ class CompanyRepo {
     return data == null ? {} : data as Map<String, dynamic>;
   }
 
-  Future<Map<String, dynamic>> updateCompany(data) {
+  updateCompany(data) {
     CollectionReference company =
         FirebaseFirestore.instance.collection("company");
     company.doc(userId).set(data);
-    return data;
+    print(data);
+    // return data;
   }
 
 }

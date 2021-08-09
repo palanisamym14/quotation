@@ -3,7 +3,7 @@ import 'package:quotation/model/model.dart';
 class ProductRepo {
   Future<void> insert() async {
     final product = TblProduct();
-    product.name = "Processor";
+    product.description = "Processor";
     var key = await product.save();
     print(key);
   }
