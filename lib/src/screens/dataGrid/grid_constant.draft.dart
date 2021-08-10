@@ -29,7 +29,7 @@ final List<Map<String, dynamic>> gridColumns = [
     "isRequired": true,
     "canPrint": true,
     "pdfTextAlignment": PdfTextAlignment.left,
-    "query": 'SELECT name, id FROM product where name like "%:input%" LIMIT 100',
+    "query": 'SELECT description as name, id FROM product where name like "%:input%" LIMIT 100',
   },
   {
     "type": "text",

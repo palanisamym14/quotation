@@ -4,80 +4,89 @@ import 'package:quotation/model/model.dart'
         TblQuotation,
         TblQuotationHeader,
         TblQuotationSummary,
+        TblProduct,
         DBQuotation;
+import 'package:quotation/src/utils/uuid.dart';
+import 'package:sqfentity_gen/sqfentity_gen.dart';
 
 class DataGridRepo {
   DataGridRepo();
-  Future<int?> insertCustomerData(TblCustomer customer) async {
-    TblCustomer _customer = new TblCustomer(
-      name: customer.name,
-      addressLine1: customer.addressLine1,
-      addressLine2: customer.addressLine2,
-      id: customer.id,
-      mobile: customer.mobile,
-      email: customer.email,
-    );
-    return await _customer.save();
-  }
-
-  Future<void> insertQuotationData(List<TblQuotation> quotations) async {
-    int? quotationId = DateTime.now().millisecondsSinceEpoch;
-    quotations.asMap().forEach((index, quotation) async {
-      if (quotation.quotationHdrId != null) {
-        quotationId = quotation.quotationHdrId;
-      }
-      TblQuotation _quotation = new TblQuotation(
-        quantity: quotation.quantity,
-        productId: quotation.productId,
-        price: quotation.price,
-        totalPrice: quotation.totalPrice,
-        quotationHdrId: quotationId,
-        sequenceNo: index,
-      );
-      await _quotation.save().then((value) => print(value));
-    });
-    TblQuotation _quotation = new TblQuotation();
-    final _q = await _quotation.select().toList();
-    print(_q);
-    for (var q in _q) {
-      print(q.toMap());
+  Future<String> insertCustomerData(Map<String, dynamic> tblCustomer) async {
+    try {
+      TblCustomer _tblCustomer = new TblCustomer();
+      String customerId = tblCustomer['id'] ?? getUuidV1();
+      _tblCustomer.id = customerId;
+      _tblCustomer.name = tblCustomer["name"];
+      _tblCustomer.mobile = tblCustomer["mobile"];
+      _tblCustomer.addressLine1 = tblCustomer["addressLine1"];
+      _tblCustomer.addressLine2 = tblCustomer["addressLine2"];
+      _tblCustomer.email = tblCustomer["email"];
+      BoolResult result = await _tblCustomer.save();
+      return result.success ? customerId : '__';
+    } on Exception catch (err) {
+      print(err);
+      return "";
     }
   }
 
-  Future<void> saveDataGrid(List<Map<String, dynamic>> gridData,
-      Map<String, dynamic> tblCustomer, Map<String, dynamic> summary) async {
-    TblCustomer _tblCustomer = new TblCustomer();
-    _tblCustomer.name = tblCustomer["name"];
-    _tblCustomer.mobile = tblCustomer["mobile"];
-    _tblCustomer.addressLine1 = tblCustomer["addressLine1"];
-    _tblCustomer.addressLine2 = tblCustomer["addressLine2"];
-    _tblCustomer.email = tblCustomer["email"];
-    int? customerId = await insertCustomerData(_tblCustomer);
-    print(customerId);
-    int? quotationHdrId =
-        await new TblQuotationHeader(customerId: customerId).save();
+  Future<void> insertQuotationData(
+      List<Map<String, dynamic>> gridData, hdrId) async {
+    try {
+      gridData.forEach((element) async {
+        TblQuotation quotation = TblQuotation();
+        quotation.quotationHdrId = hdrId;
+        quotation.id = getUuidV1();
+        quotation.price = element["price"];
+        quotation.quantity = element["quantity"];
+        quotation.totalPrice = element["totalPrice"];
+        quotation.productId = element["productId"] ?? null;
+        if (element["productId"] == null) {
+          TblProduct tblProduct = new TblProduct();
+          var _tblProduct = await tblProduct
+              .select()
+              .description
+              .equals(element["description"])
+              .toSingle();
+          if (_tblProduct == null) {
+            String productId = getUuidV1();
+            tblProduct.id = productId;
+            tblProduct.description = element["description"];
+            BoolResult res = await tblProduct.save();
+            quotation.productId = productId;
+          } else {
+            quotation.productId = _tblProduct.id;
+          }
+        }
+        BoolResult result = await quotation.save();
+      });
+    } on Exception catch (err) {
+      print(err);
+    }
+  }
 
-    List<TblQuotation> quotations = [];
-    gridData.forEach((element) {
-      TblQuotation quotation = TblQuotation();
-      quotation.quotationHdrId = quotationHdrId;
-      quotation.price = element["price"];
-      quotation.quantity = element["quantity"];
-      quotation.totalPrice = element["totalPrice"];
-      quotation.productId = element["productId"] ?? null;
-      quotations.add(quotation);
-    });
-
+  Future<void> insertSummaryData(Map<String, dynamic> summary, hdrId) async {
     TblQuotationSummary tblQuotationSummary = new TblQuotationSummary();
     tblQuotationSummary.discount = summary["discount"];
     tblQuotationSummary.netPay = summary["netPay"];
     tblQuotationSummary.grandTotal = summary["grandTotal"];
-    tblQuotationSummary.quotationHdrId = quotationHdrId;
-    await insertQuotationData(quotations);
-    // List<TblQuotation> _quotations = await new TblQuotation().select().toList();
-    List<dynamic>? _quotations = await DBQuotation().execDataTable(
-        'SELECT * FROM quotation INNER JOIN quotationHdr ON quotationHdr.id = quotation.quotationHdrId LIMIT 100')??[];
-    print(_quotations);
-    _quotations.forEach((element) { print(element);});
+    tblQuotationSummary.quotationHdrId = hdrId;
+    await tblQuotationSummary.save();
+  }
+
+  Future<void> saveDataGrid(List<Map<String, dynamic>> gridData,
+      Map<String, dynamic> tblCustomer, Map<String, dynamic> summary) async {
+    String customerId = await insertCustomerData(tblCustomer);
+    String hdrId = getUuidV1();
+    await TblQuotationHeader(customerId: customerId, id: hdrId).save();
+    await insertQuotationData(gridData, hdrId);
+    await insertSummaryData(summary, hdrId);
+    String query =
+        'select * from quotation INNER JOIN quotationHdr on quotation.quotationHdrId = quotationHdr.id where  quotationHdr.id = \'$hdrId\'  LIMIT 100';
+    List<dynamic>? _quotations = await DBQuotation().execDataTable(query) ?? [];
+    print("_quotations");
+    print(_quotations.length);
+    _quotations.forEach((element) {
+      print(element);
+    });
   }
 }

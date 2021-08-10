@@ -11,7 +11,7 @@ part 'model.g.dart';
 const SqfEntityTable tableCompany = SqfEntityTable(
     tableName: 'company',
     primaryKeyName: 'id',
-    primaryKeyType: PrimaryKeyType.integer_auto_incremental,
+    primaryKeyType: PrimaryKeyType.text,
     useSoftDeleting: true,
     modelName: "TblCompany",
     fields: [
@@ -31,7 +31,7 @@ const SqfEntityTable tableCompany = SqfEntityTable(
 const SqfEntityTable tableQuotation = SqfEntityTable(
     tableName: 'quotation',
     primaryKeyName: 'id',
-    primaryKeyType: PrimaryKeyType.integer_auto_incremental,
+    primaryKeyType: PrimaryKeyType.text,
     useSoftDeleting: true,
     modelName: "TblQuotation",
     fields: [
@@ -43,14 +43,14 @@ const SqfEntityTable tableQuotation = SqfEntityTable(
       SqfEntityFieldRelationship(
         parentTable: tableQuotationHeader,
         deleteRule: DeleteRule.CASCADE,
-        defaultValue: 1,
+        defaultValue: '__',
       ),
     ]);
 
 const SqfEntityTable tableQuotationHeader = SqfEntityTable(
     tableName: 'quotationHdr',
     primaryKeyName: 'id',
-    primaryKeyType: PrimaryKeyType.integer_auto_incremental,
+    primaryKeyType: PrimaryKeyType.text,
     useSoftDeleting: true,
     modelName: "TblQuotationHeader",
     fields: [
@@ -58,7 +58,7 @@ const SqfEntityTable tableQuotationHeader = SqfEntityTable(
       SqfEntityFieldRelationship(
         parentTable: tableCustomerDetails,
         deleteRule: DeleteRule.CASCADE,
-        defaultValue: 1,
+        defaultValue: '__',
       ),
       SqfEntityField('createdDate', DbType.datetimeUtc,
           defaultValue: 'DateTime.now()'),
@@ -67,14 +67,14 @@ const SqfEntityTable tableQuotationHeader = SqfEntityTable(
 const SqfEntityTable tableQuotationSummary = SqfEntityTable(
     tableName: 'quotationSummary',
     primaryKeyName: 'id',
-    primaryKeyType: PrimaryKeyType.integer_auto_incremental,
+    primaryKeyType: PrimaryKeyType.text,
     useSoftDeleting: true,
     modelName: "TblQuotationSummary",
     fields: [
       SqfEntityFieldRelationship(
         parentTable: tableQuotationHeader,
         deleteRule: DeleteRule.CASCADE,
-        defaultValue: 1,
+        defaultValue: '__',
       ),
       SqfEntityField('grandTotal', DbType.real, defaultValue: 1),
       SqfEntityField('discount', DbType.real, defaultValue: 0),
@@ -86,7 +86,7 @@ const SqfEntityTable tableQuotationSummary = SqfEntityTable(
 const SqfEntityTable tableCustomerDetails = SqfEntityTable(
     tableName: 'customer',
     primaryKeyName: 'id',
-    primaryKeyType: PrimaryKeyType.integer_auto_incremental,
+    primaryKeyType: PrimaryKeyType.text,
     useSoftDeleting: true,
     modelName: "TblCustomer",
     fields: [
@@ -100,7 +100,7 @@ const SqfEntityTable tableCustomerDetails = SqfEntityTable(
 const SqfEntityTable tableProduct = SqfEntityTable(
     tableName: 'product',
     primaryKeyName: 'id',
-    primaryKeyType: PrimaryKeyType.integer_auto_incremental,
+    primaryKeyType: PrimaryKeyType.text,
     useSoftDeleting: true,
     modelName: "TblProduct",
     fields: [
@@ -116,7 +116,7 @@ const SqfEntityTable tableProduct = SqfEntityTable(
 const SqfEntityTable tableItems = SqfEntityTable(
     tableName: 'items',
     primaryKeyName: 'id',
-    primaryKeyType: PrimaryKeyType.integer_auto_incremental,
+    primaryKeyType: PrimaryKeyType.text,
     useSoftDeleting: true,
     modelName: "TblItems",
     fields: [
@@ -128,7 +128,7 @@ const SqfEntityTable tableItems = SqfEntityTable(
       SqfEntityFieldRelationship(
         parentTable: tableProduct,
         deleteRule: DeleteRule.CASCADE,
-        defaultValue: 1,
+        defaultValue: '__',
       ),
       SqfEntityField('datetime', DbType.datetime,
           defaultValue: 'DateTime.now()'),

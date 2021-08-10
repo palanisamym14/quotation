@@ -25,7 +25,7 @@ class TableTblCompany extends SqfEntityTableBase {
     // declare properties of EntityTable
     tableName = 'company';
     primaryKeyName = 'id';
-    primaryKeyType = PrimaryKeyType.integer_auto_incremental;
+    primaryKeyType = PrimaryKeyType.text;
     useSoftDeleting = true;
     // when useSoftDeleting is true, creates a field named 'isDeleted' on the table, and set to '1' this field when item deleted (does not hard delete)
 
@@ -72,7 +72,7 @@ class TableTblCustomer extends SqfEntityTableBase {
     // declare properties of EntityTable
     tableName = 'customer';
     primaryKeyName = 'id';
-    primaryKeyType = PrimaryKeyType.integer_auto_incremental;
+    primaryKeyType = PrimaryKeyType.text;
     useSoftDeleting = true;
     // when useSoftDeleting is true, creates a field named 'isDeleted' on the table, and set to '1' this field when item deleted (does not hard delete)
 
@@ -103,7 +103,7 @@ class TableTblProduct extends SqfEntityTableBase {
     // declare properties of EntityTable
     tableName = 'product';
     primaryKeyName = 'id';
-    primaryKeyType = PrimaryKeyType.integer_auto_incremental;
+    primaryKeyType = PrimaryKeyType.text;
     useSoftDeleting = true;
     // when useSoftDeleting is true, creates a field named 'isDeleted' on the table, and set to '1' this field when item deleted (does not hard delete)
 
@@ -148,7 +148,7 @@ class TableTblQuotationHeader extends SqfEntityTableBase {
     // declare properties of EntityTable
     tableName = 'quotationHdr';
     primaryKeyName = 'id';
-    primaryKeyType = PrimaryKeyType.integer_auto_incremental;
+    primaryKeyType = PrimaryKeyType.text;
     useSoftDeleting = true;
     // when useSoftDeleting is true, creates a field named 'isDeleted' on the table, and set to '1' this field when item deleted (does not hard delete)
 
@@ -163,7 +163,7 @@ class TableTblQuotationHeader extends SqfEntityTableBase {
           TableTblCustomer.getInstance, DeleteRule.CASCADE,
           relationType: RelationType.ONE_TO_MANY,
           fieldName: 'customerId',
-          defaultValue: 1,
+          defaultValue: '__',
           isUnique: false,
           isNotNull: false,
           isIndex: false),
@@ -188,7 +188,7 @@ class TableTblQuotation extends SqfEntityTableBase {
     // declare properties of EntityTable
     tableName = 'quotation';
     primaryKeyName = 'id';
-    primaryKeyType = PrimaryKeyType.integer_auto_incremental;
+    primaryKeyType = PrimaryKeyType.text;
     useSoftDeleting = true;
     // when useSoftDeleting is true, creates a field named 'isDeleted' on the table, and set to '1' this field when item deleted (does not hard delete)
 
@@ -208,7 +208,7 @@ class TableTblQuotation extends SqfEntityTableBase {
           TableTblQuotationHeader.getInstance, DeleteRule.CASCADE,
           relationType: RelationType.ONE_TO_MANY,
           fieldName: 'quotationHdrId',
-          defaultValue: 1,
+          defaultValue: '__',
           isUnique: false,
           isNotNull: false,
           isIndex: false),
@@ -227,7 +227,7 @@ class TableTblQuotationSummary extends SqfEntityTableBase {
     // declare properties of EntityTable
     tableName = 'quotationSummary';
     primaryKeyName = 'id';
-    primaryKeyType = PrimaryKeyType.integer_auto_incremental;
+    primaryKeyType = PrimaryKeyType.text;
     useSoftDeleting = true;
     // when useSoftDeleting is true, creates a field named 'isDeleted' on the table, and set to '1' this field when item deleted (does not hard delete)
 
@@ -237,7 +237,7 @@ class TableTblQuotationSummary extends SqfEntityTableBase {
           TableTblQuotationHeader.getInstance, DeleteRule.CASCADE,
           relationType: RelationType.ONE_TO_MANY,
           fieldName: 'quotationHdrId',
-          defaultValue: 1,
+          defaultValue: '__',
           isUnique: false,
           isNotNull: false,
           isIndex: false),
@@ -266,7 +266,7 @@ class TableTblItems extends SqfEntityTableBase {
     // declare properties of EntityTable
     tableName = 'items';
     primaryKeyName = 'id';
-    primaryKeyType = PrimaryKeyType.integer_auto_incremental;
+    primaryKeyType = PrimaryKeyType.text;
     useSoftDeleting = true;
     // when useSoftDeleting is true, creates a field named 'isDeleted' on the table, and set to '1' this field when item deleted (does not hard delete)
 
@@ -286,7 +286,7 @@ class TableTblItems extends SqfEntityTableBase {
           TableTblProduct.getInstance, DeleteRule.CASCADE,
           relationType: RelationType.ONE_TO_MANY,
           fieldName: 'productId',
-          defaultValue: 1,
+          defaultValue: '__',
           isUnique: false,
           isNotNull: false,
           isIndex: false),
@@ -351,6 +351,7 @@ class TblCompany {
     _setDefaultValues();
   }
   TblCompany.withFields(
+      this.id,
       this.name,
       this.addressLine1,
       this.addressLine2,
@@ -382,7 +383,7 @@ class TblCompany {
     if (setDefaultValues) {
       _setDefaultValues();
     }
-    id = int.tryParse(o['id'].toString());
+    id = o['id'].toString();
     if (o['name'] != null) {
       name = o['name'].toString();
     }
@@ -421,9 +422,11 @@ class TblCompany {
     isDeleted = o['isDeleted'] != null
         ? o['isDeleted'] == 1 || o['isDeleted'] == true
         : null;
+
+    isSaved = true;
   }
   // FIELDS (TblCompany)
-  int? id;
+  String? id;
   String? name;
   String? addressLine1;
   String? addressLine2;
@@ -434,7 +437,7 @@ class TblCompany {
   DateTime? updated;
   DateTime? createdDate;
   bool? isDeleted;
-
+  bool? isSaved;
   BoolResult? saveResult;
   // end FIELDS (TblCompany)
 
@@ -574,6 +577,7 @@ class TblCompany {
 
   List<dynamic> toArgs() {
     return [
+      id,
       name,
       addressLine1,
       addressLine2,
@@ -653,7 +657,7 @@ class TblCompany {
 
   /// returns TblCompany by ID if exist, otherwise returns null
   ///
-  /// Primary Keys: int? id
+  /// Primary Keys: String? id
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -667,7 +671,7 @@ class TblCompany {
 
   ///
   /// <returns>returns TblCompany if exist, otherwise returns null
-  Future<TblCompany?> getById(int? id,
+  Future<TblCompany?> getById(String? id,
       {bool preload = false,
       List<String>? preloadFields,
       bool loadParents = false,
@@ -685,27 +689,27 @@ class TblCompany {
     return obj;
   }
 
-  /// Saves the (TblCompany) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
+  /// Saves the (TblCompany) object. If the Primary Key (id) field is null, returns Error.
+  ///
+  /// INSERTS (If not exist) OR REPLACES (If exist) data while Primary Key is not null.
+  ///
+  /// Call the saveAs() method if you do not want to save it when there is another row with the same id
 
-  /// <returns>Returns id
-  Future<int?> save() async {
-    if (id == null || id == 0) {
-      id = await _mnTblCompany.insert(this);
-    } else {
-      // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
-      await _mnTblCompany.update(this);
+  /// <returns>Returns BoolResult
+  Future<BoolResult> save() async {
+    final result = BoolResult(success: false);
+    try {
+      await _mnTblCompany.rawInsert(
+          'INSERT ${isSaved! ? 'OR REPLACE' : ''} INTO company (id,name, addressLine1, addressLine2, mobile, email, currency, logoUrl, updated, createdDate,isDeleted)  VALUES (?,?,?,?,?,?,?,?,?,?,?)',
+          toArgsWithIds());
+      result.success = true;
+      isSaved = true;
+    } catch (e) {
+      result.errorMessage = e.toString();
     }
 
-    return id;
-  }
-
-  /// saveAs TblCompany. Returns a new Primary Key value of TblCompany
-
-  /// <returns>Returns a new Primary Key value of TblCompany
-  Future<int?> saveAs() async {
-    id = null;
-
-    return save();
+    saveResult = result;
+    return result;
   }
 
   /// saveAll method saves the sent List<TblCompany> as a bulk in one transaction
@@ -720,18 +724,13 @@ class TblCompany {
     }
     //    return DBQuotation().batchCommit();
     final result = await DBQuotation().batchCommit();
-    for (int i = 0; i < tblcompanies.length; i++) {
-      if (tblcompanies[i].id == null) {
-        tblcompanies[i].id = result![i] as int;
-      }
-    }
 
     return result!;
   }
 
   /// Updates if the record exists, otherwise adds a new row
 
-  /// <returns>Returns id
+  /// <returns>Returns 1
 
   Future<int?> upsert() async {
     try {
@@ -758,25 +757,13 @@ class TblCompany {
         saveResult = BoolResult(
             success: false, errorMessage: 'TblCompany id=$id did not update');
       }
-      return id;
+      return 1;
     } catch (e) {
       saveResult = BoolResult(
           success: false,
           errorMessage: 'TblCompany Save failed. Error: ${e.toString()}');
       return null;
     }
-  }
-
-  /// inserts or replaces the sent List<<TblCompany>> as a bulk in one transaction.
-  ///
-  /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
-  ///
-  /// Returns a BoolCommitResult
-  Future<BoolCommitResult> upsertAll(List<TblCompany> tblcompanies) async {
-    final results = await _mnTblCompany.rawInsertAll(
-        'INSERT OR REPLACE INTO company (id,name, addressLine1, addressLine2, mobile, email, currency, logoUrl, updated, createdDate,isDeleted)  VALUES (?,?,?,?,?,?,?,?,?,?,?)',
-        tblcompanies);
-    return results;
   }
 
   /// Deletes TblCompany
@@ -823,6 +810,7 @@ class TblCompany {
   }
 
   void _setDefaultValues() {
+    isSaved = false;
     addressLine1 = addressLine1 ?? '';
     addressLine2 = addressLine2 ?? '';
     mobile = mobile ?? '';
@@ -1540,19 +1528,19 @@ class TblCompanyFilterBuilder extends SearchCriteria {
     return _retVal;
   }
 
-  /// This method returns Primary Key List<int>.
-  /// <returns>List<int>
-  Future<List<int>> toListPrimaryKey([bool buildParameters = true]) async {
+  /// This method returns Primary Key List<String>.
+  /// <returns>List<String>
+  Future<List<String>> toListPrimaryKey([bool buildParameters = true]) async {
     if (buildParameters) {
       _buildParameters();
     }
-    final List<int> idData = <int>[];
+    final List<String> idData = <String>[];
     qparams.selectColumns = ['id'];
     final idFuture = await _obj!._mnTblCompany.toList(qparams);
 
     final int count = idFuture.length;
     for (int i = 0; i < count; i++) {
-      idData.add(idFuture[i]['id'] as int);
+      idData.add(idFuture[i]['id'] as String);
     }
     return idData;
   }
@@ -1690,8 +1678,8 @@ class TblCustomer {
       this.isDeleted}) {
     _setDefaultValues();
   }
-  TblCustomer.withFields(this.name, this.addressLine1, this.addressLine2,
-      this.mobile, this.email, this.isDeleted) {
+  TblCustomer.withFields(this.id, this.name, this.addressLine1,
+      this.addressLine2, this.mobile, this.email, this.isDeleted) {
     _setDefaultValues();
   }
   TblCustomer.withId(this.id, this.name, this.addressLine1, this.addressLine2,
@@ -1703,7 +1691,7 @@ class TblCustomer {
     if (setDefaultValues) {
       _setDefaultValues();
     }
-    id = int.tryParse(o['id'].toString());
+    id = o['id'].toString();
     if (o['name'] != null) {
       name = o['name'].toString();
     }
@@ -1722,16 +1710,18 @@ class TblCustomer {
     isDeleted = o['isDeleted'] != null
         ? o['isDeleted'] == 1 || o['isDeleted'] == true
         : null;
+
+    isSaved = true;
   }
   // FIELDS (TblCustomer)
-  int? id;
+  String? id;
   String? name;
   String? addressLine1;
   String? addressLine2;
   String? mobile;
   String? email;
   bool? isDeleted;
-
+  bool? isSaved;
   BoolResult? saveResult;
   // end FIELDS (TblCustomer)
 
@@ -1848,7 +1838,7 @@ class TblCustomer {
   }
 
   List<dynamic> toArgs() {
-    return [name, addressLine1, addressLine2, mobile, email, isDeleted];
+    return [id, name, addressLine1, addressLine2, mobile, email, isDeleted];
   }
 
   List<dynamic> toArgsWithIds() {
@@ -1922,7 +1912,7 @@ class TblCustomer {
 
   /// returns TblCustomer by ID if exist, otherwise returns null
   ///
-  /// Primary Keys: int? id
+  /// Primary Keys: String? id
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -1936,7 +1926,7 @@ class TblCustomer {
 
   ///
   /// <returns>returns TblCustomer if exist, otherwise returns null
-  Future<TblCustomer?> getById(int? id,
+  Future<TblCustomer?> getById(String? id,
       {bool preload = false,
       List<String>? preloadFields,
       bool loadParents = false,
@@ -1972,27 +1962,27 @@ class TblCustomer {
     return obj;
   }
 
-  /// Saves the (TblCustomer) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
+  /// Saves the (TblCustomer) object. If the Primary Key (id) field is null, returns Error.
+  ///
+  /// INSERTS (If not exist) OR REPLACES (If exist) data while Primary Key is not null.
+  ///
+  /// Call the saveAs() method if you do not want to save it when there is another row with the same id
 
-  /// <returns>Returns id
-  Future<int?> save() async {
-    if (id == null || id == 0) {
-      id = await _mnTblCustomer.insert(this);
-    } else {
-      // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
-      await _mnTblCustomer.update(this);
+  /// <returns>Returns BoolResult
+  Future<BoolResult> save() async {
+    final result = BoolResult(success: false);
+    try {
+      await _mnTblCustomer.rawInsert(
+          'INSERT ${isSaved! ? 'OR REPLACE' : ''} INTO customer (id,name, addressLine1, addressLine2, mobile, email,isDeleted)  VALUES (?,?,?,?,?,?,?)',
+          toArgsWithIds());
+      result.success = true;
+      isSaved = true;
+    } catch (e) {
+      result.errorMessage = e.toString();
     }
 
-    return id;
-  }
-
-  /// saveAs TblCustomer. Returns a new Primary Key value of TblCustomer
-
-  /// <returns>Returns a new Primary Key value of TblCustomer
-  Future<int?> saveAs() async {
-    id = null;
-
-    return save();
+    saveResult = result;
+    return result;
   }
 
   /// saveAll method saves the sent List<TblCustomer> as a bulk in one transaction
@@ -2007,18 +1997,13 @@ class TblCustomer {
     }
     //    return DBQuotation().batchCommit();
     final result = await DBQuotation().batchCommit();
-    for (int i = 0; i < tblcustomers.length; i++) {
-      if (tblcustomers[i].id == null) {
-        tblcustomers[i].id = result![i] as int;
-      }
-    }
 
     return result!;
   }
 
   /// Updates if the record exists, otherwise adds a new row
 
-  /// <returns>Returns id
+  /// <returns>Returns 1
 
   Future<int?> upsert() async {
     try {
@@ -2033,25 +2018,13 @@ class TblCustomer {
         saveResult = BoolResult(
             success: false, errorMessage: 'TblCustomer id=$id did not update');
       }
-      return id;
+      return 1;
     } catch (e) {
       saveResult = BoolResult(
           success: false,
           errorMessage: 'TblCustomer Save failed. Error: ${e.toString()}');
       return null;
     }
-  }
-
-  /// inserts or replaces the sent List<<TblCustomer>> as a bulk in one transaction.
-  ///
-  /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
-  ///
-  /// Returns a BoolCommitResult
-  Future<BoolCommitResult> upsertAll(List<TblCustomer> tblcustomers) async {
-    final results = await _mnTblCustomer.rawInsertAll(
-        'INSERT OR REPLACE INTO customer (id,name, addressLine1, addressLine2, mobile, email,isDeleted)  VALUES (?,?,?,?,?,?,?)',
-        tblcustomers);
-    return results;
   }
 
   /// Deletes TblCustomer
@@ -2125,6 +2098,7 @@ class TblCustomer {
   }
 
   void _setDefaultValues() {
+    isSaved = false;
     addressLine1 = addressLine1 ?? '';
     addressLine2 = addressLine2 ?? '';
     mobile = mobile ?? '';
@@ -2874,19 +2848,19 @@ class TblCustomerFilterBuilder extends SearchCriteria {
     return _retVal;
   }
 
-  /// This method returns Primary Key List<int>.
-  /// <returns>List<int>
-  Future<List<int>> toListPrimaryKey([bool buildParameters = true]) async {
+  /// This method returns Primary Key List<String>.
+  /// <returns>List<String>
+  Future<List<String>> toListPrimaryKey([bool buildParameters = true]) async {
     if (buildParameters) {
       _buildParameters();
     }
-    final List<int> idData = <int>[];
+    final List<String> idData = <String>[];
     qparams.selectColumns = ['id'];
     final idFuture = await _obj!._mnTblCustomer.toList(qparams);
 
     final int count = idFuture.length;
     for (int i = 0; i < count; i++) {
-      idData.add(idFuture[i]['id'] as int);
+      idData.add(idFuture[i]['id'] as String);
     }
     return idData;
   }
@@ -3000,8 +2974,8 @@ class TblProduct {
       this.isDeleted}) {
     _setDefaultValues();
   }
-  TblProduct.withFields(this.description, this.isActive, this.recentlyUsed,
-      this.createdDate, this.favorite, this.isDeleted) {
+  TblProduct.withFields(this.id, this.description, this.isActive,
+      this.recentlyUsed, this.createdDate, this.favorite, this.isDeleted) {
     _setDefaultValues();
   }
   TblProduct.withId(this.id, this.description, this.isActive, this.recentlyUsed,
@@ -3013,7 +2987,7 @@ class TblProduct {
     if (setDefaultValues) {
       _setDefaultValues();
     }
-    id = int.tryParse(o['id'].toString());
+    id = o['id'].toString();
     if (o['description'] != null) {
       description = o['description'].toString();
     }
@@ -3042,16 +3016,18 @@ class TblProduct {
     isDeleted = o['isDeleted'] != null
         ? o['isDeleted'] == 1 || o['isDeleted'] == true
         : null;
+
+    isSaved = true;
   }
   // FIELDS (TblProduct)
-  int? id;
+  String? id;
   String? description;
   bool? isActive;
   DateTime? recentlyUsed;
   DateTime? createdDate;
   bool? favorite;
   bool? isDeleted;
-
+  bool? isSaved;
   BoolResult? saveResult;
   // end FIELDS (TblProduct)
 
@@ -3185,6 +3161,7 @@ class TblProduct {
 
   List<dynamic> toArgs() {
     return [
+      id,
       description,
       isActive,
       recentlyUsed != null ? recentlyUsed!.millisecondsSinceEpoch : null,
@@ -3272,7 +3249,7 @@ class TblProduct {
 
   /// returns TblProduct by ID if exist, otherwise returns null
   ///
-  /// Primary Keys: int? id
+  /// Primary Keys: String? id
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -3286,7 +3263,7 @@ class TblProduct {
 
   ///
   /// <returns>returns TblProduct if exist, otherwise returns null
-  Future<TblProduct?> getById(int? id,
+  Future<TblProduct?> getById(String? id,
       {bool preload = false,
       List<String>? preloadFields,
       bool loadParents = false,
@@ -3321,27 +3298,27 @@ class TblProduct {
     return obj;
   }
 
-  /// Saves the (TblProduct) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
+  /// Saves the (TblProduct) object. If the Primary Key (id) field is null, returns Error.
+  ///
+  /// INSERTS (If not exist) OR REPLACES (If exist) data while Primary Key is not null.
+  ///
+  /// Call the saveAs() method if you do not want to save it when there is another row with the same id
 
-  /// <returns>Returns id
-  Future<int?> save() async {
-    if (id == null || id == 0) {
-      id = await _mnTblProduct.insert(this);
-    } else {
-      // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
-      await _mnTblProduct.update(this);
+  /// <returns>Returns BoolResult
+  Future<BoolResult> save() async {
+    final result = BoolResult(success: false);
+    try {
+      await _mnTblProduct.rawInsert(
+          'INSERT ${isSaved! ? 'OR REPLACE' : ''} INTO product (id,description, isActive, recentlyUsed, createdDate, favorite,isDeleted)  VALUES (?,?,?,?,?,?,?)',
+          toArgsWithIds());
+      result.success = true;
+      isSaved = true;
+    } catch (e) {
+      result.errorMessage = e.toString();
     }
 
-    return id;
-  }
-
-  /// saveAs TblProduct. Returns a new Primary Key value of TblProduct
-
-  /// <returns>Returns a new Primary Key value of TblProduct
-  Future<int?> saveAs() async {
-    id = null;
-
-    return save();
+    saveResult = result;
+    return result;
   }
 
   /// saveAll method saves the sent List<TblProduct> as a bulk in one transaction
@@ -3356,18 +3333,13 @@ class TblProduct {
     }
     //    return DBQuotation().batchCommit();
     final result = await DBQuotation().batchCommit();
-    for (int i = 0; i < tblproducts.length; i++) {
-      if (tblproducts[i].id == null) {
-        tblproducts[i].id = result![i] as int;
-      }
-    }
 
     return result!;
   }
 
   /// Updates if the record exists, otherwise adds a new row
 
-  /// <returns>Returns id
+  /// <returns>Returns 1
 
   Future<int?> upsert() async {
     try {
@@ -3390,25 +3362,13 @@ class TblProduct {
         saveResult = BoolResult(
             success: false, errorMessage: 'TblProduct id=$id did not update');
       }
-      return id;
+      return 1;
     } catch (e) {
       saveResult = BoolResult(
           success: false,
           errorMessage: 'TblProduct Save failed. Error: ${e.toString()}');
       return null;
     }
-  }
-
-  /// inserts or replaces the sent List<<TblProduct>> as a bulk in one transaction.
-  ///
-  /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
-  ///
-  /// Returns a BoolCommitResult
-  Future<BoolCommitResult> upsertAll(List<TblProduct> tblproducts) async {
-    final results = await _mnTblProduct.rawInsertAll(
-        'INSERT OR REPLACE INTO product (id,description, isActive, recentlyUsed, createdDate, favorite,isDeleted)  VALUES (?,?,?,?,?,?,?)',
-        tblproducts);
-    return results;
   }
 
   /// Deletes TblProduct
@@ -3478,6 +3438,7 @@ class TblProduct {
   }
 
   void _setDefaultValues() {
+    isSaved = false;
     isActive = isActive ?? true;
     recentlyUsed = recentlyUsed ?? DateTime.now();
     createdDate = createdDate ?? DateTime.now();
@@ -4211,19 +4172,19 @@ class TblProductFilterBuilder extends SearchCriteria {
     return _retVal;
   }
 
-  /// This method returns Primary Key List<int>.
-  /// <returns>List<int>
-  Future<List<int>> toListPrimaryKey([bool buildParameters = true]) async {
+  /// This method returns Primary Key List<String>.
+  /// <returns>List<String>
+  Future<List<String>> toListPrimaryKey([bool buildParameters = true]) async {
     if (buildParameters) {
       _buildParameters();
     }
-    final List<int> idData = <int>[];
+    final List<String> idData = <String>[];
     qparams.selectColumns = ['id'];
     final idFuture = await _obj!._mnTblProduct.toList(qparams);
 
     final int count = idFuture.length;
     for (int i = 0; i < count; i++) {
-      idData.add(idFuture[i]['id'] as int);
+      idData.add(idFuture[i]['id'] as String);
     }
     return idData;
   }
@@ -4336,8 +4297,8 @@ class TblQuotationHeader {
       this.isDeleted}) {
     _setDefaultValues();
   }
-  TblQuotationHeader.withFields(
-      this.isPrinted, this.customerId, this.createdDate, this.isDeleted) {
+  TblQuotationHeader.withFields(this.id, this.isPrinted, this.customerId,
+      this.createdDate, this.isDeleted) {
     _setDefaultValues();
   }
   TblQuotationHeader.withId(this.id, this.isPrinted, this.customerId,
@@ -4350,12 +4311,12 @@ class TblQuotationHeader {
     if (setDefaultValues) {
       _setDefaultValues();
     }
-    id = int.tryParse(o['id'].toString());
+    id = o['id'].toString();
     if (o['isPrinted'] != null) {
       isPrinted = o['isPrinted'].toString() == '1' ||
           o['isPrinted'].toString() == 'true';
     }
-    customerId = int.tryParse(o['customerId'].toString());
+    customerId = o['customerId'].toString();
 
     if (o['createdDate'] != null) {
       createdDate = int.tryParse(o['createdDate'].toString()) != null
@@ -4373,14 +4334,16 @@ class TblQuotationHeader {
         ? TblCustomer.fromMap(o['tblCustomer'] as Map<String, dynamic>)
         : null;
     // END RELATIONSHIPS FromMAP
+
+    isSaved = true;
   }
   // FIELDS (TblQuotationHeader)
-  int? id;
+  String? id;
   bool? isPrinted;
-  int? customerId;
+  String? customerId;
   DateTime? createdDate;
   bool? isDeleted;
-
+  bool? isSaved;
   BoolResult? saveResult;
   // end FIELDS (TblQuotationHeader)
 
@@ -4534,6 +4497,7 @@ class TblQuotationHeader {
 
   List<dynamic> toArgs() {
     return [
+      id,
       isPrinted,
       customerId,
       createdDate != null ? createdDate!.millisecondsSinceEpoch : null,
@@ -4644,7 +4608,7 @@ class TblQuotationHeader {
 
   /// returns TblQuotationHeader by ID if exist, otherwise returns null
   ///
-  /// Primary Keys: int? id
+  /// Primary Keys: String? id
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -4658,7 +4622,7 @@ class TblQuotationHeader {
 
   ///
   /// <returns>returns TblQuotationHeader if exist, otherwise returns null
-  Future<TblQuotationHeader?> getById(int? id,
+  Future<TblQuotationHeader?> getById(String? id,
       {bool preload = false,
       List<String>? preloadFields,
       bool loadParents = false,
@@ -4720,27 +4684,27 @@ class TblQuotationHeader {
     return obj;
   }
 
-  /// Saves the (TblQuotationHeader) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
+  /// Saves the (TblQuotationHeader) object. If the Primary Key (id) field is null, returns Error.
+  ///
+  /// INSERTS (If not exist) OR REPLACES (If exist) data while Primary Key is not null.
+  ///
+  /// Call the saveAs() method if you do not want to save it when there is another row with the same id
 
-  /// <returns>Returns id
-  Future<int?> save() async {
-    if (id == null || id == 0) {
-      id = await _mnTblQuotationHeader.insert(this);
-    } else {
-      // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
-      await _mnTblQuotationHeader.update(this);
+  /// <returns>Returns BoolResult
+  Future<BoolResult> save() async {
+    final result = BoolResult(success: false);
+    try {
+      await _mnTblQuotationHeader.rawInsert(
+          'INSERT ${isSaved! ? 'OR REPLACE' : ''} INTO quotationHdr (id,isPrinted, customerId, createdDate,isDeleted)  VALUES (?,?,?,?,?)',
+          toArgsWithIds());
+      result.success = true;
+      isSaved = true;
+    } catch (e) {
+      result.errorMessage = e.toString();
     }
 
-    return id;
-  }
-
-  /// saveAs TblQuotationHeader. Returns a new Primary Key value of TblQuotationHeader
-
-  /// <returns>Returns a new Primary Key value of TblQuotationHeader
-  Future<int?> saveAs() async {
-    id = null;
-
-    return save();
+    saveResult = result;
+    return result;
   }
 
   /// saveAll method saves the sent List<TblQuotationHeader> as a bulk in one transaction
@@ -4756,18 +4720,13 @@ class TblQuotationHeader {
     }
     //    return DBQuotation().batchCommit();
     final result = await DBQuotation().batchCommit();
-    for (int i = 0; i < tblquotationheaders.length; i++) {
-      if (tblquotationheaders[i].id == null) {
-        tblquotationheaders[i].id = result![i] as int;
-      }
-    }
 
     return result!;
   }
 
   /// Updates if the record exists, otherwise adds a new row
 
-  /// <returns>Returns id
+  /// <returns>Returns 1
 
   Future<int?> upsert() async {
     try {
@@ -4789,7 +4748,7 @@ class TblQuotationHeader {
             success: false,
             errorMessage: 'TblQuotationHeader id=$id did not update');
       }
-      return id;
+      return 1;
     } catch (e) {
       saveResult = BoolResult(
           success: false,
@@ -4797,19 +4756,6 @@ class TblQuotationHeader {
               'TblQuotationHeader Save failed. Error: ${e.toString()}');
       return null;
     }
-  }
-
-  /// inserts or replaces the sent List<<TblQuotationHeader>> as a bulk in one transaction.
-  ///
-  /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
-  ///
-  /// Returns a BoolCommitResult
-  Future<BoolCommitResult> upsertAll(
-      List<TblQuotationHeader> tblquotationheaders) async {
-    final results = await _mnTblQuotationHeader.rawInsertAll(
-        'INSERT OR REPLACE INTO quotationHdr (id,isPrinted, customerId, createdDate,isDeleted)  VALUES (?,?,?,?,?)',
-        tblquotationheaders);
-    return results;
   }
 
   /// Deletes TblQuotationHeader
@@ -4908,8 +4854,9 @@ class TblQuotationHeader {
   }
 
   void _setDefaultValues() {
+    isSaved = false;
     isPrinted = isPrinted ?? false;
-    customerId = customerId ?? 1;
+    customerId = customerId ?? '__';
     createdDate = createdDate ?? DateTime.now();
     isDeleted = isDeleted ?? false;
   }
@@ -5355,7 +5302,7 @@ class TblQuotationHeaderFilterBuilder extends SearchCriteria {
 
   TblQuotationHeaderField? _customerId;
   TblQuotationHeaderField get customerId {
-    return _customerId = setField(_customerId, 'customerId', DbType.integer);
+    return _customerId = setField(_customerId, 'customerId', DbType.text);
   }
 
   TblQuotationHeaderField? _createdDate;
@@ -5716,19 +5663,19 @@ class TblQuotationHeaderFilterBuilder extends SearchCriteria {
     return _retVal;
   }
 
-  /// This method returns Primary Key List<int>.
-  /// <returns>List<int>
-  Future<List<int>> toListPrimaryKey([bool buildParameters = true]) async {
+  /// This method returns Primary Key List<String>.
+  /// <returns>List<String>
+  Future<List<String>> toListPrimaryKey([bool buildParameters = true]) async {
     if (buildParameters) {
       _buildParameters();
     }
-    final List<int> idData = <int>[];
+    final List<String> idData = <String>[];
     qparams.selectColumns = ['id'];
     final idFuture = await _obj!._mnTblQuotationHeader.toList(qparams);
 
     final int count = idFuture.length;
     for (int i = 0; i < count; i++) {
-      idData.add(idFuture[i]['id'] as int);
+      idData.add(idFuture[i]['id'] as String);
     }
     return idData;
   }
@@ -5789,7 +5736,7 @@ class TblQuotationHeaderFields {
   static TableField? _fCustomerId;
   static TableField get customerId {
     return _fCustomerId = _fCustomerId ??
-        SqlSyntax.setField(_fCustomerId, 'customerId', DbType.integer);
+        SqlSyntax.setField(_fCustomerId, 'customerId', DbType.text);
   }
 
   static TableField? _fCreatedDate;
@@ -5832,7 +5779,7 @@ class TblQuotation {
       this.isDeleted}) {
     _setDefaultValues();
   }
-  TblQuotation.withFields(this.productId, this.quantity, this.price,
+  TblQuotation.withFields(this.id, this.productId, this.quantity, this.price,
       this.totalPrice, this.sequenceNo, this.quotationHdrId, this.isDeleted) {
     _setDefaultValues();
   }
@@ -5845,7 +5792,7 @@ class TblQuotation {
     if (setDefaultValues) {
       _setDefaultValues();
     }
-    id = int.tryParse(o['id'].toString());
+    id = o['id'].toString();
     if (o['productId'] != null) {
       productId = o['productId'].toString();
     }
@@ -5861,7 +5808,7 @@ class TblQuotation {
     if (o['sequenceNo'] != null) {
       sequenceNo = int.tryParse(o['sequenceNo'].toString());
     }
-    quotationHdrId = int.tryParse(o['quotationHdrId'].toString());
+    quotationHdrId = o['quotationHdrId'].toString();
 
     isDeleted = o['isDeleted'] != null
         ? o['isDeleted'] == 1 || o['isDeleted'] == true
@@ -5873,17 +5820,19 @@ class TblQuotation {
             o['tblQuotationHeader'] as Map<String, dynamic>)
         : null;
     // END RELATIONSHIPS FromMAP
+
+    isSaved = true;
   }
   // FIELDS (TblQuotation)
-  int? id;
+  String? id;
   String? productId;
   String? quantity;
   String? price;
   String? totalPrice;
   int? sequenceNo;
-  int? quotationHdrId;
+  String? quotationHdrId;
   bool? isDeleted;
-
+  bool? isSaved;
   BoolResult? saveResult;
   // end FIELDS (TblQuotation)
 
@@ -5939,7 +5888,7 @@ class TblQuotation {
       map['quotationHdrId'] = forView
           ? plTblQuotationHeader == null
               ? quotationHdrId
-              : plTblQuotationHeader!.id
+              : plTblQuotationHeader!.customerId
           : quotationHdrId;
     }
 
@@ -5982,7 +5931,7 @@ class TblQuotation {
       map['quotationHdrId'] = forView
           ? plTblQuotationHeader == null
               ? quotationHdrId
-              : plTblQuotationHeader!.id
+              : plTblQuotationHeader!.customerId
           : quotationHdrId;
     }
 
@@ -6005,6 +5954,7 @@ class TblQuotation {
 
   List<dynamic> toArgs() {
     return [
+      id,
       productId,
       quantity,
       price,
@@ -6094,7 +6044,7 @@ class TblQuotation {
 
   /// returns TblQuotation by ID if exist, otherwise returns null
   ///
-  /// Primary Keys: int? id
+  /// Primary Keys: String? id
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -6108,7 +6058,7 @@ class TblQuotation {
 
   ///
   /// <returns>returns TblQuotation if exist, otherwise returns null
-  Future<TblQuotation?> getById(int? id,
+  Future<TblQuotation?> getById(String? id,
       {bool preload = false,
       List<String>? preloadFields,
       bool loadParents = false,
@@ -6143,27 +6093,27 @@ class TblQuotation {
     return obj;
   }
 
-  /// Saves the (TblQuotation) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
+  /// Saves the (TblQuotation) object. If the Primary Key (id) field is null, returns Error.
+  ///
+  /// INSERTS (If not exist) OR REPLACES (If exist) data while Primary Key is not null.
+  ///
+  /// Call the saveAs() method if you do not want to save it when there is another row with the same id
 
-  /// <returns>Returns id
-  Future<int?> save() async {
-    if (id == null || id == 0) {
-      id = await _mnTblQuotation.insert(this);
-    } else {
-      // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
-      await _mnTblQuotation.update(this);
+  /// <returns>Returns BoolResult
+  Future<BoolResult> save() async {
+    final result = BoolResult(success: false);
+    try {
+      await _mnTblQuotation.rawInsert(
+          'INSERT ${isSaved! ? 'OR REPLACE' : ''} INTO quotation (id,productId, quantity, price, totalPrice, sequenceNo, quotationHdrId,isDeleted)  VALUES (?,?,?,?,?,?,?,?)',
+          toArgsWithIds());
+      result.success = true;
+      isSaved = true;
+    } catch (e) {
+      result.errorMessage = e.toString();
     }
 
-    return id;
-  }
-
-  /// saveAs TblQuotation. Returns a new Primary Key value of TblQuotation
-
-  /// <returns>Returns a new Primary Key value of TblQuotation
-  Future<int?> saveAs() async {
-    id = null;
-
-    return save();
+    saveResult = result;
+    return result;
   }
 
   /// saveAll method saves the sent List<TblQuotation> as a bulk in one transaction
@@ -6178,18 +6128,13 @@ class TblQuotation {
     }
     //    return DBQuotation().batchCommit();
     final result = await DBQuotation().batchCommit();
-    for (int i = 0; i < tblquotations.length; i++) {
-      if (tblquotations[i].id == null) {
-        tblquotations[i].id = result![i] as int;
-      }
-    }
 
     return result!;
   }
 
   /// Updates if the record exists, otherwise adds a new row
 
-  /// <returns>Returns id
+  /// <returns>Returns 1
 
   Future<int?> upsert() async {
     try {
@@ -6213,25 +6158,13 @@ class TblQuotation {
         saveResult = BoolResult(
             success: false, errorMessage: 'TblQuotation id=$id did not update');
       }
-      return id;
+      return 1;
     } catch (e) {
       saveResult = BoolResult(
           success: false,
           errorMessage: 'TblQuotation Save failed. Error: ${e.toString()}');
       return null;
     }
-  }
-
-  /// inserts or replaces the sent List<<TblQuotation>> as a bulk in one transaction.
-  ///
-  /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
-  ///
-  /// Returns a BoolCommitResult
-  Future<BoolCommitResult> upsertAll(List<TblQuotation> tblquotations) async {
-    final results = await _mnTblQuotation.rawInsertAll(
-        'INSERT OR REPLACE INTO quotation (id,productId, quantity, price, totalPrice, sequenceNo, quotationHdrId,isDeleted)  VALUES (?,?,?,?,?,?,?,?)',
-        tblquotations);
-    return results;
   }
 
   /// Deletes TblQuotation
@@ -6278,7 +6211,8 @@ class TblQuotation {
   }
 
   void _setDefaultValues() {
-    quotationHdrId = quotationHdrId ?? 1;
+    isSaved = false;
+    quotationHdrId = quotationHdrId ?? '__';
     isDeleted = isDeleted ?? false;
   }
   // END METHODS
@@ -6731,7 +6665,7 @@ class TblQuotationFilterBuilder extends SearchCriteria {
   TblQuotationField? _quotationHdrId;
   TblQuotationField get quotationHdrId {
     return _quotationHdrId =
-        setField(_quotationHdrId, 'quotationHdrId', DbType.integer);
+        setField(_quotationHdrId, 'quotationHdrId', DbType.text);
   }
 
   TblQuotationField? _isDeleted;
@@ -7009,19 +6943,19 @@ class TblQuotationFilterBuilder extends SearchCriteria {
     return _retVal;
   }
 
-  /// This method returns Primary Key List<int>.
-  /// <returns>List<int>
-  Future<List<int>> toListPrimaryKey([bool buildParameters = true]) async {
+  /// This method returns Primary Key List<String>.
+  /// <returns>List<String>
+  Future<List<String>> toListPrimaryKey([bool buildParameters = true]) async {
     if (buildParameters) {
       _buildParameters();
     }
-    final List<int> idData = <int>[];
+    final List<String> idData = <String>[];
     qparams.selectColumns = ['id'];
     final idFuture = await _obj!._mnTblQuotation.toList(qparams);
 
     final int count = idFuture.length;
     for (int i = 0; i < count; i++) {
-      idData.add(idFuture[i]['id'] as int);
+      idData.add(idFuture[i]['id'] as String);
     }
     return idData;
   }
@@ -7106,7 +7040,7 @@ class TblQuotationFields {
   static TableField? _fQuotationHdrId;
   static TableField get quotationHdrId {
     return _fQuotationHdrId = _fQuotationHdrId ??
-        SqlSyntax.setField(_fQuotationHdrId, 'quotationHdrId', DbType.integer);
+        SqlSyntax.setField(_fQuotationHdrId, 'quotationHdrId', DbType.text);
   }
 
   static TableField? _fIsDeleted;
@@ -7143,7 +7077,7 @@ class TblQuotationSummary {
       this.isDeleted}) {
     _setDefaultValues();
   }
-  TblQuotationSummary.withFields(this.quotationHdrId, this.grandTotal,
+  TblQuotationSummary.withFields(this.id, this.quotationHdrId, this.grandTotal,
       this.discount, this.netPay, this.wages, this.transport, this.isDeleted) {
     _setDefaultValues();
   }
@@ -7157,8 +7091,8 @@ class TblQuotationSummary {
     if (setDefaultValues) {
       _setDefaultValues();
     }
-    id = int.tryParse(o['id'].toString());
-    quotationHdrId = int.tryParse(o['quotationHdrId'].toString());
+    id = o['id'].toString();
+    quotationHdrId = o['quotationHdrId'].toString();
 
     if (o['grandTotal'] != null) {
       grandTotal = double.tryParse(o['grandTotal'].toString());
@@ -7185,17 +7119,19 @@ class TblQuotationSummary {
             o['tblQuotationHeader'] as Map<String, dynamic>)
         : null;
     // END RELATIONSHIPS FromMAP
+
+    isSaved = true;
   }
   // FIELDS (TblQuotationSummary)
-  int? id;
-  int? quotationHdrId;
+  String? id;
+  String? quotationHdrId;
   double? grandTotal;
   double? discount;
   double? netPay;
   double? wages;
   double? transport;
   bool? isDeleted;
-
+  bool? isSaved;
   BoolResult? saveResult;
   // end FIELDS (TblQuotationSummary)
 
@@ -7232,7 +7168,7 @@ class TblQuotationSummary {
       map['quotationHdrId'] = forView
           ? plTblQuotationHeader == null
               ? quotationHdrId
-              : plTblQuotationHeader!.id
+              : plTblQuotationHeader!.customerId
           : quotationHdrId;
     }
 
@@ -7275,7 +7211,7 @@ class TblQuotationSummary {
       map['quotationHdrId'] = forView
           ? plTblQuotationHeader == null
               ? quotationHdrId
-              : plTblQuotationHeader!.id
+              : plTblQuotationHeader!.customerId
           : quotationHdrId;
     }
 
@@ -7318,6 +7254,7 @@ class TblQuotationSummary {
 
   List<dynamic> toArgs() {
     return [
+      id,
       quotationHdrId,
       grandTotal,
       discount,
@@ -7407,7 +7344,7 @@ class TblQuotationSummary {
 
   /// returns TblQuotationSummary by ID if exist, otherwise returns null
   ///
-  /// Primary Keys: int? id
+  /// Primary Keys: String? id
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -7421,7 +7358,7 @@ class TblQuotationSummary {
 
   ///
   /// <returns>returns TblQuotationSummary if exist, otherwise returns null
-  Future<TblQuotationSummary?> getById(int? id,
+  Future<TblQuotationSummary?> getById(String? id,
       {bool preload = false,
       List<String>? preloadFields,
       bool loadParents = false,
@@ -7456,27 +7393,27 @@ class TblQuotationSummary {
     return obj;
   }
 
-  /// Saves the (TblQuotationSummary) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
+  /// Saves the (TblQuotationSummary) object. If the Primary Key (id) field is null, returns Error.
+  ///
+  /// INSERTS (If not exist) OR REPLACES (If exist) data while Primary Key is not null.
+  ///
+  /// Call the saveAs() method if you do not want to save it when there is another row with the same id
 
-  /// <returns>Returns id
-  Future<int?> save() async {
-    if (id == null || id == 0) {
-      id = await _mnTblQuotationSummary.insert(this);
-    } else {
-      // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
-      await _mnTblQuotationSummary.update(this);
+  /// <returns>Returns BoolResult
+  Future<BoolResult> save() async {
+    final result = BoolResult(success: false);
+    try {
+      await _mnTblQuotationSummary.rawInsert(
+          'INSERT ${isSaved! ? 'OR REPLACE' : ''} INTO quotationSummary (id,quotationHdrId, grandTotal, discount, netPay, wages, transport,isDeleted)  VALUES (?,?,?,?,?,?,?,?)',
+          toArgsWithIds());
+      result.success = true;
+      isSaved = true;
+    } catch (e) {
+      result.errorMessage = e.toString();
     }
 
-    return id;
-  }
-
-  /// saveAs TblQuotationSummary. Returns a new Primary Key value of TblQuotationSummary
-
-  /// <returns>Returns a new Primary Key value of TblQuotationSummary
-  Future<int?> saveAs() async {
-    id = null;
-
-    return save();
+    saveResult = result;
+    return result;
   }
 
   /// saveAll method saves the sent List<TblQuotationSummary> as a bulk in one transaction
@@ -7492,18 +7429,13 @@ class TblQuotationSummary {
     }
     //    return DBQuotation().batchCommit();
     final result = await DBQuotation().batchCommit();
-    for (int i = 0; i < tblquotationsummaries.length; i++) {
-      if (tblquotationsummaries[i].id == null) {
-        tblquotationsummaries[i].id = result![i] as int;
-      }
-    }
 
     return result!;
   }
 
   /// Updates if the record exists, otherwise adds a new row
 
-  /// <returns>Returns id
+  /// <returns>Returns 1
 
   Future<int?> upsert() async {
     try {
@@ -7528,7 +7460,7 @@ class TblQuotationSummary {
             success: false,
             errorMessage: 'TblQuotationSummary id=$id did not update');
       }
-      return id;
+      return 1;
     } catch (e) {
       saveResult = BoolResult(
           success: false,
@@ -7536,19 +7468,6 @@ class TblQuotationSummary {
               'TblQuotationSummary Save failed. Error: ${e.toString()}');
       return null;
     }
-  }
-
-  /// inserts or replaces the sent List<<TblQuotationSummary>> as a bulk in one transaction.
-  ///
-  /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
-  ///
-  /// Returns a BoolCommitResult
-  Future<BoolCommitResult> upsertAll(
-      List<TblQuotationSummary> tblquotationsummaries) async {
-    final results = await _mnTblQuotationSummary.rawInsertAll(
-        'INSERT OR REPLACE INTO quotationSummary (id,quotationHdrId, grandTotal, discount, netPay, wages, transport,isDeleted)  VALUES (?,?,?,?,?,?,?,?)',
-        tblquotationsummaries);
-    return results;
   }
 
   /// Deletes TblQuotationSummary
@@ -7595,7 +7514,8 @@ class TblQuotationSummary {
   }
 
   void _setDefaultValues() {
-    quotationHdrId = quotationHdrId ?? 1;
+    isSaved = false;
+    quotationHdrId = quotationHdrId ?? '__';
     grandTotal = grandTotal ?? 1;
     discount = discount ?? 0;
     netPay = netPay ?? 0;
@@ -8041,7 +7961,7 @@ class TblQuotationSummaryFilterBuilder extends SearchCriteria {
   TblQuotationSummaryField? _quotationHdrId;
   TblQuotationSummaryField get quotationHdrId {
     return _quotationHdrId =
-        setField(_quotationHdrId, 'quotationHdrId', DbType.integer);
+        setField(_quotationHdrId, 'quotationHdrId', DbType.text);
   }
 
   TblQuotationSummaryField? _grandTotal;
@@ -8348,19 +8268,19 @@ class TblQuotationSummaryFilterBuilder extends SearchCriteria {
     return _retVal;
   }
 
-  /// This method returns Primary Key List<int>.
-  /// <returns>List<int>
-  Future<List<int>> toListPrimaryKey([bool buildParameters = true]) async {
+  /// This method returns Primary Key List<String>.
+  /// <returns>List<String>
+  Future<List<String>> toListPrimaryKey([bool buildParameters = true]) async {
     if (buildParameters) {
       _buildParameters();
     }
-    final List<int> idData = <int>[];
+    final List<String> idData = <String>[];
     qparams.selectColumns = ['id'];
     final idFuture = await _obj!._mnTblQuotationSummary.toList(qparams);
 
     final int count = idFuture.length;
     for (int i = 0; i < count; i++) {
-      idData.add(idFuture[i]['id'] as int);
+      idData.add(idFuture[i]['id'] as String);
     }
     return idData;
   }
@@ -8415,7 +8335,7 @@ class TblQuotationSummaryFields {
   static TableField? _fQuotationHdrId;
   static TableField get quotationHdrId {
     return _fQuotationHdrId = _fQuotationHdrId ??
-        SqlSyntax.setField(_fQuotationHdrId, 'quotationHdrId', DbType.integer);
+        SqlSyntax.setField(_fQuotationHdrId, 'quotationHdrId', DbType.text);
   }
 
   static TableField? _fGrandTotal;
@@ -8484,6 +8404,7 @@ class TblItems {
     _setDefaultValues();
   }
   TblItems.withFields(
+      this.id,
       this.description,
       this.price,
       this.quantity,
@@ -8511,7 +8432,7 @@ class TblItems {
     if (setDefaultValues) {
       _setDefaultValues();
     }
-    id = int.tryParse(o['id'].toString());
+    id = o['id'].toString();
     if (o['description'] != null) {
       description = o['description'].toString();
     }
@@ -8527,7 +8448,7 @@ class TblItems {
     if (o['sequence'] != null) {
       sequence = int.tryParse(o['sequence'].toString());
     }
-    productId = int.tryParse(o['productId'].toString());
+    productId = o['productId'].toString();
 
     if (o['datetime'] != null) {
       datetime = int.tryParse(o['datetime'].toString()) != null
@@ -8544,18 +8465,20 @@ class TblItems {
         ? TblProduct.fromMap(o['tblProduct'] as Map<String, dynamic>)
         : null;
     // END RELATIONSHIPS FromMAP
+
+    isSaved = true;
   }
   // FIELDS (TblItems)
-  int? id;
+  String? id;
   String? description;
   double? price;
   double? quantity;
   double? totalPrice;
   int? sequence;
-  int? productId;
+  String? productId;
   DateTime? datetime;
   bool? isDeleted;
-
+  bool? isSaved;
   BoolResult? saveResult;
   // end FIELDS (TblItems)
 
@@ -8693,6 +8616,7 @@ class TblItems {
 
   List<dynamic> toArgs() {
     return [
+      id,
       description,
       price,
       quantity,
@@ -8781,7 +8705,7 @@ class TblItems {
 
   /// returns TblItems by ID if exist, otherwise returns null
   ///
-  /// Primary Keys: int? id
+  /// Primary Keys: String? id
   ///
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   ///
@@ -8795,7 +8719,7 @@ class TblItems {
 
   ///
   /// <returns>returns TblItems if exist, otherwise returns null
-  Future<TblItems?> getById(int? id,
+  Future<TblItems?> getById(String? id,
       {bool preload = false,
       List<String>? preloadFields,
       bool loadParents = false,
@@ -8829,27 +8753,27 @@ class TblItems {
     return obj;
   }
 
-  /// Saves the (TblItems) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
+  /// Saves the (TblItems) object. If the Primary Key (id) field is null, returns Error.
+  ///
+  /// INSERTS (If not exist) OR REPLACES (If exist) data while Primary Key is not null.
+  ///
+  /// Call the saveAs() method if you do not want to save it when there is another row with the same id
 
-  /// <returns>Returns id
-  Future<int?> save() async {
-    if (id == null || id == 0) {
-      id = await _mnTblItems.insert(this);
-    } else {
-      // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
-      await _mnTblItems.update(this);
+  /// <returns>Returns BoolResult
+  Future<BoolResult> save() async {
+    final result = BoolResult(success: false);
+    try {
+      await _mnTblItems.rawInsert(
+          'INSERT ${isSaved! ? 'OR REPLACE' : ''} INTO items (id,description, price, quantity, totalPrice, sequence, productId, datetime,isDeleted)  VALUES (?,?,?,?,?,?,?,?,?)',
+          toArgsWithIds());
+      result.success = true;
+      isSaved = true;
+    } catch (e) {
+      result.errorMessage = e.toString();
     }
 
-    return id;
-  }
-
-  /// saveAs TblItems. Returns a new Primary Key value of TblItems
-
-  /// <returns>Returns a new Primary Key value of TblItems
-  Future<int?> saveAs() async {
-    id = null;
-
-    return save();
+    saveResult = result;
+    return result;
   }
 
   /// saveAll method saves the sent List<TblItems> as a bulk in one transaction
@@ -8864,18 +8788,13 @@ class TblItems {
     }
     //    return DBQuotation().batchCommit();
     final result = await DBQuotation().batchCommit();
-    for (int i = 0; i < tblitemses.length; i++) {
-      if (tblitemses[i].id == null) {
-        tblitemses[i].id = result![i] as int;
-      }
-    }
 
     return result!;
   }
 
   /// Updates if the record exists, otherwise adds a new row
 
-  /// <returns>Returns id
+  /// <returns>Returns 1
 
   Future<int?> upsert() async {
     try {
@@ -8900,25 +8819,13 @@ class TblItems {
         saveResult = BoolResult(
             success: false, errorMessage: 'TblItems id=$id did not update');
       }
-      return id;
+      return 1;
     } catch (e) {
       saveResult = BoolResult(
           success: false,
           errorMessage: 'TblItems Save failed. Error: ${e.toString()}');
       return null;
     }
-  }
-
-  /// inserts or replaces the sent List<<TblItems>> as a bulk in one transaction.
-  ///
-  /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
-  ///
-  /// Returns a BoolCommitResult
-  Future<BoolCommitResult> upsertAll(List<TblItems> tblitemses) async {
-    final results = await _mnTblItems.rawInsertAll(
-        'INSERT OR REPLACE INTO items (id,description, price, quantity, totalPrice, sequence, productId, datetime,isDeleted)  VALUES (?,?,?,?,?,?,?,?,?)',
-        tblitemses);
-    return results;
   }
 
   /// Deletes TblItems
@@ -8965,10 +8872,11 @@ class TblItems {
   }
 
   void _setDefaultValues() {
+    isSaved = false;
     price = price ?? 0;
     quantity = quantity ?? 0;
     totalPrice = totalPrice ?? 0;
-    productId = productId ?? 1;
+    productId = productId ?? '__';
     datetime = datetime ?? DateTime.now();
     isDeleted = isDeleted ?? false;
   }
@@ -9403,7 +9311,7 @@ class TblItemsFilterBuilder extends SearchCriteria {
 
   TblItemsField? _productId;
   TblItemsField get productId {
-    return _productId = setField(_productId, 'productId', DbType.integer);
+    return _productId = setField(_productId, 'productId', DbType.text);
   }
 
   TblItemsField? _datetime;
@@ -9684,19 +9592,19 @@ class TblItemsFilterBuilder extends SearchCriteria {
     return _retVal;
   }
 
-  /// This method returns Primary Key List<int>.
-  /// <returns>List<int>
-  Future<List<int>> toListPrimaryKey([bool buildParameters = true]) async {
+  /// This method returns Primary Key List<String>.
+  /// <returns>List<String>
+  Future<List<String>> toListPrimaryKey([bool buildParameters = true]) async {
     if (buildParameters) {
       _buildParameters();
     }
-    final List<int> idData = <int>[];
+    final List<String> idData = <String>[];
     qparams.selectColumns = ['id'];
     final idFuture = await _obj!._mnTblItems.toList(qparams);
 
     final int count = idFuture.length;
     for (int i = 0; i < count; i++) {
-      idData.add(idFuture[i]['id'] as int);
+      idData.add(idFuture[i]['id'] as String);
     }
     return idData;
   }
@@ -9781,7 +9689,7 @@ class TblItemsFields {
   static TableField? _fProductId;
   static TableField get productId {
     return _fProductId = _fProductId ??
-        SqlSyntax.setField(_fProductId, 'productId', DbType.integer);
+        SqlSyntax.setField(_fProductId, 'productId', DbType.text);
   }
 
   static TableField? _fDatetime;
