@@ -14,15 +14,28 @@ class DataGridRepo {
   Future<String> insertCustomerData(Map<String, dynamic> tblCustomer) async {
     try {
       TblCustomer _tblCustomer = new TblCustomer();
-      String customerId = tblCustomer['id'] ?? getUuidV1();
+      String? customerId = tblCustomer['id'] ?? getUuidV1();
+      if (tblCustomer['id'] == null) {
+        var _tblCust = await _tblCustomer
+            .select()
+            .name
+            .equals(tblCustomer["name"])
+            .or
+            .mobile
+            .equals(tblCustomer['mobile'])
+            .toSingle();
+        if (_tblCust!.id != null) {
+          customerId = _tblCust.id;
+        }
+      }
       _tblCustomer.id = customerId;
       _tblCustomer.name = tblCustomer["name"];
       _tblCustomer.mobile = tblCustomer["mobile"];
       _tblCustomer.addressLine1 = tblCustomer["addressLine1"];
       _tblCustomer.addressLine2 = tblCustomer["addressLine2"];
       _tblCustomer.email = tblCustomer["email"];
-      BoolResult result = await _tblCustomer.save();
-      return result.success ? customerId : '__';
+      await _tblCustomer.save();
+      return customerId ?? getUuidV1();
     } on Exception catch (err) {
       print(err);
       return "";
@@ -81,9 +94,8 @@ class DataGridRepo {
     await insertQuotationData(gridData, hdrId);
     await insertSummaryData(summary, hdrId);
     String query =
-        'select * from quotation INNER JOIN quotationHdr on quotation.quotationHdrId = quotationHdr.id where  quotationHdr.id = \'$hdrId\'  LIMIT 100';
+        'select * from quotation INNER JOIN quotationHdr on quotation.quotationHdrId = quotationHdr.id  INNER JOIN product on product.id = quotation.productId where  quotationHdr.id = \'$hdrId\'  LIMIT 100';
     List<dynamic>? _quotations = await DBQuotation().execDataTable(query) ?? [];
-    print("_quotations");
     print(_quotations.length);
     _quotations.forEach((element) {
       print(element);
