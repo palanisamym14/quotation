@@ -24,7 +24,7 @@ class DataGridRepo {
             .mobile
             .equals(tblCustomer['mobile'])
             .toSingle();
-        if (_tblCust!.id != null) {
+        if (_tblCust != null) {
           customerId = _tblCust.id;
         }
       }
@@ -100,5 +100,13 @@ class DataGridRepo {
     _quotations.forEach((element) {
       print(element);
     });
+    await getQuotationHistory();
+  }
+
+  getQuotationHistory() async {
+    const query =
+        'select customer.name as customerName, customer."addressLine1", customer."addressLine2", customer. mobile, customer.email, "quotationHdr".*, "quotationSummary".id, "quotationSummary"."netPay", "quotationSummary"."grandTotal", "quotationSummary".wages, "quotationSummary".discount from customer inner join  "quotationHdr" on "quotationHdr"."customerId" = customer.id inner join "quotationSummary" on "quotationSummary"."quotationHdrId" = "quotationHdr".id where "quotationHdr"."isDeleted" !=1  order by createdDate desc';
+    List<dynamic>? _quotations = await DBQuotation().execDataTable(query) ?? [];
+    return _quotations;
   }
 }

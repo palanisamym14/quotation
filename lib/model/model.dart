@@ -48,7 +48,7 @@ const SqfEntityTable tableQuotation = SqfEntityTable(
     ]);
 
 const SqfEntityTable tableQuotationHeader = SqfEntityTable(
-    tableName: 'quotationHdr',
+      tableName: 'quotationHdr',
     primaryKeyName: 'id',
     primaryKeyType: PrimaryKeyType.text,
     useSoftDeleting: true,
