@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:quotation/src/modal/data_grid_repo.dart';
 import 'package:intl/intl.dart';
+import 'package:quotation/src/utils/util.dart';
 
 final f = new DateFormat('yyyy-MM-dd');
+final quotationFormat = new DateFormat('d-H-m-s');
+
 class QuotationHistory extends StatefulWidget {
   const QuotationHistory({Key? key}) : super(key: key);
   @override
@@ -64,76 +67,81 @@ class _QuotationHistoryState extends State<QuotationHistory> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: Scaffold(
-            body: Container(
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Expanded(
-            child: ListView.builder(
-                itemCount: quotationHistory.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                    height: 144,
-                    width: double.maxFinite,
-                    child: Card(
-                      elevation: 5,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border(
-                            top: BorderSide(width: 2.0, color: Colors.green),
-                          ),
-                          color: Colors.white,
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(7),
-                          child: Stack(
-                            children: <Widget>[
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: Stack(
-                                  children: <Widget>[
-                                    Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 10, top: 5),
-                                        child: Column(
-                                          children: <Widget>[
-                                            Row(
+      home: Scaffold(
+        body: Container(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Expanded(
+                child: ListView.builder(
+                    itemCount: quotationHistory.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                        height: 160,
+                        width: double.maxFinite,
+                        child: Card(
+                          elevation: 5,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border(
+                                top:
+                                    BorderSide(width: 2.0, color: Colors.green),
+                              ),
+                              color: Colors.white,
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.all(7),
+                              child: Stack(
+                                children: <Widget>[
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Stack(
+                                      children: <Widget>[
+                                        Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 10, top: 5),
+                                            child: Column(
                                               children: <Widget>[
-                                                cryptoNameSymbol(
-                                                    quotationHistory[index]),
-                                                Spacer(),
-                                                cryptoChange(
-                                                    quotationHistory[index]),
+                                                Row(
+                                                  children: <Widget>[
+                                                    historyCustomerDetail(
+                                                        quotationHistory[
+                                                            index]),
+                                                    Spacer(),
+                                                    summaryDetails(
+                                                        quotationHistory[
+                                                            index]),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: <Widget>[
+                                                    actionIcons(
+                                                        quotationHistory[index])
+                                                  ],
+                                                )
                                               ],
-                                            ),
-                                            Row(
-                                              children: <Widget>[
-                                                actionIcons(
-                                                    quotationHistory[index])
-                                              ],
-                                            )
-                                          ],
-                                        ))
-                                  ],
-                                ),
-                              )
-                            ],
+                                            ))
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  );
-                }),
+                      );
+                    }),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
-    )));
+    );
   }
 
-  Widget cryptoNameSymbol(data) {
+  Widget historyCustomerDetail(data) {
     return Align(
       alignment: Alignment.centerLeft,
       child: RichText(
@@ -148,24 +156,31 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                     color: Colors.grey,
                     fontSize: 15,
                     fontWeight: FontWeight.bold)),
+            TextSpan(
+                text:
+                    '${formatQuotationNumber(data['createdDate'])}',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 12,
+                )),
           ],
         ),
       ),
     );
   }
 
-  Widget cryptoChange(data) {
+  Widget summaryDetails(data) {
     return Align(
       alignment: Alignment.topRight,
       child: RichText(
         text: TextSpan(
-          text:
-              '${data["grandTotal"]}',
+          text: '${data["grandTotal"]}',
           style: TextStyle(
               fontWeight: FontWeight.bold, color: Colors.green, fontSize: 20),
           children: <TextSpan>[
             TextSpan(
-                text: '\n${f.format(new DateTime.fromMillisecondsSinceEpoch(data['createdDate']))}',
+                text:
+                    '\n${formatDate(date:data['createdDate'])}',
                 style: TextStyle(
                     color: data['changeColor'],
                     fontSize: 15,
@@ -200,38 +215,6 @@ class _QuotationHistoryState extends State<QuotationHistory> {
               ),
             ),
           ).toList(),
-        ),
-      ),
-    );
-  }
-
-  Widget cryptoAmount(data) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 20.0),
-        child: Row(
-          children: <Widget>[
-            RichText(
-              textAlign: TextAlign.left,
-              text: TextSpan(
-                text: '\n${data['value']}',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 35,
-                ),
-                children: <TextSpan>[
-                  TextSpan(
-                      text: '\n0.1349',
-                      style: TextStyle(
-                          color: Colors.grey,
-                          fontStyle: FontStyle.italic,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold)),
-                ],
-              ),
-            ),
-          ],
         ),
       ),
     );

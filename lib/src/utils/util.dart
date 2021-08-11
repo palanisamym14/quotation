@@ -63,3 +63,13 @@ void removeNullAndEmptyParams(Map<String, Object> mapToEdit) {
     }
   }
 }
+
+formatQuotationNumber(date) {
+  final quotationFormat = new DateFormat('MM-d-H-m-s');
+  return 'Q${quotationFormat.format(new DateTime.fromMillisecondsSinceEpoch(date)).replaceAll('-', '')}';
+}
+
+formatDate({date, format = 'yyyy-MM-dd'}) {
+  final dateFormat = new DateFormat(format);
+  return '${dateFormat.format(new DateTime.fromMillisecondsSinceEpoch(date))}';
+}
