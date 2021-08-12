@@ -38,7 +38,7 @@ class SpinnerBody extends StatelessWidget {
                     margin: const EdgeInsets.only(top: 25.0),
                     child: new Center(
                       child: new Text(
-                        "Loading  wait...",
+                        "Loading wait...",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 12,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:quotation/src/modal/data_grid_repo.dart';
 import 'package:intl/intl.dart';
 import 'package:quotation/src/utils/util.dart';
@@ -34,13 +35,13 @@ class _QuotationHistoryState extends State<QuotationHistory> {
   List actionItems = [
     {
       'name': 'Edit',
-      'type': 'ETH',
+      'type': 'edit',
       'icon': Icons.border_color_outlined,
       'iconColor': Colors.orange,
     },
     {
       'name': 'Preview',
-      'type': 'ETH',
+      'type': 'view',
       'icon': Icons.table_view_outlined,
       'iconColor': Colors.black,
     },
@@ -157,8 +158,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                     fontSize: 15,
                     fontWeight: FontWeight.bold)),
             TextSpan(
-                text:
-                    '${formatQuotationNumber(data['createdDate'])}',
+                text: '${formatQuotationNumber(data['createdDate'])}',
                 style: TextStyle(
                   color: Colors.grey,
                   fontSize: 12,
@@ -179,8 +179,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
               fontWeight: FontWeight.bold, color: Colors.green, fontSize: 20),
           children: <TextSpan>[
             TextSpan(
-                text:
-                    '\n${formatDate(date:data['createdDate'])}',
+                text: '\n${formatDate(date: data['createdDate'])}',
                 style: TextStyle(
                     color: data['changeColor'],
                     fontSize: 15,
@@ -201,7 +200,9 @@ class _QuotationHistoryState extends State<QuotationHistory> {
             actionItems.length,
             (i) => InkWell(
               splashColor: Colors.green, // splash color
-              onTap: () {}, // button pressed
+              onTap: () {
+                handleIconClick(data, actionItems[i]['type']);
+              }, // button pressed
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -218,5 +219,31 @@ class _QuotationHistoryState extends State<QuotationHistory> {
         ),
       ),
     );
+  }
+
+  handleIconClick(data, actionType) {
+    print(actionType);
+    var id = data["id"];
+    switch (actionType) {
+      case 'edit':
+        {
+          Modular.to.pushNamed('/home?id=$id');
+        }
+        break;
+      case 'view':
+        {}
+        break;
+      case 'copy':
+        {}
+        break;
+      case 'share':
+        {}
+        break;
+      case 'delete':
+        {}
+        break;
+      default:
+        break;
+    }
   }
 }

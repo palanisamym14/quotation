@@ -27,12 +27,16 @@ class _DataGridHeaderState extends State<DataGridHeader> {
     super.initState();
   }
 
+
   @override
-  void didChangeDependencies() {
-    print("widget.didChangeDependencies");
-    print(widget.companyDetail);
+  void didUpdateWidget(DataGridHeader oldWidget) {
+    super.didUpdateWidget(oldWidget);
     headerValuesChange(widget.companyDetail);
-    super.didChangeDependencies();
+  }
+
+  @override
+  void setState(fn) {
+    super.setState(fn);
   }
 
   @override
@@ -91,11 +95,11 @@ class _DataGridHeaderState extends State<DataGridHeader> {
     );
     setState(() {
       widget.onHeaderDataChange(result);
-      headerValuesChange(result);
     });
   }
 
-  void headerValuesChange(Map<String, dynamic> companyDetail) {
+
+  headerValuesChange(Map<String, dynamic> companyDetail){
     List<String> to = [];
     print(companyDetail);
     headerColumns.forEach((ele) {

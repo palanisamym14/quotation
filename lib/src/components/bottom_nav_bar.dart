@@ -7,7 +7,7 @@ import 'package:quotation/src/components/drawer.dart';
 
 final padding = EdgeInsets.symmetric(horizontal: 18, vertical: 12);
 double gap = 10;
-List<String> routes = ['home', 'schedule', 'favourite', 'analysis'];
+List<String> routes = ['history', 'quotation', 'favourite', 'analysis'];
 List<Color> colors = [Colors.purple, Colors.pink, Colors.purple, Colors.teal];
 
 class BottomNavBar extends StatefulWidget {
@@ -60,7 +60,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 3.0, vertical: 3),
             child: GNav(
-              tabs: [
+              tabs:[
                 GButton(
                   gap: gap,
                   iconActiveColor: Colors.purple,
@@ -70,7 +70,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   iconSize: 24,
                   padding: padding,
                   icon: LineIcons.home,
-                  text: 'Home',
+                  text: 'History',
                 ),
                 GButton(
                   gap: gap,
@@ -81,7 +81,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   iconSize: 24,
                   padding: padding,
                   icon: LineIcons.calendarCheck,
-                  text: 'Schedules',
+                  text: 'Products',
                 ),
                 GButton(
                   gap: gap,
@@ -92,7 +92,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   iconSize: 24,
                   padding: padding,
                   icon: LineIcons.heart,
-                  text: 'Likes',
+                  text: 'Customer',
                 ),
                 GButton(
                   gap: gap,
@@ -102,14 +102,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   backgroundColor: Colors.teal.withOpacity(.2),
                   iconSize: 24,
                   padding: padding,
-                  icon: LineIcons.trophy,
-                  // leading: CircleAvatar(
-                  //   radius: 12,
-                  //   backgroundImage: NetworkImage(
-                  //     'https://sooxt98.space/content/images/size/w100/2019/01/profile.png',
-                  //   ),
-                  // ),
-                  text: 'Chart',
+                  icon: LineIcons.playstation,
+                  text: 'Report',
                 )
               ],
               selectedIndex: _selectedIndex,

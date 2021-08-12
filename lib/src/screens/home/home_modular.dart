@@ -15,8 +15,8 @@ class HomeModule extends Module {
   @override
   final List<ModularRoute> routes = [
     ChildRoute('/', child: (context, args) => HomeScreen(), children: [
-      ChildRoute('/home', child: (_, args) => QuotationScreen()),
-      ChildRoute('/analysis', child: (_, args) => QuotationHistoryScreen()),
+      ChildRoute('/quotation', child: (_, args) => QuotationScreen()),
+      ChildRoute('/history', child: (_, args) => QuotationHistoryScreen()),
       ChildRoute('/schedule', child: (_, args) => ScheduleScreen()),
       ChildRoute('/favourite', child: (_, args) => FavouriteScreen()),
       ChildRoute('/company-details', child: (_, args) => CompanyDetailsScreen()),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:intl/intl.dart';
 
@@ -72,4 +73,12 @@ formatQuotationNumber(date) {
 formatDate({date, format = 'yyyy-MM-dd'}) {
   final dateFormat = new DateFormat(format);
   return '${dateFormat.format(new DateTime.fromMillisecondsSinceEpoch(date))}';
+}
+
+getQueryParameters({key}) {
+  var params = Modular.args?.queryParams;
+  if (key != null) {
+    return params![key];
+  }
+  return params;
 }

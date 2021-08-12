@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:quotation/src/components/add_item.dart';
 import 'package:quotation/src/components/custom_text_form.dart';
+import 'package:quotation/src/modal/data_grid_repo.dart';
 import 'package:quotation/src/screens/dataGrid/data_action.dart';
 import 'package:quotation/src/screens/dataGrid/grid_constant.draft.dart';
-import 'package:quotation/src/storage/repository.dart';
 import 'package:quotation/src/utils/util.dart';
 import 'header.dart';
+
+const footerDefault = {"grandTotal": 0.00, "discount": 0.00, "netPay": 0.00};
 
 class DataGrid extends StatefulWidget {
   const DataGrid({Key? key}) : super(key: key);
@@ -19,20 +21,36 @@ class _DataGridState extends State<DataGrid> {
   List<Map<String, dynamic>> rowData = [];
   List<Map<String, dynamic>> columns = gridColumns;
   Map<String, dynamic> companyDetail = {};
-  Map<String, dynamic> footerValue = {
-    "grandTotal": 0.00,
-    "discount": 0.00,
-    "netPay": 0.00
-  };
+  Map<String, dynamic> footerValue = footerDefault;
   Map<String, String> stringParams = {
     "description": '',
   };
   Future<void> updateCompanyAddress(data) async {
     setState(() {
-      if(data!=null) {
+      if (data != null) {
         companyDetail = data as Map<String, dynamic>;
       }
     });
+  }
+
+  loadInitData() {
+    var id = getQueryParameters(key: "id") ?? '';
+    print(id);
+    new DataGridRepo().loadQuotationData(id).then((value) {
+      print(value["quotation"]);
+      setState(() {
+        this.footerValue =
+            Map<String, dynamic>.of(value["summary"] ?? footerDefault);
+        this.companyDetail = Map<String, dynamic>.of(value["customer"] ?? {});
+        this.rowData = List<Map<String, dynamic>>.of(value["quotation"] ?? []);
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadInitData();
   }
 
   @override
@@ -197,9 +215,6 @@ class _DataGridState extends State<DataGrid> {
   }
 
   void _navigateAndDisplaySelection(BuildContext context, val, idx) async {
-    // Map<String, dynamic> _val = Map<String, dynamic>.from(val);
-    // print("_val");
-    print(val);
     final result = await Navigator.push(
       context,
       // Create the SelectionScreen in the next step.
