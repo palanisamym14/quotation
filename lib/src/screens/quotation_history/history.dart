@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:quotation/src/modal/data_grid_repo.dart';
+import 'package:quotation/src/repo/data_grid_repo.dart';
 import 'package:intl/intl.dart';
 import 'package:quotation/src/utils/util.dart';
 

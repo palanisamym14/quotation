@@ -6,8 +6,10 @@ import 'package:quotation/app_widget.dart';
 import 'dart:async';
 
 import 'package:quotation/setup.dart';
+import 'package:quotation/src/store/app_store.dart';
 
 Future<void> main() async {
   await Setup.init();
-  runApp(ModularApp(module: AppModule(), child: AppWidget()));
+  var store = await createStore();
+  runApp(ModularApp(module: AppModule(), child: AppWidget(store)));
 }

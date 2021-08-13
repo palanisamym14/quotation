@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:quotation/src/components/add_item.dart';
 import 'package:quotation/src/components/custom_text_form.dart';
-import 'package:quotation/src/modal/data_grid_repo.dart';
+import 'package:quotation/src/repo/data_grid_repo.dart';
 import 'package:quotation/src/screens/dataGrid/data_action.dart';
 import 'package:quotation/src/screens/dataGrid/grid_constant.draft.dart';
+import 'package:quotation/src/store/model/datagrid_view_model.dart';
 import 'package:quotation/src/utils/util.dart';
 import 'header.dart';
 
 const footerDefault = {"grandTotal": 0.00, "discount": 0.00, "netPay": 0.00};
 
 class DataGrid extends StatefulWidget {
-  const DataGrid({Key? key}) : super(key: key);
-
+  final DataGridViewModel viewModel;
+  const DataGrid({Key? key, required this.viewModel}) : super(key: key);
   @override
   _DataGridState createState() => _DataGridState();
 }
@@ -35,7 +36,6 @@ class _DataGridState extends State<DataGrid> {
 
   loadInitData() {
     var id = getQueryParameters(key: "id") ?? '';
-    print(id);
     new DataGridRepo().loadQuotationData(id).then((value) {
       print(value["quotation"]);
       setState(() {
@@ -51,6 +51,8 @@ class _DataGridState extends State<DataGrid> {
   void initState() {
     super.initState();
     loadInitData();
+    print(widget.viewModel.rowData);
+    print("widget.viewModel");
   }
 
   @override
