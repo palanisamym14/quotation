@@ -29,6 +29,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
   void initState() {
     super.initState();
     // fetchGraphql();
+    print("Data");
     loadInitData();
   }
 
@@ -227,7 +228,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
     switch (actionType) {
       case 'edit':
         {
-          Modular.to.pushNamed('/home?id=$id');
+          Modular.to.pushNamed('/quotation?id=$id');
         }
         break;
       case 'view':
