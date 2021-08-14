@@ -4,6 +4,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:quotation/src/repo/data_grid_repo.dart';
 import 'package:intl/intl.dart';
 import 'package:quotation/src/utils/util.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 final f = new DateFormat('yyyy-MM-dd');
 final quotationFormat = new DateFormat('d-H-m-s');
@@ -70,75 +71,104 @@ class _QuotationHistoryState extends State<QuotationHistory> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: Container(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Expanded(
-                child: ListView.builder(
-                    itemCount: quotationHistory.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                        height: 160,
-                        width: double.maxFinite,
-                        child: Card(
-                          elevation: 5,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border(
-                                top:
-                                    BorderSide(width: 2.0, color: Colors.green),
-                              ),
-                              color: Colors.white,
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.all(7),
-                              child: Stack(
-                                children: <Widget>[
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Stack(
-                                      children: <Widget>[
-                                        Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 10, top: 5),
-                                            child: Column(
-                                              children: <Widget>[
-                                                Row(
-                                                  children: <Widget>[
-                                                    historyCustomerDetail(
-                                                        quotationHistory[
-                                                            index]),
-                                                    Spacer(),
-                                                    summaryDetails(
-                                                        quotationHistory[
-                                                            index]),
-                                                  ],
-                                                ),
-                                                Row(
-                                                  children: <Widget>[
-                                                    actionIcons(
-                                                        quotationHistory[index])
-                                                  ],
-                                                )
-                                              ],
-                                            ))
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
+        body: quotationHistory.length == 0
+            ? new Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        new Container(
+                          width: 300.0,
+                          height: 300.0,
+                          decoration: new BoxDecoration(
+                            color: Colors.green[50],
+                            shape: BoxShape.circle,
+                          ),
+                          child: SvgPicture.asset(
+                            "assets/images/notification.svg",
+                            width: 100,
+                            height: 144,
                           ),
                         ),
-                      );
-                    }),
+                      ],
+                    ),
+                  ],
+                ),
+              )
+            : new Container(
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Expanded(
+                      child: ListView.builder(
+                          itemCount: quotationHistory.length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                              height: 160,
+                              width: double.maxFinite,
+                              child: Card(
+                                elevation: 5,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      top: BorderSide(
+                                          width: 2.0, color: Colors.green),
+                                    ),
+                                    color: Colors.white,
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(7),
+                                    child: Stack(
+                                      children: <Widget>[
+                                        Align(
+                                          alignment: Alignment.centerRight,
+                                          child: Stack(
+                                            children: <Widget>[
+                                              Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 10, top: 5),
+                                                  child: Column(
+                                                    children: <Widget>[
+                                                      Row(
+                                                        children: <Widget>[
+                                                          historyCustomerDetail(
+                                                              quotationHistory[
+                                                                  index]),
+                                                          Spacer(),
+                                                          summaryDetails(
+                                                              quotationHistory[
+                                                                  index]),
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        children: <Widget>[
+                                                          actionIcons(
+                                                              quotationHistory[
+                                                                  index])
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ))
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }),
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
-        ),
       ),
     );
   }

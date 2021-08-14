@@ -19,18 +19,19 @@ class BottomNavBar extends StatefulWidget {
 
 class _BottomNavBarState extends State<BottomNavBar> {
   int _selectedIndex = 0;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
   void initState() {
     super.initState();
-      final FirebaseAuth _auth = FirebaseAuth.instance;
-      User? user = _auth.currentUser;
-      print(user);
-      print("user");
-      if (user != null) {
-        Modular.to.navigate(routes[0]);
-      }else{
-        Modular.to.navigate('login');
-      }
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    User? user = _auth.currentUser;
+    print(user);
+    print("user");
+    if (user != null) {
+      Modular.to.navigate(routes[0]);
+    } else {
+      Modular.to.navigate('login');
+    }
   }
 
   @override
@@ -38,8 +39,13 @@ class _BottomNavBarState extends State<BottomNavBar> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: this.widget.body,
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(routes[_selectedIndex]),
+        // leading: new IconButton(
+        //   icon: new Icon(Icons.more_vert),
+        //   onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+        // ),
       ),
       drawer: CustomDrawer(),
       bottomNavigationBar: SafeArea(
@@ -60,7 +66,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 3.0, vertical: 3),
             child: GNav(
-              tabs:[
+              tabs: [
                 GButton(
                   gap: gap,
                   iconActiveColor: Colors.purple,
