@@ -12,7 +12,7 @@ class QuotationScreen extends StatelessWidget {
     return new StoreConnector<AppState, DataGridViewModel>(
       onInit: (store) {},
       converter: (store) => DataGridViewModel.fromStore(store),
-      builder: (_, viewModel) => DataGrid(viewModel: viewModel),
+      builder: (_, viewModel) => DataGrid(gridStore: viewModel),
     );
   }
 }

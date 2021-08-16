@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 
 @immutable
 class DataGridState {
-  final List<Map<String, dynamic>>? rowData;
+  final List<Map<String, dynamic>> rowData;
   final Map<String, dynamic>? customerDetail;
   final Map<String, dynamic>? summaryData;
   final String? quotationId;
   DataGridState(
-      {this.rowData, this.customerDetail, this.summaryData, this.quotationId});
+      {this.rowData: const [],
+      this.customerDetail,
+      this.summaryData,
+      this.quotationId});
 
   factory DataGridState.initial() {
     return new DataGridState(
@@ -24,5 +27,15 @@ class DataGridState {
         customerDetail: customerDetail ?? this.customerDetail,
         summaryData: summaryData ?? this.summaryData,
         quotationId: quotationId ?? this.quotationId);
+  }
+
+  DataGridState updateRowData(
+      {required Map<String, dynamic> data, int index = -1}) {
+    if (index > -1 && this.rowData.length > 0 && index < this.rowData.length) {
+      this.rowData[index] = data;
+    } else {
+      this.rowData.add(data);
+    }
+    return copyWith();
   }
 }

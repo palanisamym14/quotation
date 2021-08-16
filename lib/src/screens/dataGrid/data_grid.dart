@@ -12,8 +12,8 @@ import 'header.dart';
 const footerDefault = {"grandTotal": 0.00, "discount": 0.00, "netPay": 0.00};
 
 class DataGrid extends StatefulWidget {
-  final DataGridViewModel viewModel;
-  const DataGrid({Key? key, required this.viewModel}) : super(key: key);
+  final DataGridViewModel gridStore;
+  const DataGrid({Key? key, required this.gridStore}) : super(key: key);
   @override
   _DataGridState createState() => _DataGridState();
 }
@@ -52,18 +52,13 @@ class _DataGridState extends State<DataGrid> {
   void initState() {
     super.initState();
     loadInitData();
-    print(widget.viewModel.rowData);
-    widget.viewModel.addRowData!([
-      {"test": 1}
-    ]);
-    print("widget.viewModel");
+    print(widget.gridStore.rowData);
   }
 
   @override
   void didUpdateWidget(DataGrid oldWidget) {
     super.didUpdateWidget(oldWidget);
-    print("widget.update");
-    print(widget.viewModel.rowData);
+    print(widget.gridStore.rowData);
   }
 
   @override
@@ -79,30 +74,42 @@ class _DataGridState extends State<DataGrid> {
           child: DataTable(
             headingRowColor: MaterialStateColor.resolveWith(
                 (states) => Colors.green.withOpacity(0.3)),
-            columns: List.generate(columns.length, (index) {
-              return DataColumn(
-                label: Expanded(
+            columns: List.generate(
+              columns.length,
+              (index) {
+                return DataColumn(
+                  label: Expanded(
                     child: Text(
-                  columns[index]["label"],
-                  style: TextStyle(fontStyle: FontStyle.italic),
-                  textAlign: TextAlign.center,
-                )),
-              );
-            }),
-            rows: List.generate(rowData.length, (idx) {
-              return DataRow(
+                      columns[index]["label"],
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                );
+              },
+            ),
+            rows: List.generate(
+              widget.gridStore.rowData.length,
+              (idx) {
+                var item = widget.gridStore.rowData[idx];
+                return DataRow(
                   color: MaterialStateProperty.resolveWith<Color>(
-                      (Set<MaterialState> states) {
-                    // Even rows will have a grey color.
-                    if (idx % 2 == 0) return Colors.green.withOpacity(0.1);
-                    return Colors.green.withOpacity(
-                        0.2); // Use default value for other states and odd rows.
-                  }),
-                  cells: List.generate(columns.length, (index) {
-                    return DataCell(
-                        _dataCell(context, idx, columns[index], rowData[idx]));
-                  }));
-            }),
+                    (Set<MaterialState> states) {
+                      // Even rows will have a grey color.
+                      if (idx % 2 == 0) return Colors.green.withOpacity(0.1);
+                      return Colors.green.withOpacity(0.2);
+                    },
+                  ),
+                  cells: List.generate(
+                    columns.length,
+                    (index) {
+                      return DataCell(
+                          _dataCell(context, idx, columns[index], item));
+                    },
+                  ),
+                );
+              },
+            ),
             headingRowHeight: 50.0,
             dataRowHeight: 40.0,
           ),
@@ -151,11 +158,12 @@ class _DataGridState extends State<DataGrid> {
                   children: [
                     Text('Net Amount'),
                     Expanded(
-                        child: new CustomEditForm(
-                      value: footerValue["netPay"],
-                      keyName: "netPay",
-                      callback: onFooterValueChanged,
-                    )),
+                      child: new CustomEditForm(
+                        value: footerValue["netPay"],
+                        keyName: "netPay",
+                        callback: onFooterValueChanged,
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -164,7 +172,7 @@ class _DataGridState extends State<DataGrid> {
         ),
         DataGridAction(
           columns: columns,
-          data: rowData,
+          data: widget.gridStore.rowData,
           header: companyDetail,
           footer: footerValue,
         ),
@@ -244,8 +252,10 @@ class _DataGridState extends State<DataGrid> {
       setState(() {
         if (idx == -1) {
           rowData.add(result);
+          widget.gridStore.addRowData!(result, -1);
         } else {
           rowData[idx] = result;
+          widget.gridStore.addRowData!(result, idx);
         }
       });
       onFooterValueChanged(
