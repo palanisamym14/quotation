@@ -16,6 +16,8 @@ class DataGridState {
   }
   DataGridState copyWith({
     List<Map<String, dynamic>>? rowData,
+    Map<String, dynamic>? companyDetail,
+    Map<String, dynamic>? footerValue,
   }) {
     return new DataGridState(
         rowData: rowData ?? this.rowData,

@@ -35,25 +35,6 @@ const SqfEntityTable tableQuotation = SqfEntityTable(
     useSoftDeleting: true,
     modelName: "TblQuotation",
     fields: [
-      SqfEntityField('productId', DbType.text),
-      SqfEntityField('quantity', DbType.text),
-      SqfEntityField('price', DbType.text),
-      SqfEntityField('totalPrice', DbType.text),
-      SqfEntityField('sequenceNo', DbType.integer),
-      SqfEntityFieldRelationship(
-        parentTable: tableQuotationHeader,
-        deleteRule: DeleteRule.CASCADE,
-        defaultValue: '__',
-      ),
-    ]);
-
-const SqfEntityTable tableQuotationHeader = SqfEntityTable(
-    tableName: 'quotationHdr',
-    primaryKeyName: 'id',
-    primaryKeyType: PrimaryKeyType.text,
-    useSoftDeleting: true,
-    modelName: "TblQuotationHeader",
-    fields: [
       SqfEntityField('isPrinted', DbType.bool, defaultValue: false),
       SqfEntityFieldRelationship(
         parentTable: tableCustomerDetails,
@@ -72,7 +53,7 @@ const SqfEntityTable tableQuotationSummary = SqfEntityTable(
     modelName: "TblQuotationSummary",
     fields: [
       SqfEntityFieldRelationship(
-        parentTable: tableQuotationHeader,
+        parentTable: tableQuotation,
         deleteRule: DeleteRule.CASCADE,
         defaultValue: '__',
       ),
@@ -120,18 +101,16 @@ const SqfEntityTable tableItems = SqfEntityTable(
     useSoftDeleting: true,
     modelName: "TblItems",
     fields: [
-      SqfEntityField('description', DbType.text),
-      SqfEntityField('price', DbType.real, defaultValue: 0),
-      SqfEntityField('quantity', DbType.real, defaultValue: 0),
-      SqfEntityField('totalPrice', DbType.real, defaultValue: 0),
-      SqfEntityField('sequence', DbType.integer, isNotNull: true),
+      SqfEntityField('productId', DbType.text),
+      SqfEntityField('quantity', DbType.text),
+      SqfEntityField('price', DbType.text),
+      SqfEntityField('totalPrice', DbType.text),
+      SqfEntityField('sequenceNo', DbType.integer),
       SqfEntityFieldRelationship(
-        parentTable: tableProduct,
+        parentTable: tableQuotation,
         deleteRule: DeleteRule.CASCADE,
         defaultValue: '__',
       ),
-      SqfEntityField('datetime', DbType.datetime,
-          defaultValue: 'DateTime.now()'),
     ]);
 
 // Define the 'identity' constant as SqfEntitySequence.
@@ -157,7 +136,6 @@ const myDbModel = SqfEntityModel(
       tableCompany,
       tableCustomerDetails,
       tableProduct,
-      tableQuotationHeader,
       tableQuotation,
       tableQuotationSummary,
       tableItems,

@@ -2,10 +2,11 @@ import 'package:quotation/model/model.dart'
     show
         TblCustomer,
         TblQuotation,
-        TblQuotationHeader,
+        TblItems,
         TblQuotationSummary,
         TblProduct,
         DBQuotation;
+import 'package:quotation/src/repo/db_query.dart' as DBQuery;
 import 'package:quotation/src/utils/uuid.dart';
 import 'package:sqfentity_gen/sqfentity_gen.dart';
 
@@ -48,13 +49,13 @@ class DataGridRepo {
       print(gridData);
       print("gridData");
       gridData.forEach((element) async {
-        TblQuotation quotation = TblQuotation();
-        quotation.quotationHdrId = hdrId;
-        quotation.id = getUuidV1();
-        quotation.price = element["price"];
-        quotation.quantity = element["quantity"];
-        quotation.totalPrice = element["totalPrice"];
-        quotation.productId = element["productId"] ?? null;
+        TblItems items = TblItems();
+        items.quotationId = hdrId;
+        items.id = getUuidV1();
+        items.price = element["price"];
+        items.quantity = element["quantity"];
+        items.totalPrice = element["totalPrice"];
+        items.productId = element["productId"] ?? null;
         if (element["productId"] == null) {
           TblProduct tblProduct = new TblProduct();
           var _tblProduct = await tblProduct
@@ -67,12 +68,12 @@ class DataGridRepo {
             tblProduct.id = productId;
             tblProduct.description = element["description"];
             BoolResult res = await tblProduct.save();
-            quotation.productId = productId;
+            items.productId = productId;
           } else {
-            quotation.productId = _tblProduct.id;
+            items.productId = _tblProduct.id;
           }
         }
-        BoolResult result = await quotation.save();
+        BoolResult result = await items.save();
       });
     } on Exception catch (err) {
       print(err);
@@ -84,7 +85,7 @@ class DataGridRepo {
     tblQuotationSummary.discount = summary["discount"];
     tblQuotationSummary.netPay = summary["netPay"];
     tblQuotationSummary.grandTotal = summary["grandTotal"];
-    tblQuotationSummary.quotationHdrId = hdrId;
+    tblQuotationSummary.quotationId = hdrId;
     tblQuotationSummary.id = getUuidV1();
     await tblQuotationSummary.save();
   }
@@ -93,54 +94,44 @@ class DataGridRepo {
       Map<String, dynamic> tblCustomer, Map<String, dynamic> summary) async {
     String customerId = await insertCustomerData(tblCustomer);
     String hdrId = getUuidV1();
-    await TblQuotationHeader(customerId: customerId, id: hdrId).save();
+    await TblQuotation(customerId: customerId, id: hdrId).save();
     await insertQuotationData(gridData, hdrId);
     await insertSummaryData(summary, hdrId);
-    String query =
-        'select * from quotation INNER JOIN quotationHdr on quotation.quotationHdrId = quotationHdr.id  INNER JOIN product on product.id = quotation.productId where  quotationHdr.id = \'$hdrId\'  LIMIT 100';
-    List<dynamic>? _quotations = await DBQuotation().execDataTable(query) ?? [];
-    print(_quotations.length);
-    _quotations.forEach((element) {
-      print(element);
-    });
     await getQuotationHistory();
   }
 
   getQuotationHistory() async {
-    const query =
-        'select customer.name as customerName, customer."addressLine1", customer."addressLine2", customer. mobile, customer.email, "quotationHdr".*, "quotationSummary".id as summeryId, "quotationSummary"."netPay", "quotationSummary"."grandTotal", "quotationSummary".wages, "quotationSummary".discount from customer inner join  "quotationHdr" on "quotationHdr"."customerId" = customer.id inner join "quotationSummary" on "quotationSummary"."quotationHdrId" = "quotationHdr".id where "quotationHdr"."isDeleted" !=1  order by createdDate desc';
+    String query = DBQuery.selectQuotationHistory;
     List<dynamic>? _quotations = await DBQuotation().execDataTable(query) ?? [];
     return _quotations;
   }
 
   Future<Map<String, dynamic>> loadQuotationData(String quotationId) async {
-    var _quotationHeader = await new TblQuotationHeader()
+    var _quotation = await new TblQuotation()
         .select(columnsToSelect: ["customerId"])
         .id
         .equals(quotationId)
         .toSingle();
-    print("_quotationHeader");
-    if (_quotationHeader != null) {
+    if (_quotation != null) {
       var customer = await new TblCustomer()
           .select()
           .id
-          .equals(_quotationHeader.customerId)
+          .equals(_quotation.customerId)
           .toSingle();
       print(customer?.toMap());
       var footer = await new TblQuotationSummary()
           .select()
-          .quotationHdrId
+          .quotationId
           .equals(quotationId)
           .toSingle();
       print(footer?.toMap());
-      const query =
-          'select quotation.*, product.description, product.id  from product inner join  quotation on quotation."productId" = product.id inner join quotationHdr on "quotationHdr".id = quotation."quotationHdrId" where quotation."quotationHdrId" = \':val\'  and "quotationHdr"."isDeleted" !=1 order by "sequenceNo" desc';
+      String query = DBQuery.selectQuotationById;
       List<dynamic>? _quotations = await DBQuotation()
               .execDataTable(query.replaceAll(':val', quotationId)) ??
           [];
-      var quotation = await new TblQuotation()
+      var quotation = await new TblItems()
           .select()
-          .quotationHdrId
+          .quotationId
           .equals(quotationId)
           .toMapList();
       print(_quotations);

@@ -26,6 +26,7 @@ class _DataGridState extends State<DataGrid> {
   Map<String, String> stringParams = {
     "description": '',
   };
+
   Future<void> updateCompanyAddress(data) async {
     setState(() {
       if (data != null) {
@@ -52,7 +53,17 @@ class _DataGridState extends State<DataGrid> {
     super.initState();
     loadInitData();
     print(widget.viewModel.rowData);
+    widget.viewModel.addRowData!([
+      {"test": 1}
+    ]);
     print("widget.viewModel");
+  }
+
+  @override
+  void didUpdateWidget(DataGrid oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    print("widget.update");
+    print(widget.viewModel.rowData);
   }
 
   @override
