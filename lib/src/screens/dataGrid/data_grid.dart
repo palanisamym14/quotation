@@ -251,10 +251,8 @@ class _DataGridState extends State<DataGrid> {
     if (result != null) {
       setState(() {
         if (idx == -1) {
-          rowData.add(result);
           widget.gridStore.addRowData!(result, -1);
         } else {
-          rowData[idx] = result;
           widget.gridStore.addRowData!(result, idx);
         }
       });

@@ -13,9 +13,7 @@ final dataGridReducer = combineReducers<DataGridState>([
 
 DataGridState addGridDataReducer(
     DataGridState state, SaveRowDataAction action) {
-  print("rowData");
-  print(action.rowData);
-  return state.updateRowData(data: action.rowData);
+  return state.updateRowData(data: action.rowData, index: action.index);
 }
 
 DataGridState updateCustomerInfoReducer(
