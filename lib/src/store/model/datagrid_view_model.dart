@@ -5,9 +5,9 @@ import 'package:redux/redux.dart';
 class DataGridViewModel {
   final List<Map<String, dynamic>>? rowData;
   final Function(List<Map<String, dynamic>>? rowData)? addRowData;
-  final Function(List<Map<String, dynamic>>? rowData)? updateCustomer;
-  final Function(List<Map<String, dynamic>>? rowData)? updateSummary;
-  final Function(List<Map<String, dynamic>>? rowData)? updateQuotationId;
+  final Function(Map<String, dynamic>? rowData)? updateCustomer;
+  final Function(Map<String, dynamic>? rowData)? updateSummary;
+  final Function(String)? updateQuotationId;
   final String? quotationId;
 
   DataGridViewModel(
@@ -20,17 +20,17 @@ class DataGridViewModel {
   static DataGridViewModel fromStore(Store<AppState> store) {
     return DataGridViewModel(
       rowData: store.state.dataGridState.rowData,
-      addRowData: (_rowData) => store.dispatch(
-        new SaveRowDataAction(_rowData),
+      addRowData: (value) => store.dispatch(
+        new SaveRowDataAction(rowData: value),
       ),
-      updateCustomer: (_rowData) => store.dispatch(
-        new SaveRowDataAction(_rowData),
+      updateCustomer: (value) => store.dispatch(
+        new SaveRowDataAction(customerDetail: value),
       ),
-      updateSummary: (_rowData) => store.dispatch(
-        new SaveRowDataAction(_rowData),
+      updateSummary: (value) => store.dispatch(
+        new SaveRowDataAction(summaryData: value),
       ),
-      updateQuotationId: (_rowData) => store.dispatch(
-        new SaveRowDataAction(_rowData),
+      updateQuotationId: (value) => store.dispatch(
+        new SaveRowDataAction(quotationId: value),
       ),
     );
   }
