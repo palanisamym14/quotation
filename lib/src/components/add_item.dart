@@ -30,7 +30,7 @@ class AddItemForm extends StatefulWidget {
 
 class AddItemFormState extends State<AddItemForm> {
   bool autoValidate = true;
-  final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
+  GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
   final Map<String, TextEditingController> _typeAheadController = {};
   dynamic getFormValue(GlobalKey<FormBuilderState> form, String field) {
     if (form.currentState!.fields.containsKey(field) == false)

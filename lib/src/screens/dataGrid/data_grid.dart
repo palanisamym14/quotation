@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:quotation/src/components/add_item.dart';
-import 'package:quotation/src/components/custom_text_form.dart';
 import 'package:quotation/src/repo/data_grid_repo.dart';
 import 'package:quotation/src/screens/dataGrid/data_action.dart';
+import 'package:quotation/src/screens/dataGrid/footer.dart';
 import 'package:quotation/src/screens/dataGrid/grid_constant.draft.dart';
 import 'package:quotation/src/store/model/datagrid_view_model.dart';
 import 'package:quotation/src/utils/util.dart';
@@ -52,13 +52,11 @@ class _DataGridState extends State<DataGrid> {
   void initState() {
     super.initState();
     loadInitData();
-    print(widget.gridStore.rowData);
   }
 
   @override
   void didUpdateWidget(DataGrid oldWidget) {
     super.didUpdateWidget(oldWidget);
-    print(widget.gridStore.rowData);
   }
 
   @override
@@ -66,9 +64,7 @@ class _DataGridState extends State<DataGrid> {
     return ListView(
       shrinkWrap: true,
       children: <Widget>[
-        DataGridHeader(
-            companyDetail: companyDetail,
-            onHeaderDataChange: updateCompanyAddress),
+        DataGridHeader(gridStore: widget.gridStore),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: DataTable(
@@ -95,7 +91,6 @@ class _DataGridState extends State<DataGrid> {
                 return DataRow(
                   color: MaterialStateProperty.resolveWith<Color>(
                     (Set<MaterialState> states) {
-                      // Even rows will have a grey color.
                       if (idx % 2 == 0) return Colors.green.withOpacity(0.1);
                       return Colors.green.withOpacity(0.2);
                     },
@@ -124,52 +119,7 @@ class _DataGridState extends State<DataGrid> {
             ),
           ],
         ),
-        Container(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Grand Total'),
-                    Expanded(
-                        child: new CustomEditForm(
-                            value: footerValue["grandTotal"],
-                            keyName: "grandTotal",
-                            callback: onFooterValueChanged)),
-                  ],
-                ),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Adjustment'),
-                    Expanded(
-                        child: new CustomEditForm(
-                            value: footerValue["discount"],
-                            keyName: "discount",
-                            callback: onFooterValueChanged)),
-                  ],
-                ),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Net Amount'),
-                    Expanded(
-                      child: new CustomEditForm(
-                        value: footerValue["netPay"],
-                        keyName: "netPay",
-                        callback: onFooterValueChanged,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
+        DataGridFooter(gridStore: widget.gridStore),
         DataGridAction(
           columns: columns,
           data: widget.gridStore.rowData,
@@ -178,25 +128,6 @@ class _DataGridState extends State<DataGrid> {
         ),
       ],
     );
-  }
-
-  onFooterValueChanged(val, key) {
-    var tempVal = val;
-    tempVal = double.parse(val);
-    setState(() {
-      footerValue.update(key, (value) => tempVal);
-    });
-    if (key == "grandTotal") {
-      setState(() {
-        footerValue.update(
-            "netPay", (value) => tempVal - footerValue["discount"]);
-      });
-    } else if (key == "discount") {
-      setState(() {
-        footerValue.update(
-            "netPay", (value) => footerValue["grandTotal"] - tempVal);
-      });
-    }
   }
 
   _dataCell(BuildContext context, rowIdx, column, item) {
@@ -249,19 +180,11 @@ class _DataGridState extends State<DataGrid> {
       ),
     );
     if (result != null) {
-      setState(() {
-        if (idx == -1) {
-          widget.gridStore.addRowData!(result, -1);
-        } else {
-          widget.gridStore.addRowData!(result, idx);
-        }
-      });
-      onFooterValueChanged(
-          rowData
-              .map((e) => double.parse(e["totalPrice"]))
-              .reduce((a, b) => a + b)
-              .toString(),
-          "grandTotal");
+      if (idx == -1) {
+        widget.gridStore.addRowData!(result, -1);
+      } else {
+        widget.gridStore.addRowData!(result, idx);
+      }
     }
   }
 }

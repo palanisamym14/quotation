@@ -64,7 +64,7 @@ class _DataGridActionState extends State<DataGridAction> {
     });
     printResponseModal.header.to = to;
     List<Map<String, dynamic>> _footer = [];
-    footerColumns.forEach((ele) {
+    summaryColumns.forEach((ele) {
       var val = widget.footer[ele['_key']];
       if (val != null && val != '') {
         _footer.add({

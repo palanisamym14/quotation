@@ -137,7 +137,7 @@ final List<Map<String, dynamic>> headerColumns = [
   }
 ];
 
-final List<Map<String, dynamic>> footerColumns = [
+final List<Map<String, dynamic>> summaryColumns = [
   {
     "type": "text",
     "label": "Grand Total",
@@ -165,7 +165,7 @@ final List<Map<String, dynamic>> footerColumns = [
   {
     "type": "text",
     "label": "Net Pay",
-    "_key": "grandTotal",
+    "_key": "netPay",
     "width": "30",
     "isVisible": true,
     "labelAlign": "center",

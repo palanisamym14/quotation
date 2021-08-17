@@ -2,17 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:quotation/src/components/add_item.dart';
 import 'package:quotation/src/screens/dataGrid/grid_constant.draft.dart';
+import 'package:quotation/src/store/model/datagrid_view_model.dart';
 // import 'package:quotation/src/utils/util.dart';
 
 typedef void SignalingStateCallback(dynamic data);
 
 class DataGridHeader extends StatefulWidget {
-  final Map<String, dynamic> companyDetail;
-  final SignalingStateCallback onHeaderDataChange;
+  final DataGridViewModel gridStore;
 
-  const DataGridHeader(
-      {Key? key, required this.companyDetail, required this.onHeaderDataChange})
-      : super(key: key);
+  const DataGridHeader({Key? key, required this.gridStore}) : super(key: key);
   @override
   _DataGridHeaderState createState() => _DataGridHeaderState();
 }
@@ -22,16 +20,15 @@ class _DataGridHeaderState extends State<DataGridHeader> {
   @override
   void initState() {
     print("widget.companyDetail");
-    print(widget.companyDetail);
-    // headerValuesChange(widget.companyDetail);
+    print(widget.gridStore.customerDetail);
+    headerValuesChange(widget.gridStore.customerDetail);
     super.initState();
   }
-
 
   @override
   void didUpdateWidget(DataGridHeader oldWidget) {
     super.didUpdateWidget(oldWidget);
-    headerValuesChange(widget.companyDetail);
+    headerValuesChange(widget.gridStore.customerDetail);
   }
 
   @override
@@ -78,7 +75,7 @@ class _DataGridHeaderState extends State<DataGridHeader> {
   }
 
   void _navigateAndDisplaySelection(BuildContext context) async {
-    Map<String, dynamic> val = widget.companyDetail;
+    Map<String, dynamic> val = widget.gridStore.customerDetail;
     // print("_val");
     print(val);
     final result = await Navigator.push(
@@ -93,13 +90,10 @@ class _DataGridHeaderState extends State<DataGridHeader> {
             header: "Add Address"),
       ),
     );
-    setState(() {
-      widget.onHeaderDataChange(result);
-    });
+    widget.gridStore.updateCustomer!(result);
   }
 
-
-  headerValuesChange(Map<String, dynamic> companyDetail){
+  headerValuesChange(Map<String, dynamic> companyDetail) {
     List<String> to = [];
     print(companyDetail);
     headerColumns.forEach((ele) {

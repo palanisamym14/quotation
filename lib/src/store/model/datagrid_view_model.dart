@@ -4,25 +4,28 @@ import 'package:redux/redux.dart';
 
 class DataGridViewModel {
   final List<Map<String, dynamic>> rowData;
-  final Map<String, dynamic>? summaryData;
+  final Map<String, dynamic> summaryData;
+  final Map<String, dynamic> customerDetail;
   final Function(Map<String, dynamic> rowData, int index)? addRowData;
   final Function(Map<String, dynamic> rowData)? updateCustomer;
-  final Function(Map<String, dynamic> rowData)? updateSummary;
+  final Function(Map<String, dynamic> rowData) updateSummary;
   final Function(String)? updateQuotationId;
   final String? quotationId;
 
   DataGridViewModel(
       {this.rowData: const [],
-      this.summaryData,
+      this.customerDetail: const {},
+      this.summaryData: const {},
       this.addRowData,
-      this.updateSummary,
+      required this.updateSummary,
       this.updateCustomer,
       this.updateQuotationId,
       this.quotationId});
   static DataGridViewModel fromStore(Store<AppState> store) {
     return DataGridViewModel(
       rowData: store.state.dataGridState.rowData,
-      summaryData: store.state.dataGridState.summaryData,
+      customerDetail: store.state.dataGridState.customerDetail ?? {},
+      summaryData: store.state.dataGridState.summaryData ?? {},
       addRowData: (value, index) => store.dispatch(
         new SaveRowDataAction(rowData: value, index: index),
       ),

@@ -31,10 +31,23 @@ class DataGridState {
 
   DataGridState updateRowData(
       {required Map<String, dynamic> data, int index = -1}) {
-    if (index > -1 && this.rowData.length > 0 && index < this.rowData.length) {
-      this.rowData[index] = data;
-    } else {
-      this.rowData.add(data);
+    try {
+      if (index > -1 &&
+          this.rowData.length > 0 &&
+          index < this.rowData.length) {
+        this.rowData[index] = data;
+      } else {
+        this.rowData.add(data);
+      }
+      var tempVal = this
+          .rowData
+          .map((e) => double.parse(e["totalPrice"]))
+          .reduce((a, b) => a + b);
+      this.summaryData!["netPay"] =
+          tempVal - (this.summaryData!["discount"] ?? 0);
+      this.summaryData!['grandTotal'] = tempVal;
+    } on Exception catch (error) {
+      print(error);
     }
     return copyWith();
   }
