@@ -152,7 +152,7 @@ final List<Map<String, dynamic>> summaryColumns = [
   },
   {
     "type": "text",
-    "label": "discount",
+    "label": "Discount",
     "_key": "discount",
     "width": "30",
     "isVisible": true,

@@ -167,6 +167,7 @@ class _DataGridState extends State<DataGrid> {
   }
 
   void _navigateAndDisplaySelection(BuildContext context, val, idx) async {
+    widget.gridStore.hideAppBar!();
     final result = await Navigator.push(
       context,
       // Create the SelectionScreen in the next step.
@@ -179,6 +180,7 @@ class _DataGridState extends State<DataGrid> {
         ),
       ),
     );
+    widget.gridStore.showAppBar!();
     if (result != null) {
       if (idx == -1) {
         widget.gridStore.addRowData!(result, -1);

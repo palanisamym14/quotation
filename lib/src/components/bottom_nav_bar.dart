@@ -4,6 +4,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:quotation/src/components/drawer.dart';
+import 'package:quotation/src/store/model/app_view_model.dart';
 
 final padding = EdgeInsets.symmetric(horizontal: 18, vertical: 12);
 double gap = 10;
@@ -11,8 +12,9 @@ List<String> routes = ['history', 'quotation', 'favourite', 'history'];
 List<Color> colors = [Colors.purple, Colors.pink, Colors.purple, Colors.teal];
 
 class BottomNavBar extends StatefulWidget {
-  final Widget? body;
-  BottomNavBar({this.body});
+  final Widget body;
+  final AppViewModel appState;
+  BottomNavBar({required this.body, required this.appState});
   @override
   _BottomNavBarState createState() => _BottomNavBarState();
 }
@@ -41,6 +43,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       body: this.widget.body,
       key: _scaffoldKey,
       appBar: AppBar(
+        centerTitle: true,
         title: Text(routes[_selectedIndex]),
         // leading: new IconButton(
         //   icon: new Icon(Icons.more_vert),

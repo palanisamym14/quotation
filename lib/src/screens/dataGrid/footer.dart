@@ -18,7 +18,6 @@ class DataGridFooter extends StatefulWidget {
 }
 
 class _DataGridFooterState extends State<DataGridFooter> {
-
   @override
   void initState() {
     super.initState();
@@ -33,7 +32,6 @@ class _DataGridFooterState extends State<DataGridFooter> {
   void dispose() {
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {

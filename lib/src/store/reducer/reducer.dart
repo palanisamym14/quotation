@@ -4,4 +4,4 @@ import 'datagrid_reducer.dart';
 
 AppState appReducer(AppState state, dynamic action) => new AppState(
     dataGridState: dataGridReducer(state.dataGridState, action),
-    signInState: signInReducer(state.signInState, action));
+    menuState: menuReducer(state.menuState, action));

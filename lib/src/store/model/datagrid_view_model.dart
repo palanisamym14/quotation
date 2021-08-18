@@ -1,4 +1,5 @@
-import 'package:quotation/src/store/actions/app_action.dart';
+import 'package:quotation/src/store/actions/datagrid_action.dart';
+import 'package:quotation/src/store/actions/menu_action.dart';
 import 'package:quotation/src/store/state/app_state.dart';
 import 'package:redux/redux.dart';
 
@@ -11,6 +12,8 @@ class DataGridViewModel {
   final Function(Map<String, dynamic> rowData) updateSummary;
   final Function(String)? updateQuotationId;
   final String? quotationId;
+  final Function? showAppBar;
+  final Function? hideAppBar;
 
   DataGridViewModel(
       {this.rowData: const [],
@@ -20,7 +23,9 @@ class DataGridViewModel {
       required this.updateSummary,
       this.updateCustomer,
       this.updateQuotationId,
-      this.quotationId});
+      this.quotationId,
+      this.hideAppBar,
+      this.showAppBar});
   static DataGridViewModel fromStore(Store<AppState> store) {
     return DataGridViewModel(
       rowData: store.state.dataGridState.rowData,
@@ -37,6 +42,12 @@ class DataGridViewModel {
       ),
       updateQuotationId: (value) => store.dispatch(
         new UpdateQuotationIdDataAction(value),
+      ),
+      showAppBar: () => store.dispatch(
+        new ShowAppBarAction(),
+      ),
+      hideAppBar: () => store.dispatch(
+        new HideAppBarAction(),
       ),
     );
   }

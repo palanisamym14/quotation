@@ -1,30 +1,28 @@
 import 'package:meta/meta.dart';
 import 'package:quotation/src/store/state/datagrid_state.dart';
-import 'package:quotation/src/store/state/signin_state.dart';
+import 'package:quotation/src/store/state/menu_state.dart';
 
 enum LoadingStatus { loading, error, success }
-
 
 @immutable
 class AppState {
   final DataGridState dataGridState;
-  final SignInState signInState;
+  final MenuState menuState;
 
-  AppState({required this.dataGridState, required this.signInState});
+  AppState({required this.dataGridState, required this.menuState});
 
   factory AppState.initial() {
     return AppState(
-        dataGridState: DataGridState.initial(),
-        signInState: SignInState.initial());
+        dataGridState: DataGridState.initial(), menuState: MenuState.initial());
   }
 
   AppState copyWith({
     DataGridState? dataGridState,
-    SignInState? signInState,
+    MenuState? menuState,
   }) {
     return AppState(
         dataGridState: dataGridState ?? this.dataGridState,
-        signInState: signInState ?? this.signInState);
+        menuState: menuState ?? this.menuState);
   }
 
   @override
@@ -33,8 +31,8 @@ class AppState {
       other is AppState &&
           runtimeType == other.runtimeType &&
           dataGridState == other.dataGridState &&
-          signInState == other.signInState;
+          menuState == other.menuState;
 
   @override
-  int get hashCode => dataGridState.hashCode ^ signInState.hashCode;
+  int get hashCode => dataGridState.hashCode ^ menuState.hashCode;
 }
