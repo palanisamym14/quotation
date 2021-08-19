@@ -42,15 +42,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
       backgroundColor: Colors.white,
       body: this.widget.body,
       key: _scaffoldKey,
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(routes[_selectedIndex]),
-        // leading: new IconButton(
-        //   icon: new Icon(Icons.more_vert),
-        //   onPressed: () => _scaffoldKey.currentState?.openDrawer(),
-        // ),
-      ),
-      drawer: CustomDrawer(),
       bottomNavigationBar: SafeArea(
         child: Container(
           margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
