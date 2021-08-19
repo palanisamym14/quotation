@@ -20,7 +20,6 @@ class DataGrid extends StatefulWidget {
 
 class _DataGridState extends State<DataGrid> {
   List<Map<String, dynamic>> rowData = [];
-  List<Map<String, dynamic>> columns = gridColumns;
   Map<String, dynamic> companyDetail = {};
   Map<String, dynamic> footerValue = footerDefault;
   Map<String, String> stringParams = {
@@ -71,12 +70,12 @@ class _DataGridState extends State<DataGrid> {
             headingRowColor: MaterialStateColor.resolveWith(
                 (states) => Colors.green.withOpacity(0.3)),
             columns: List.generate(
-              columns.length,
+              quotationItemColumns.length,
               (index) {
                 return DataColumn(
                   label: Expanded(
                     child: Text(
-                      columns[index]["label"],
+                      quotationItemColumns[index]["label"],
                       style: TextStyle(fontStyle: FontStyle.italic),
                       textAlign: TextAlign.center,
                     ),
@@ -96,10 +95,10 @@ class _DataGridState extends State<DataGrid> {
                     },
                   ),
                   cells: List.generate(
-                    columns.length,
+                    quotationItemColumns.length,
                     (index) {
-                      return DataCell(
-                          _dataCell(context, idx, columns[index], item));
+                      return DataCell(_dataCell(
+                          context, idx, quotationItemColumns[index], item));
                     },
                   ),
                 );
@@ -121,7 +120,7 @@ class _DataGridState extends State<DataGrid> {
         ),
         DataGridFooter(gridStore: widget.gridStore),
         DataGridAction(
-          columns: columns,
+          columns: quotationItemColumns,
           data: widget.gridStore.rowData,
           header: companyDetail,
           footer: footerValue,
@@ -167,20 +166,19 @@ class _DataGridState extends State<DataGrid> {
   }
 
   void _navigateAndDisplaySelection(BuildContext context, val, idx) async {
-    widget.gridStore.hideAppBar!();
     final result = await Navigator.push(
       context,
       // Create the SelectionScreen in the next step.
       MaterialPageRoute(
         builder: (context) => AddItemForm(
-          columns:
-              columns.where((element) => element["allowAddScreen"]).toList(),
+          columns: quotationItemColumns
+              .where((element) => element["allowAddScreen"])
+              .toList(),
           initValues: val,
           header: "Add Item",
         ),
       ),
     );
-    widget.gridStore.showAppBar!();
     if (result != null) {
       if (idx == -1) {
         widget.gridStore.addRowData!(result, -1);

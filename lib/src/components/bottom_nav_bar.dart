@@ -8,7 +8,7 @@ import 'package:quotation/src/store/model/app_view_model.dart';
 
 final padding = EdgeInsets.symmetric(horizontal: 18, vertical: 12);
 double gap = 10;
-List<String> routes = ['history', 'quotation', 'favourite', 'history'];
+List<String> routes = ['history', 'product', 'customer', 'history'];
 List<Color> colors = [Colors.purple, Colors.pink, Colors.purple, Colors.teal];
 
 class BottomNavBar extends StatefulWidget {
@@ -27,8 +27,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
     super.initState();
     final FirebaseAuth _auth = FirebaseAuth.instance;
     User? user = _auth.currentUser;
-    print(user);
-    print("user");
     if (user != null) {
       Modular.to.navigate(routes[0]);
     } else {

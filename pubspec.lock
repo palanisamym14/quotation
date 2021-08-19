@@ -900,7 +900,14 @@ packages:
       name: syncfusion_flutter_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "19.2.51"
+    version: "19.2.56"
+  syncfusion_flutter_datagrid:
+    dependency: "direct main"
+    description:
+      name: syncfusion_flutter_datagrid
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "19.2.56-beta"
   syncfusion_flutter_pdf:
     dependency: "direct main"
     description:

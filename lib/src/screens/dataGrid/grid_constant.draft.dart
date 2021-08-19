@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
-final List<Map<String, dynamic>> gridColumns = [
+final List<Map<String, dynamic>> quotationItemColumns = [
   {
     "type": "index",
     "label": "S NO",
@@ -85,7 +85,7 @@ final List<Map<String, dynamic>> gridColumns = [
   }
 ];
 
-final List<Map<String, dynamic>> headerColumns = [
+final List<Map<String, dynamic>> customerDetailColumns = [
   {
     "type": "list",
     "label": "Customer Name",

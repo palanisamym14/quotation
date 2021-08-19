@@ -56,7 +56,7 @@ class _DataGridActionState extends State<DataGridAction> {
         .toList();
     printResponseModal.data = widget.data;
     List<String> to = [];
-    headerColumns.forEach((ele) {
+    customerDetailColumns.forEach((ele) {
       var val = widget.header[ele['_key']];
       if (val != null && val != '') {
         to.add(val);

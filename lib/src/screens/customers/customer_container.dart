@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:quotation/src/components/add_item.dart';
 import 'package:quotation/src/components/drawer.dart';
+import 'package:quotation/src/screens/customers/customer.dart';
+import 'package:quotation/src/screens/dataGrid/grid_constant.draft.dart';
 import 'package:quotation/src/screens/quotation/quotation_screen.dart';
-import 'package:quotation/src/screens/quotation_history/history.dart';
 
-class QuotationHistoryScreen extends StatelessWidget {
-  const QuotationHistoryScreen({Key? key}) : super(key: key);
+class CustomerContainer extends StatelessWidget {
+  const CustomerContainer({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text("Quotation History"),
-        // leading: new IconButton(
-        //   icon: new Icon(Icons.more_vert),
-        //   onPressed: () => _scaffoldKey.currentState?.openDrawer(),
-        // ),
+        title: Text("Customer List"),
       ),
       drawer: CustomDrawer(),
-      body: QuotationHistory(),
+      body: CustomerList(),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.green,
         child: Icon(Icons.add),
@@ -35,10 +33,12 @@ class QuotationHistoryScreen extends StatelessWidget {
       // Create the SelectionScreen in the next step.
       MaterialPageRoute(
         builder: (context) => new Scaffold(
-          appBar: new AppBar(
-            title: const Text('New entry'),
-          ),
-          body: QuotationScreen(),
+          body: AddItemForm(
+              columns: customerDetailColumns
+                  .where((element) => element["allowAddScreen"])
+                  .toList(),
+              initValues: {},
+              header: "Add Customer Details"),
         ),
       ),
     );

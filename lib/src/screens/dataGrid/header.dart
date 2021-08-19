@@ -83,11 +83,11 @@ class _DataGridHeaderState extends State<DataGridHeader> {
       // Create the SelectionScreen in the next step.
       MaterialPageRoute(
         builder: (context) => AddItemForm(
-            columns: headerColumns
+            columns: customerDetailColumns
                 .where((element) => element["allowAddScreen"])
                 .toList(),
             initValues: val,
-            header: "Add Address"),
+            header: "Add Customer Details"),
       ),
     );
     widget.gridStore.updateCustomer!(result);
@@ -96,7 +96,7 @@ class _DataGridHeaderState extends State<DataGridHeader> {
   headerValuesChange(Map<String, dynamic> companyDetail) {
     List<String> to = [];
     print(companyDetail);
-    headerColumns.forEach((ele) {
+    customerDetailColumns.forEach((ele) {
       var val = companyDetail[ele['_key']];
       if (val != null && val != '') {
         to.add(val.toString());
