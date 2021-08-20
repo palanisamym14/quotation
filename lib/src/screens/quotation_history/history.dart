@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:quotation/src/repo/data_grid_repo.dart';
 import 'package:intl/intl.dart';
+import 'package:quotation/src/screens/quotation/quotation_screen.dart';
 import 'package:quotation/src/utils/util.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -232,7 +233,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
             (i) => InkWell(
               splashColor: Colors.green, // splash color
               onTap: () {
-                handleIconClick(data, actionItems[i]['type']);
+                handleIconClick(context, data, actionItems[i]['type']);
               }, // button pressed
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -252,14 +253,12 @@ class _QuotationHistoryState extends State<QuotationHistory> {
     );
   }
 
-  handleIconClick(data, actionType) {
+  handleIconClick(context, data, actionType) {
     print(actionType);
     var id = data["id"];
     switch (actionType) {
       case 'edit':
-        {
-          Modular.to.pushNamed('/history?id=$id');
-        }
+        onUpdateButtonPressed(context, id);
         break;
       case 'view':
         {}
@@ -276,5 +275,20 @@ class _QuotationHistoryState extends State<QuotationHistory> {
       default:
         break;
     }
+  }
+
+  onUpdateButtonPressed(context, quotationId) async {
+    final result = await Navigator.push(
+      context,
+      // Create the SelectionScreen in the next step.
+      MaterialPageRoute(
+        builder: (context) => new Scaffold(
+            appBar: new AppBar(
+              title: const Text('New entry'),
+            ),
+            body: QuotationScreen(quotationId: quotationId),
+            ),
+      ),
+    );
   }
 }
