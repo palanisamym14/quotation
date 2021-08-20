@@ -258,7 +258,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
     switch (actionType) {
       case 'edit':
         {
-          Modular.to.pushNamed('/quotation?id=$id');
+          Modular.to.pushNamed('/history?id=$id');
         }
         break;
       case 'view':

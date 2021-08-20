@@ -3,7 +3,9 @@ import 'package:flutter/widgets.dart';
 import 'package:quotation/src/repo/customer_repo.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:quotation/src/screens/customers/customer_data_source.dart';
 import 'package:quotation/src/screens/dataGrid/grid_constant.draft.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 final f = new DateFormat('yyyy-MM-dd');
 final quotationFormat = new DateFormat('d-H-m-s');
@@ -15,14 +17,18 @@ class CustomerList extends StatefulWidget {
 }
 
 class _CustomerListState extends State<CustomerList> {
+  late CustomerDataSource customerDataSource;
   List customerList = [];
-  List columns = customerDetailColumns.where((element) => element["allowHistory"]).toList();
+  List columns = customerDetailColumns
+      .where((element) => element["allowHistory"])
+      .toList();
   loadInitData() {
     new CustomerRepo().getCustomerHistory().then((_customerList) {
       print("_customerList");
       print(_customerList);
       setState(() {
         customerList = _customerList;
+        customerDataSource = new CustomerDataSource(customerList);
       });
     });
   }
@@ -67,49 +73,59 @@ class _CustomerListState extends State<CustomerList> {
                 ),
               )
             : new Container(
-                child: DataTable(
-                  headingRowColor: MaterialStateColor.resolveWith(
-                      (states) => Colors.green.withOpacity(0.3)),
-                  columns: List.generate(
+                child: SfDataGrid(
+                  columnWidthMode: ColumnWidthMode.fill,
+                  source: customerDataSource,
+                  allowSwiping: true,
+                  swipeMaxOffset: 121.0,
+                  startSwipeActionsBuilder: _buildStartSwipeWidget,
+                  endSwipeActionsBuilder: _buildStartSwipeWidget,
+                  columns: new List.generate(
                     customerDetailColumns.length,
                     (index) {
-                      return DataColumn(
-                        label: Expanded(
+                      var column = customerDetailColumns[index];
+                      return GridColumn(
+                        columnName: column["_key"],
+                        label: Container(
+                          alignment: Alignment.centerRight,
+                          padding: EdgeInsets.symmetric(horizontal: 16.0),
                           child: Text(
-                            customerDetailColumns[index]["label"],
-                            style: TextStyle(fontStyle: FontStyle.italic),
-                            textAlign: TextAlign.center,
+                            column["label"],
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       );
                     },
-                  ),
-                  rows: List.generate(
-                    customerList.length,
-                    (idx) {
-                      var item = customerList[idx];
-                      return DataRow(
-                        color: MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                            if (idx % 2 == 0)
-                              return Colors.green.withOpacity(0.1);
-                            return Colors.green.withOpacity(0.2);
-                          },
-                        ),
-                        cells: List.generate(
-                          customerDetailColumns.length,
-                          (index) {
-                            return DataCell(Text("Hai"));
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                  headingRowHeight: 50.0,
-                  dataRowHeight: 40.0,
+                  ).toList(),
                 ),
               ),
       ),
     );
+  }
+  Widget _buildStartSwipeWidget(BuildContext context, DataGridRow row, int index) {
+    print(index);
+    return GestureDetector(
+      onTap: () => _handleEditWidgetTap(row),
+      child: Container(
+        color: Colors.green,
+        padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const <Widget>[
+            Icon(Icons.edit, color: Colors.white, size: 20),
+            SizedBox(width: 16.0),
+            Text(
+              'EDIT',
+              style: TextStyle(color: Colors.white, fontSize: 15),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  _handleEditWidgetTap(DataGridRow row) {
+    print(row.getCells());
   }
 }
