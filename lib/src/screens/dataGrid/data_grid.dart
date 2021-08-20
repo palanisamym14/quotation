@@ -14,7 +14,8 @@ const footerDefault = {"grandTotal": 0.00, "discount": 0.00, "netPay": 0.00};
 class DataGrid extends StatefulWidget {
   final DataGridViewModel gridStore;
   final String? quotationId;
-  const DataGrid({Key? key, required this.gridStore, this.quotationId}) : super(key: key);
+  const DataGrid({Key? key, required this.gridStore, this.quotationId})
+      : super(key: key);
   @override
   _DataGridState createState() => _DataGridState();
 }
@@ -120,12 +121,7 @@ class _DataGridState extends State<DataGrid> {
           ],
         ),
         DataGridFooter(gridStore: widget.gridStore),
-        DataGridAction(
-          columns: quotationItemColumns,
-          data: widget.gridStore.rowData,
-          header: companyDetail,
-          footer: footerValue,
-        ),
+        DataGridAction(gridStore: widget.gridStore),
       ],
     );
   }

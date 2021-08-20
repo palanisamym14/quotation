@@ -80,6 +80,7 @@ class _CustomerListState extends State<CustomerList> {
                   swipeMaxOffset: 121.0,
                   startSwipeActionsBuilder: _buildStartSwipeWidget,
                   endSwipeActionsBuilder: _buildStartSwipeWidget,
+                  frozenColumnsCount: 1,
                   columns: new List.generate(
                     customerDetailColumns.length,
                     (index) {

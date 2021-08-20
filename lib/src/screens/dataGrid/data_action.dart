@@ -4,21 +4,13 @@ import 'package:quotation/src/components/pdf_invoice_template.dart';
 import 'package:quotation/src/repo/data_grid_repo.dart';
 import 'package:quotation/src/modal/data_print.dart';
 import 'package:quotation/src/screens/dataGrid/grid_constant.draft.dart';
+import 'package:quotation/src/store/model/datagrid_view_model.dart';
 import 'package:quotation/src/utils/util.dart';
 
 class DataGridAction extends StatefulWidget {
-  final List<Map<String, dynamic>> columns;
-  final List<Map<String, dynamic>> data;
-  final Map<String, dynamic> header;
-  final Map<String, dynamic> footer;
+  final DataGridViewModel gridStore;
 
-  const DataGridAction(
-      {Key? key,
-      required this.data,
-      required this.columns,
-      required this.header,
-      required this.footer})
-      : super(key: key);
+  const DataGridAction({Key? key, required this.gridStore}) : super(key: key);
 
   @override
   _DataGridActionState createState() => _DataGridActionState();
@@ -49,15 +41,16 @@ class _DataGridActionState extends State<DataGridAction> {
 
   onPressed(BuildContext context) async {
     // final path = await DBQuotation().getDatabasePath();
-    await new DataGridRepo().saveDataGrid(widget.data, widget.header, widget.footer);
+    await new DataGridRepo().saveDataGrid(widget.gridStore.rowData,
+        widget.gridStore.customerDetail, widget.gridStore.summaryData);
     PrintResponseModal printResponseModal = new PrintResponseModal();
-    printResponseModal.columns = widget.columns
+    printResponseModal.columns = quotationItemColumns
         .where((element) => element["canPrint"] ?? false)
         .toList();
-    printResponseModal.data = widget.data;
+    printResponseModal.data = widget.gridStore.rowData;
     List<String> to = [];
     customerDetailColumns.forEach((ele) {
-      var val = widget.header[ele['_key']];
+      var val = widget.gridStore.customerDetail[ele['_key']];
       if (val != null && val != '') {
         to.add(val);
       }
@@ -65,7 +58,7 @@ class _DataGridActionState extends State<DataGridAction> {
     printResponseModal.header.to = to;
     List<Map<String, dynamic>> _footer = [];
     summaryColumns.forEach((ele) {
-      var val = widget.footer[ele['_key']];
+      var val = widget.gridStore.summaryData[ele['_key']];
       if (val != null && val != '') {
         _footer.add({
           "key": ele['_key'],

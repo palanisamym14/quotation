@@ -15,7 +15,8 @@ class DataGridRepo {
   Future<String> insertCustomerData(Map<String, dynamic> tblCustomer) async {
     try {
       TblCustomer _tblCustomer = new TblCustomer();
-      String? customerId = tblCustomer['id'] ?? getUuidV1();
+      print(tblCustomer);
+      String customerId = tblCustomer['id'] ?? getUuidV1();
       if (tblCustomer['id'] == null) {
         var _tblCust = await _tblCustomer
             .select()
@@ -26,7 +27,7 @@ class DataGridRepo {
             .equals(tblCustomer['mobile'])
             .toSingle();
         if (_tblCust != null) {
-          customerId = _tblCust.id;
+          customerId = _tblCust.id!;
         }
       }
       _tblCustomer.id = customerId;
@@ -36,7 +37,7 @@ class DataGridRepo {
       _tblCustomer.addressLine2 = tblCustomer["addressLine2"];
       _tblCustomer.email = tblCustomer["email"];
       await _tblCustomer.save();
-      return customerId ?? getUuidV1();
+      return customerId;
     } on Exception catch (err) {
       print(err);
       return "";

@@ -21,6 +21,6 @@
 
   final String selectQuotationById = '''select quotation.*, 
   product.description, product.id  
-  from product inner join  quotation on quotation."productId" = product.id 
-  inner join quotationHdr on "quotationHdr".id = quotation."quotationHdrId" 
-  where quotation."quotationHdrId" = \':val\'  and "quotationHdr"."isDeleted" !=1 order by "sequenceNo" desc''';
+  from product inner join  items on items."productId" = product.id 
+  inner join quotation on "quotation".id = items."quotationId" 
+  where items."quotationId" = \':val\'  and "quotation"."isDeleted" !=1 order by "sequenceNo" desc''';

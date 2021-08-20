@@ -10,9 +10,9 @@ class CustomerDataSource extends DataGridSource {
               customerDetailColumns.length,
               (index) {
                 var column = customerDetailColumns[index];
-                return DataGridCell<int>(
+                return DataGridCell<String>(
                     columnName: column["label"],
-                    value: dataGridRow[column["_key"]]);
+                    value: dataGridRow[column["_key"]].toString());
               },
             ).toList()))
         .toList();
