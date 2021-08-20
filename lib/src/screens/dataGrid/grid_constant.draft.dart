@@ -98,6 +98,7 @@ final List<Map<String, dynamic>> customerDetailColumns = [
     "keyboardType": TextInputType.text,
     "isRequired": true,
     "query": 'SELECT name, id FROM customer where name like "%:input%" LIMIT 100',
+    "allowHistory":true
   },
   {
     "type": "text",
@@ -109,7 +110,8 @@ final List<Map<String, dynamic>> customerDetailColumns = [
     "textAlign": Alignment.centerLeft,
     "allowAddScreen": true,
     "keyboardType": TextInputType.text,
-    "isRequired": false
+    "isRequired": false,
+    "allowHistory":false
   },
   {
     "type": "text",
@@ -121,7 +123,8 @@ final List<Map<String, dynamic>> customerDetailColumns = [
     "textAlign": Alignment.centerLeft,
     "allowAddScreen": true,
     "keyboardType": TextInputType.text,
-    "isRequired": false
+    "isRequired": false,
+    "allowHistory":false
   },
   {
     "type": "text",
@@ -133,7 +136,8 @@ final List<Map<String, dynamic>> customerDetailColumns = [
     "textAlign": Alignment.centerLeft,
     "allowAddScreen": true,
     "keyboardType": TextInputType.text,
-    "isRequired": false
+    "isRequired": false,
+    "allowHistory":true
   }
 ];
 

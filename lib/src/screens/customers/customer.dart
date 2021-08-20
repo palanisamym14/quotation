@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:quotation/src/repo/customer_repo.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:quotation/src/screens/dataGrid/grid_constant.draft.dart';
 
 final f = new DateFormat('yyyy-MM-dd');
 final quotationFormat = new DateFormat('d-H-m-s');
@@ -15,6 +16,7 @@ class CustomerList extends StatefulWidget {
 
 class _CustomerListState extends State<CustomerList> {
   List customerList = [];
+  List columns = customerDetailColumns.where((element) => element["allowHistory"]).toList();
   loadInitData() {
     new CustomerRepo().getCustomerHistory().then((_customerList) {
       print("_customerList");
@@ -64,7 +66,49 @@ class _CustomerListState extends State<CustomerList> {
                   ],
                 ),
               )
-            : new Container(),
+            : new Container(
+                child: DataTable(
+                  headingRowColor: MaterialStateColor.resolveWith(
+                      (states) => Colors.green.withOpacity(0.3)),
+                  columns: List.generate(
+                    customerDetailColumns.length,
+                    (index) {
+                      return DataColumn(
+                        label: Expanded(
+                          child: Text(
+                            customerDetailColumns[index]["label"],
+                            style: TextStyle(fontStyle: FontStyle.italic),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  rows: List.generate(
+                    customerList.length,
+                    (idx) {
+                      var item = customerList[idx];
+                      return DataRow(
+                        color: MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                            if (idx % 2 == 0)
+                              return Colors.green.withOpacity(0.1);
+                            return Colors.green.withOpacity(0.2);
+                          },
+                        ),
+                        cells: List.generate(
+                          customerDetailColumns.length,
+                          (index) {
+                            return DataCell(Text("Hai"));
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                  headingRowHeight: 50.0,
+                  dataRowHeight: 40.0,
+                ),
+              ),
       ),
     );
   }
