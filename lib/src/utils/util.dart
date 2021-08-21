@@ -9,6 +9,7 @@ class CustomNumberFormat {
 }
 
 CustomNumberFormat currency(context, number) {
+  print(number);
   var validCharacters = RegExp(r'^[0-9]+$');
   Locale locale = Localizations.localeOf(context);
   NumberFormat format = NumberFormat.simpleCurrency(locale: locale.toString());

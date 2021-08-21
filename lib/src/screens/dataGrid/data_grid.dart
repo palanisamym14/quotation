@@ -38,14 +38,19 @@ class _DataGridState extends State<DataGrid> {
 
   loadInitData() {
     var id = getQueryParameters(key: "id") ?? widget.quotationId ?? '';
+    widget.gridStore.updateQuotationId!(id);
     new DataGridRepo().loadQuotationData(id).then((value) {
-      print(id);
-      setState(() {
-        this.footerValue =
-            Map<String, dynamic>.of(value["summary"] ?? footerDefault);
-        this.companyDetail = Map<String, dynamic>.of(value["customer"] ?? {});
-        this.rowData = List<Map<String, dynamic>>.of(value["quotation"] ?? []);
-      });
+      print(value["quotation"]);
+      Map<String, dynamic> _gridData = {};
+      _gridData.putIfAbsent("gridData",
+          () => List<Map<String, dynamic>>.of(value["quotation"] ?? []));
+      _gridData.putIfAbsent(
+          "summaryDetail",
+          () =>
+              Map<String, dynamic>.of(value["summary"] ?? footerDefault ?? {}));
+      _gridData.putIfAbsent("customerDetail",
+          () => Map<String, dynamic>.of(value["customer"] ?? {}));
+      widget.gridStore.updateGridData!(_gridData);
     });
   }
 
@@ -121,7 +126,6 @@ class _DataGridState extends State<DataGrid> {
           ],
         ),
         DataGridFooter(gridStore: widget.gridStore),
-        DataGridAction(gridStore: widget.gridStore),
       ],
     );
   }

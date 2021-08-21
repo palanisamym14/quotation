@@ -14,18 +14,21 @@ class DataGridViewModel {
   final String? quotationId;
   final Function? showAppBar;
   final Function? hideAppBar;
+  final Function( Map<String, dynamic> _gridData)? updateGridData;
 
-  DataGridViewModel(
-      {this.rowData: const [],
-      this.customerDetail: const {},
-      this.summaryData: const {},
-      this.addRowData,
-      required this.updateSummary,
-      this.updateCustomer,
-      this.updateQuotationId,
-      this.quotationId,
-      this.hideAppBar,
-      this.showAppBar});
+  DataGridViewModel({
+    this.rowData: const [],
+    this.customerDetail: const {},
+    this.summaryData: const {},
+    this.addRowData,
+    required this.updateSummary,
+    this.updateCustomer,
+    this.updateQuotationId,
+    this.quotationId,
+    this.hideAppBar,
+    this.showAppBar,
+    this.updateGridData,
+  });
   static DataGridViewModel fromStore(Store<AppState> store) {
     return DataGridViewModel(
       rowData: store.state.dataGridState.rowData,
@@ -48,6 +51,13 @@ class DataGridViewModel {
       ),
       hideAppBar: () => store.dispatch(
         new HideAppBarAction(),
+      ),
+      updateGridData: (_gridData) =>
+          store.dispatch(
+        new UpdateGridData(
+            summaryDetail: _gridData["summaryDetail"],
+            customerDetail: _gridData["customerDetail"],
+            gridData: _gridData["gridData"]),
       ),
     );
   }

@@ -19,8 +19,8 @@
   inner join quotationSummary on quotationSummary.quotationId = quotation.id 
   where quotation.isDeleted !=1  order by createdDate desc''';
 
-  final String selectQuotationById = '''select quotation.*, 
-  product.description, product.id  
+  final String selectQuotationById = '''select items.*,
+  product.description
   from product inner join  items on items."productId" = product.id 
   inner join quotation on "quotation".id = items."quotationId" 
   where items."quotationId" = \':val\'  and "quotation"."isDeleted" !=1 order by "sequenceNo" desc''';

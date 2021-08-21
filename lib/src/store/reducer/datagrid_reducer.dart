@@ -9,6 +9,7 @@ final dataGridReducer = combineReducers<DataGridState>([
   TypedReducer<DataGridState, UpdateSummaryDataAction>(updateSummaryReducer),
   TypedReducer<DataGridState, UpdateQuotationIdDataAction>(
       updateQuotationIdReducer),
+  TypedReducer<DataGridState, UpdateGridData>(updateGridData),
 ]);
 
 DataGridState addGridDataReducer(
@@ -18,18 +19,32 @@ DataGridState addGridDataReducer(
 
 DataGridState updateCustomerInfoReducer(
     DataGridState state, UpdateCustomerDetailAction action) {
-  print("customerDetail");
-  print(action.customerDetail);
   return state.copyWith(customerDetail: action.customerDetail);
 }
 
 DataGridState updateSummaryReducer(
     DataGridState state, UpdateSummaryDataAction action) {
-  print(action.summaryData);
   return state.copyWith(summaryData: action.summaryData);
 }
 
 DataGridState updateQuotationIdReducer(
     DataGridState state, UpdateQuotationIdDataAction action) {
+  if (state.quotationId != action.quotationId) {
+    var _tempState = DataGridState.initial();
+    return state.copyWith(
+        customerDetail: _tempState.customerDetail,
+        summaryData: _tempState.summaryData,
+        rowData: _tempState.rowData,
+        quotationId: action.quotationId);
+  }
   return state.copyWith(quotationId: action.quotationId);
+}
+
+DataGridState updateGridData(DataGridState state, UpdateGridData action) {
+  print(action.gridData);
+  print("gridData");
+  return state.copyWith(
+      summaryData: action.summaryDetail,
+      customerDetail: action.customerDetail,
+      rowData:action.gridData);
 }

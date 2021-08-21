@@ -190,7 +190,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                     fontSize: 15,
                     fontWeight: FontWeight.bold)),
             TextSpan(
-                text: '${formatQuotationNumber(data['createdDate'])}',
+                text: '\n${formatQuotationNumber(data['createdDate'])}',
                 style: TextStyle(
                   color: Colors.grey,
                   fontSize: 12,
@@ -205,6 +205,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
     return Align(
       alignment: Alignment.topRight,
       child: RichText(
+        textAlign: TextAlign.right,
         text: TextSpan(
           text: '${data["grandTotal"]}',
           style: TextStyle(

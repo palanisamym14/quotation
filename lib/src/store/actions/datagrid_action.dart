@@ -18,3 +18,10 @@ class UpdateQuotationIdDataAction {
   final String? quotationId;
   UpdateQuotationIdDataAction(this.quotationId);
 }
+
+class UpdateGridData {
+  final List<Map<String, dynamic>>? gridData;
+  final Map<String, dynamic>? summaryDetail;
+  final Map<String, dynamic>? customerDetail;
+  UpdateGridData({this.gridData, this.customerDetail, this.summaryDetail});
+}
