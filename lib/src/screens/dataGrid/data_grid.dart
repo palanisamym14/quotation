@@ -126,6 +126,7 @@ class _DataGridState extends State<DataGrid> {
           ],
         ),
         DataGridFooter(gridStore: widget.gridStore),
+        DataGridAction(gridStore: widget.gridStore)
       ],
     );
   }
