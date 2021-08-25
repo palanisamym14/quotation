@@ -101,8 +101,12 @@ class DataGridRepo {
     await getQuotationHistory();
   }
 
-  getQuotationHistory() async {
-    String query = DBQuery.selectQuotationHistory;
+  getQuotationHistory({String? customerId}) async {
+    String query = customerId != null
+        ? DBQuery.selectQuotationHistoryByCustomerId
+        : DBQuery.selectQuotationHistory;
+    query = query.replaceAll(':customerId', customerId ?? '');
+    print(query);
     List<dynamic>? _quotations = await DBQuotation().execDataTable(query) ?? [];
     return _quotations;
   }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_modular/flutter_modular.dart';
 import 'package:quotation/src/repo/data_grid_repo.dart';
 import 'package:intl/intl.dart';
 import 'package:quotation/src/screens/quotation/quotation_screen.dart';
@@ -11,7 +10,8 @@ final f = new DateFormat('yyyy-MM-dd');
 final quotationFormat = new DateFormat('d-H-m-s');
 
 class QuotationHistory extends StatefulWidget {
-  const QuotationHistory({Key? key}) : super(key: key);
+  final String? customerId;
+  const QuotationHistory({Key? key, this.customerId}) : super(key: key);
   @override
   _QuotationHistoryState createState() => _QuotationHistoryState();
 }
@@ -19,7 +19,9 @@ class QuotationHistory extends StatefulWidget {
 class _QuotationHistoryState extends State<QuotationHistory> {
   List quotationHistory = [];
   loadInitData() {
-    DataGridRepo().getQuotationHistory().then((_quotationHistory) {
+    DataGridRepo()
+        .getQuotationHistory(customerId: widget.customerId)
+        .then((_quotationHistory) {
       print(_quotationHistory);
       setState(() {
         quotationHistory = _quotationHistory;
@@ -99,77 +101,77 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                   ],
                 ),
               )
-            : new Container(
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Expanded(
-                      child: ListView.builder(
-                          itemCount: quotationHistory.length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                              height: 160,
-                              width: double.maxFinite,
-                              child: Card(
-                                elevation: 5,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      top: BorderSide(
-                                          width: 2.0, color: Colors.green),
-                                    ),
-                                    color: Colors.white,
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.all(7),
-                                    child: Stack(
+            : buildRows(),
+      ),
+    );
+  }
+
+  Widget buildRows() {
+    return new Container(
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Expanded(
+            child: ListView.builder(
+              itemCount: quotationHistory.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                  height: 160,
+                  width: double.maxFinite,
+                  child: Card(
+                    elevation: 5,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          top: BorderSide(width: 2.0, color: Colors.green),
+                        ),
+                        color: Colors.white,
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(7),
+                        child: Stack(
+                          children: <Widget>[
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: Stack(
+                                children: <Widget>[
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.only(left: 10, top: 5),
+                                    child: Column(
                                       children: <Widget>[
-                                        Align(
-                                          alignment: Alignment.centerRight,
-                                          child: Stack(
-                                            children: <Widget>[
-                                              Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 10, top: 5),
-                                                  child: Column(
-                                                    children: <Widget>[
-                                                      Row(
-                                                        children: <Widget>[
-                                                          historyCustomerDetail(
-                                                              quotationHistory[
-                                                                  index]),
-                                                          Spacer(),
-                                                          summaryDetails(
-                                                              quotationHistory[
-                                                                  index]),
-                                                        ],
-                                                      ),
-                                                      Row(
-                                                        children: <Widget>[
-                                                          actionIcons(
-                                                              quotationHistory[
-                                                                  index])
-                                                        ],
-                                                      )
-                                                    ],
-                                                  ))
-                                            ],
-                                          ),
+                                        Row(
+                                          children: <Widget>[
+                                            historyCustomerDetail(
+                                                quotationHistory[index]),
+                                            Spacer(),
+                                            summaryDetails(
+                                                quotationHistory[index]),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: <Widget>[
+                                            actionIcons(quotationHistory[index])
+                                          ],
                                         )
                                       ],
                                     ),
-                                  ),
-                                ),
+                                  )
+                                ],
                               ),
-                            );
-                          }),
+                            )
+                          ],
+                        ),
+                      ),
                     ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -179,18 +181,18 @@ class _QuotationHistoryState extends State<QuotationHistory> {
       alignment: Alignment.centerLeft,
       child: RichText(
         text: TextSpan(
-          text: '${data['customerName']}',
+          text: widget.customerId != null ? "" : '${data['customerName']}\n',
           style: TextStyle(
               fontWeight: FontWeight.bold, color: Colors.black, fontSize: 20),
           children: <TextSpan>[
             TextSpan(
-                text: '\n${data['mobile']}',
+                text: widget.customerId != null ? "" : '${data['mobile']}\n',
                 style: TextStyle(
                     color: Colors.grey,
                     fontSize: 15,
                     fontWeight: FontWeight.bold)),
             TextSpan(
-                text: '\n${formatQuotationNumber(data['createdDate'])}',
+                text: '${formatQuotationNumber(data['createdDate'])}',
                 style: TextStyle(
                   color: Colors.grey,
                   fontSize: 12,
@@ -279,16 +281,16 @@ class _QuotationHistoryState extends State<QuotationHistory> {
   }
 
   onUpdateButtonPressed(context, quotationId) async {
-    final result = await Navigator.push(
+    await Navigator.push(
       context,
       // Create the SelectionScreen in the next step.
       MaterialPageRoute(
         builder: (context) => new Scaffold(
-            appBar: new AppBar(
-              title: const Text('New entry'),
-            ),
-            body: QuotationScreen(quotationId: quotationId),
-            ),
+          appBar: new AppBar(
+            title: const Text('New entry'),
+          ),
+          body: QuotationScreen(quotationId: quotationId),
+        ),
       ),
     );
   }

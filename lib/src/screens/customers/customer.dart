@@ -3,21 +3,20 @@ import 'package:flutter/widgets.dart';
 import 'package:quotation/src/repo/customer_repo.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:quotation/src/screens/customers/customer_data_source.dart';
+import 'package:quotation/src/screens/customers/customer_detail.dart';
 import 'package:quotation/src/screens/dataGrid/grid_constant.draft.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 final f = new DateFormat('yyyy-MM-dd');
 final quotationFormat = new DateFormat('d-H-m-s');
 
 class CustomerList extends StatefulWidget {
-  const CustomerList({Key? key}) : super(key: key);
+  final BuildContext context;
+  const CustomerList({Key? key, required this.context}) : super(key: key);
   @override
   _CustomerListState createState() => _CustomerListState();
 }
 
 class _CustomerListState extends State<CustomerList> {
-  late CustomerDataSource customerDataSource;
   List customerList = [];
   List columns = customerDetailColumns
       .where((element) => element["allowHistory"])
@@ -28,7 +27,6 @@ class _CustomerListState extends State<CustomerList> {
       print(_customerList);
       setState(() {
         customerList = _customerList;
-        customerDataSource = new CustomerDataSource(customerList);
       });
     });
   }
@@ -36,8 +34,6 @@ class _CustomerListState extends State<CustomerList> {
   @override
   void initState() {
     super.initState();
-    // fetchGraphql();
-    print("Data");
     loadInitData();
   }
 
@@ -72,61 +68,52 @@ class _CustomerListState extends State<CustomerList> {
                   ],
                 ),
               )
-            : new Container(
-                child: SfDataGrid(
-                  columnWidthMode: ColumnWidthMode.fill,
-                  source: customerDataSource,
-                  allowSwiping: true,
-                  swipeMaxOffset: 121.0,
-                  startSwipeActionsBuilder: _buildStartSwipeWidget,
-                  endSwipeActionsBuilder: _buildStartSwipeWidget,
-                  frozenColumnsCount: 1,
-                  columns: new List.generate(
-                    customerDetailColumns.length,
-                    (index) {
-                      var column = customerDetailColumns[index];
-                      return GridColumn(
-                        columnName: column["_key"],
-                        label: Container(
-                          alignment: Alignment.centerRight,
-                          padding: EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Text(
-                            column["label"],
-                            overflow: TextOverflow.ellipsis,
-                          ),
+            : ListView.builder(
+                itemCount: customerList.length,
+                itemBuilder: (context, index) {
+                  var _model = customerList[index];
+                  print(_model);
+                  return Column(
+                    children: <Widget>[
+                      Divider(
+                        height: 12.0,
+                      ),
+                      ListTile(
+                        leading: new CircleAvatar(
+                          radius: 24.0,
+                          backgroundColor: Colors.green,
+                          backgroundImage:
+                              new AssetImage('assets/images/boy.png'),
                         ),
-                      );
-                    },
-                  ).toList(),
-                ),
+                        title: Row(
+                          children: <Widget>[
+                            Text(_model["name"]),
+                          ],
+                        ),
+                        subtitle: Text(_model["mobile"]),
+                        trailing: IconButton(
+                            icon: const Icon(Icons.arrow_forward_ios),
+                            onPressed: () {
+                              onViewCustomerButtonPressed(context, _model);
+                            },),
+                      ),
+                    ],
+                  );
+                },
               ),
       ),
     );
   }
-  Widget _buildStartSwipeWidget(BuildContext context, DataGridRow row, int index) {
-    print(index);
-    return GestureDetector(
-      onTap: () => _handleEditWidgetTap(row),
-      child: Container(
-        color: Colors.green,
-        padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[
-            Icon(Icons.edit, color: Colors.white, size: 20),
-            SizedBox(width: 16.0),
-            Text(
-              'EDIT',
-              style: TextStyle(color: Colors.white, fontSize: 15),
-            )
-          ],
+
+  onViewCustomerButtonPressed(context, customer) async {
+    final result = await Navigator.push(
+      widget.context,
+      // Create the SelectionScreen in the next step.
+      MaterialPageRoute(
+        builder: (context) => new Scaffold(
+          body: CustomerDetailContainer(customer: customer),
         ),
       ),
     );
-  }
-
-  _handleEditWidgetTap(DataGridRow row) {
-    print(row.getCells());
   }
 }

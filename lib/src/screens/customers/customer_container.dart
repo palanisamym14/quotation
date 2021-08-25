@@ -4,7 +4,6 @@ import 'package:quotation/src/components/add_item.dart';
 import 'package:quotation/src/components/drawer.dart';
 import 'package:quotation/src/screens/customers/customer.dart';
 import 'package:quotation/src/screens/dataGrid/grid_constant.draft.dart';
-import 'package:quotation/src/screens/quotation/quotation_screen.dart';
 
 class CustomerContainer extends StatelessWidget {
   const CustomerContainer({Key? key}) : super(key: key);
@@ -16,7 +15,7 @@ class CustomerContainer extends StatelessWidget {
         title: Text("Customer List"),
       ),
       drawer: CustomDrawer(),
-      body: CustomerList(),
+      body: CustomerList(context: context),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.green,
         child: Icon(Icons.add),
