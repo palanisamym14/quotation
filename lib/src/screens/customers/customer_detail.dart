@@ -17,7 +17,7 @@ class CustomerDetailContainer extends StatelessWidget {
         title: Text("Customer Detail"),
       ),
       body: Container(
-        child: QuotationHistory(customerId:customer["id"] ),
+        child: QuotationHistory(customerId:customer["id"]),
       ),
     );
   }

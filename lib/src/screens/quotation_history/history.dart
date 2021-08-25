@@ -114,6 +114,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
         children: <Widget>[
           Expanded(
             child: ListView.builder(
+              shrinkWrap: true,
               itemCount: quotationHistory.length,
               itemBuilder: (context, index) {
                 return Container(
