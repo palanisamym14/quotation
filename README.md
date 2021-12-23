@@ -31,4 +31,13 @@ cd /data/user/0/com.quotation.quotation/databases
 sqlite3 test.db
 ```
 
+
+![Alt text](samples/add.jpeg?raw=true "Title")
+![Alt text](samples/company.jpeg?raw=true "Title")
+![Alt text](samples/footer.jpeg?raw=true "Title")
+![Alt text](samples/login.jpeg?raw=true "Title")
 ![Alt text](samples/main.jpeg?raw=true "Title")
+![Alt text](samples/main1.jpeg?raw=true "Title")
+![Alt text](samples/main3.jpeg?raw=true "Title")
+![Alt text](samples/popup.jpeg?raw=true "Title")
+![Alt text](samples/print.jpeg?raw=true "Title")
