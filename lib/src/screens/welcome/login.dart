@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
-import 'package:graphql/client.dart';
 import '../../utils/graphql_client.dart';
 import 'welcome.graphql.dart';
 
@@ -11,7 +10,7 @@ class LoginScreen extends StatelessWidget {
   Duration get loginTime => Duration(milliseconds: 2250);
 
   Future<dynamic> validateUser() async {
-     getAllUserQuery();
+     // getAllUserQuery();
   }
 
   Future<String> _authUser(LoginData data) async {

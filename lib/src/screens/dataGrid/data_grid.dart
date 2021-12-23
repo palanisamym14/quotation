@@ -1,135 +1,116 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:quotation/src/components/add_item.dart';
-import 'package:quotation/src/components/custom_text_form.dart';
+import 'package:quotation/src/repo/data_grid_repo.dart';
 import 'package:quotation/src/screens/dataGrid/data_action.dart';
+import 'package:quotation/src/screens/dataGrid/footer.dart';
+import 'package:quotation/src/screens/dataGrid/grid_constant.draft.dart';
+import 'package:quotation/src/store/model/datagrid_view_model.dart';
+import 'package:quotation/src/utils/util.dart';
 import 'header.dart';
 
-class DataGrid extends StatefulWidget {
-  const DataGrid({Key? key}) : super(key: key);
+const footerDefault = {"grandTotal": 0.00, "discount": 0.00, "netPay": 0.00};
 
+class DataGrid extends StatefulWidget {
+  final DataGridViewModel gridStore;
+  final String? quotationId;
+  const DataGrid({Key? key, required this.gridStore, this.quotationId})
+      : super(key: key);
   @override
   _DataGridState createState() => _DataGridState();
 }
 
 class _DataGridState extends State<DataGrid> {
   List<Map<String, dynamic>> rowData = [];
-  List<Map<String, dynamic>> columns = [
-    {
-      "type": "index",
-      "label": "S NO",
-      "_key": "sno",
-      "width": "30",
-      "isVisible": true,
-      "labelAlign": "center",
-      "textAlign": Alignment.center,
-      "allowAddScreen": false,
-      "keyboardType": TextInputType.text,
-      "isRequired": true,
-    },
-    {
-      "type": "text",
-      "label": "Description",
-      "_key": "description",
-      "width": "30",
-      "isVisible": true,
-      "labelAlign": "center",
-      "textAlign": Alignment.centerLeft,
-      "allowAddScreen": true,
-      "keyboardType": TextInputType.text,
-      "isRequired": true,
-    },
-    {
-      "type": "text",
-      "label": "Quantity",
-      "_key": "quantity",
-      "width": "30",
-      "isVisible": true,
-      "labelAlign": "center",
-      "textAlign": Alignment.centerLeft,
-      "allowAddScreen": true,
-      "keyboardType": TextInputType.number,
-      "isRequired": true,
-    },
-    {
-      "type": "text",
-      "label": "Unit price ",
-      "_key": "price",
-      "width": "30",
-      "isVisible": true,
-      "labelAlign": "center",
-      "textAlign": Alignment.centerRight,
-      "allowAddScreen": true,
-      "keyboardType": TextInputType.number,
-      "isRequired": true,
-    },
-    {
-      "type": "text",
-      "label": "Total price",
-      "_key": "totalPrice",
-      "width": "30",
-      "isVisible": true,
-      "labelAlign": "center",
-      "textAlign": Alignment.centerRight,
-      "allowAddScreen": true,
-      "keyboardType": TextInputType.number,
-      "isRequired": true,
-    },
-    {
-      "type": "action",
-      "isVisible": true,
-      "label": "Action",
-      "width": "30",
-      "labelAlign": "center",
-      "textAlign": Alignment.centerRight,
-      "allowAddScreen": false,
-    }
-  ];
-
-  Map<String, dynamic> footerValue = {
-    "grandTotal": 0.00,
-    "discount": 0.00,
-    "netPay": 0.00
-  };
+  Map<String, dynamic> companyDetail = {};
+  Map<String, dynamic> footerValue = footerDefault;
   Map<String, String> stringParams = {
     "description": '',
   };
+
+  Future<void> updateCompanyAddress(data) async {
+    setState(() {
+      if (data != null) {
+        companyDetail = data as Map<String, dynamic>;
+      }
+    });
+  }
+
+  loadInitData() {
+    var id = getQueryParameters(key: "id") ?? widget.quotationId ?? '';
+    widget.gridStore.updateQuotationId!(id);
+    new DataGridRepo().loadQuotationData(id).then((value) {
+      print(value["quotation"]);
+      Map<String, dynamic> _gridData = {};
+      _gridData.putIfAbsent("gridData",
+          () => List<Map<String, dynamic>>.of(value["quotation"] ?? []));
+      _gridData.putIfAbsent(
+          "summaryDetail",
+          () =>
+              Map<String, dynamic>.of(value["summary"] ?? footerDefault ?? {}));
+      _gridData.putIfAbsent("customerDetail",
+          () => Map<String, dynamic>.of(value["customer"] ?? {}));
+      widget.gridStore.updateGridData!(_gridData);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadInitData();
+  }
+
+  @override
+  void didUpdateWidget(DataGrid oldWidget) {
+    super.didUpdateWidget(oldWidget);
+  }
 
   @override
   Widget build(BuildContext context) {
     return ListView(
       shrinkWrap: true,
       children: <Widget>[
-        DataGridHeader(),
+        DataGridHeader(gridStore: widget.gridStore),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: DataTable(
             headingRowColor: MaterialStateColor.resolveWith(
                 (states) => Colors.green.withOpacity(0.3)),
-            columns: List.generate(columns.length, (index) {
-              return DataColumn(
-                label: Expanded(
+            columns: List.generate(
+              quotationItemColumns.length,
+              (index) {
+                return DataColumn(
+                  label: Expanded(
                     child: Text(
-                  columns[index]["label"],
-                  style: TextStyle(fontStyle: FontStyle.italic),
-                  textAlign: TextAlign.center,
-                )),
-              );
-            }),
-            rows: List.generate(rowData.length, (idx) {
-              return DataRow(
+                      quotationItemColumns[index]["label"],
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                );
+              },
+            ),
+            rows: List.generate(
+              widget.gridStore.rowData.length,
+              (idx) {
+                var item = widget.gridStore.rowData[idx];
+                return DataRow(
                   color: MaterialStateProperty.resolveWith<Color>(
-                      (Set<MaterialState> states) {
-                    // Even rows will have a grey color.
-                    if (idx % 2 == 0) return Colors.green.withOpacity(0.1);
-                    return Colors.green.withOpacity(
-                        0.2); // Use default value for other states and odd rows.
-                  }),
-                  cells: List.generate(columns.length, (index) {
-                    return DataCell(
-                        _dataCell(context, idx, columns[index], rowData[idx]));
-                  }));
-            }),
+                    (Set<MaterialState> states) {
+                      if (idx % 2 == 0) return Colors.green.withOpacity(0.1);
+                      return Colors.green.withOpacity(0.2);
+                    },
+                  ),
+                  cells: List.generate(
+                    quotationItemColumns.length,
+                    (index) {
+                      return DataCell(_dataCell(
+                          context, idx, quotationItemColumns[index], item));
+                    },
+                  ),
+                );
+              },
+            ),
             headingRowHeight: 50.0,
             dataRowHeight: 40.0,
           ),
@@ -144,73 +125,10 @@ class _DataGridState extends State<DataGrid> {
             ),
           ],
         ),
-        Container(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Grand Total'),
-                    Expanded(
-                        child: new CustomEditForm(
-                            value: footerValue["grandTotal"],
-                            keyName: "grandTotal",
-                            callback: onFooterValueChanged)),
-                  ],
-                ),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Adjustment'),
-                    Expanded(
-                        child: new CustomEditForm(
-                            value: footerValue["discount"],
-                            keyName: "discount",
-                            callback: onFooterValueChanged)),
-                  ],
-                ),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Net Amount'),
-                    Expanded(
-                        child: new CustomEditForm(
-                      value: footerValue["netPay"],
-                      keyName: "netPay",
-                      callback: onFooterValueChanged,
-                    )),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-        DataGridAction(),
+        DataGridFooter(gridStore: widget.gridStore),
+        DataGridAction(gridStore: widget.gridStore)
       ],
     );
-  }
-
-  onFooterValueChanged(val, key) {
-    var tempVal = val;
-    tempVal = double.parse(val);
-    setState(() {
-      footerValue.update(key, (value) => tempVal);
-    });
-    if (key == "grandTotal") {
-      setState(() {
-        footerValue.update(
-            "netPay", (value) => tempVal - footerValue["discount"]);
-      });
-    } else if (key == "discount") {
-      setState(() {
-        footerValue.update(
-            "netPay", (value) => footerValue["grandTotal"] - tempVal);
-      });
-    }
   }
 
   _dataCell(BuildContext context, rowIdx, column, item) {
@@ -236,6 +154,10 @@ class _DataGridState extends State<DataGrid> {
         return Align(
             alignment: column["textAlign"],
             child: Text((rowIdx + 1).toString()));
+      case "currency":
+        return Align(
+            alignment: column["textAlign"],
+            child: Text(currency(context, item[_key]).value));
       default:
         return Align(
             alignment: column["textAlign"],
@@ -246,35 +168,25 @@ class _DataGridState extends State<DataGrid> {
   }
 
   void _navigateAndDisplaySelection(BuildContext context, val, idx) async {
-    // Map<String, dynamic> _val = Map<String, dynamic>.from(val);
-    // print("_val");
-    print(val);
     final result = await Navigator.push(
       context,
       // Create the SelectionScreen in the next step.
       MaterialPageRoute(
         builder: (context) => AddItemForm(
-          columns:
-              columns.where((element) => element["allowAddScreen"]).toList(),
+          columns: quotationItemColumns
+              .where((element) => element["allowAddScreen"])
+              .toList(),
           initValues: val,
           header: "Add Item",
         ),
       ),
     );
     if (result != null) {
-      setState(() {
-        if (idx == -1) {
-          rowData.add(result);
-        } else {
-          rowData[idx] = result;
-        }
-      });
-      onFooterValueChanged(
-          rowData
-              .map((e) => double.parse(e["totalPrice"]))
-              .reduce((a, b) => a + b)
-              .toString(),
-          "grandTotal");
+      if (idx == -1) {
+        widget.gridStore.addRowData!(result, -1);
+      } else {
+        widget.gridStore.addRowData!(result, idx);
+      }
     }
   }
 }

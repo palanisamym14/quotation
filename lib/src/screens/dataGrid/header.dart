@@ -1,66 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:quotation/src/components/add_item.dart';
+import 'package:quotation/src/screens/dataGrid/grid_constant.draft.dart';
+import 'package:quotation/src/store/model/datagrid_view_model.dart';
+// import 'package:quotation/src/utils/util.dart';
+
+typedef void SignalingStateCallback(dynamic data);
 
 class DataGridHeader extends StatefulWidget {
-  const DataGridHeader({Key? key}) : super(key: key);
+  final DataGridViewModel gridStore;
 
+  const DataGridHeader({Key? key, required this.gridStore}) : super(key: key);
   @override
   _DataGridHeaderState createState() => _DataGridHeaderState();
 }
 
 class _DataGridHeaderState extends State<DataGridHeader> {
-  Map<String, dynamic> companyDetail = {};
-  List<Map<String, dynamic>> columns = [
-    {
-      "type": "text",
-      "label": "Company Name",
-      "_key": "companyName",
-      "width": "30",
-      "isVisible": true,
-      "labelAlign": "center",
-      "textAlign": Alignment.centerLeft,
-      "allowAddScreen": true,
-      "keyboardType": TextInputType.text,
-      "isRequired": true,
-    },
-    {
-      "type": "text",
-      "label": "Address Line1",
-      "_key": "addressLine1",
-      "width": "30",
-      "isVisible": true,
-      "labelAlign": "center",
-      "textAlign": Alignment.centerLeft,
-      "allowAddScreen": true,
-      "keyboardType": TextInputType.text,
-      "isRequired": false
-    },
-    {
-      "type": "text",
-      "label": "Address Line2",
-      "_key": "addressLine2",
-      "width": "30",
-      "isVisible": true,
-      "labelAlign": "center",
-      "textAlign": Alignment.centerLeft,
-      "allowAddScreen": true,
-      "keyboardType": TextInputType.text,
-      "isRequired": false
-    },
-    {
-      "type": "text",
-      "label": "Mobile",
-      "_key": "mobile",
-      "width": "30",
-      "isVisible": true,
-      "labelAlign": "center",
-      "textAlign": Alignment.centerLeft,
-      "allowAddScreen": true,
-      "keyboardType": TextInputType.text,
-      "isRequired": false
-    }
-  ];
+  List<String> addressDetails = [];
+  @override
+  void initState() {
+    print("widget.companyDetail");
+    print(widget.gridStore.customerDetail);
+    headerValuesChange(widget.gridStore.customerDetail);
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(DataGridHeader oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    headerValuesChange(widget.gridStore.customerDetail);
+  }
+
+  @override
+  void setState(fn) {
+    super.setState(fn);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -89,15 +64,10 @@ class _DataGridHeaderState extends State<DataGridHeader> {
           ),
           new ListView.builder(
               shrinkWrap: true,
-              itemCount: columns.length,
+              itemCount: addressDetails.length,
               itemBuilder: (context, index) {
-                var val = companyDetail[columns[index]["_key"]];
-                return val == null
-                    ? Container(
-                        height: 0,
-                        width: 0,
-                      )
-                    : Text(val);
+                var val = addressDetails[index];
+                return Text(val);
               })
         ],
       ),
@@ -105,7 +75,7 @@ class _DataGridHeaderState extends State<DataGridHeader> {
   }
 
   void _navigateAndDisplaySelection(BuildContext context) async {
-    Map<String, dynamic> val = companyDetail;
+    Map<String, dynamic> val = widget.gridStore.customerDetail;
     // print("_val");
     print(val);
     final result = await Navigator.push(
@@ -113,15 +83,27 @@ class _DataGridHeaderState extends State<DataGridHeader> {
       // Create the SelectionScreen in the next step.
       MaterialPageRoute(
         builder: (context) => AddItemForm(
-            columns:
-                columns.where((element) => element["allowAddScreen"]).toList(),
+            columns: customerDetailColumns
+                .where((element) => element["allowAddScreen"])
+                .toList(),
             initValues: val,
-            header: "Add Address"),
+            header: "Add Customer Details"),
       ),
     );
-    print(result);
+    widget.gridStore.updateCustomer!(result);
+  }
+
+  headerValuesChange(Map<String, dynamic> companyDetail) {
+    List<String> to = [];
+    print(companyDetail);
+    customerDetailColumns.forEach((ele) {
+      var val = companyDetail[ele['_key']];
+      if (val != null && val != '') {
+        to.add(val.toString());
+      }
+    });
     setState(() {
-      companyDetail = result;
+      this.addressDetails = to;
     });
   }
 }

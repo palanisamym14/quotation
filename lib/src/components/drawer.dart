@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:quotation/src/screens/company_details/company_details.dart';
 
 class CustomDrawer extends StatefulWidget {
@@ -8,6 +10,21 @@ class CustomDrawer extends StatefulWidget {
 }
 
 class _CustomDrawerState extends State<CustomDrawer> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  User? user;
+  Future<void> getCurrentUser() async {
+    User? _user = _auth.currentUser;
+    setState(() {
+      user = _user;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Drawer(
@@ -15,8 +32,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
         children: <Widget>[
           //Set User Information Username Avatar
           UserAccountsDrawerHeader(
-            accountName: new Text("Palani"),
-            accountEmail: new Text("palanisamym14@email.com"),
+            accountName: new Text(user!.displayName ?? ''),
+            accountEmail: new Text(user!.email ?? ''),
             //Current avatar
             currentAccountPicture: new CircleAvatar(
               backgroundColor: Colors.green,
@@ -85,6 +102,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
               ),
             ),
             title: new Text("Logout"),
+            onTap: (){
+              _auth.signOut().then((value){
+                Modular.to.navigate('login');
+              });
+            },
           )
         ],
       ),

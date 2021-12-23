@@ -1,14 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:quotation/src/components/profile_image.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:quotation/model/model.dart';
+
 // import 'package:intl/intl.dart';
+typedef void SignalingStateCallback(dynamic data);
 
 class AddItemForm extends StatefulWidget {
   final List<Map<String, dynamic>>? columns;
-  Map<String, dynamic> initValues;
+  final Map<String, dynamic> initValues;
   final String header;
-  AddItemForm({this.columns, required this.initValues, required this.header});
+  final String actionLabel;
+  final bool isCallBack;
+  final SignalingStateCallback? callBack;
+  AddItemForm(
+      {this.columns,
+      required this.initValues,
+      required this.header,
+      this.isCallBack = false,
+      this.callBack,
+      this.actionLabel = 'Submit'});
 
   @override
   AddItemFormState createState() {
@@ -18,7 +30,25 @@ class AddItemForm extends StatefulWidget {
 
 class AddItemFormState extends State<AddItemForm> {
   bool autoValidate = true;
-  final _formKey = GlobalKey<FormBuilderState>();
+  GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
+  final Map<String, TextEditingController> _typeAheadController = {};
+  dynamic getFormValue(GlobalKey<FormBuilderState> form, String field) {
+    if (form.currentState!.fields.containsKey(field) == false)
+      return null;
+    else {
+      // !["currentState"]["value"];
+      return form.currentState!.fields[field];
+    }
+  }
+
+  void setFormValue(
+      GlobalKey<FormBuilderState> form, String field, dynamic value) {
+    if (form == null || form.currentState!.fields.containsKey(field) == false)
+      return;
+    setState(() {
+      // form.currentState?.setAttributeValue(field, value);
+    });
+  }
 
   // final ValueChanged _onChanged = (val) => print(val);
 
@@ -47,7 +77,8 @@ class AddItemFormState extends State<AddItemForm> {
                             shrinkWrap: true,
                             itemCount: widget.columns?.length,
                             itemBuilder: (context, index) {
-                              return getFormField(widget.columns![index]);
+                              return getFormField(widget.columns![index],
+                                  _typeAheadController, widget.initValues);
                             })
                       ],
                     ),
@@ -60,16 +91,30 @@ class AddItemFormState extends State<AddItemForm> {
                           onPressed: () {
                             if (_formKey.currentState?.saveAndValidate() ??
                                 false) {
-                              print(_formKey.currentState?.value);
-                              Navigator.pop(
-                                  context, _formKey.currentState?.value);
+                              Map<String, dynamic> _formValues =
+                                  new Map<String, dynamic>();
+                              _formValues
+                                  .addAll(_formKey.currentState?.value ?? {});
+                              try {
+                                _typeAheadController.forEach((key, ele) {
+                                  print(ele);
+                                  _formValues.putIfAbsent(key, () => ele.text);
+                                });
+                              } on Exception catch (ee) {
+                                print(ee);
+                              }
+                              if (widget.isCallBack) {
+                                widget.callBack!(_formValues);
+                              } else {
+                                Navigator.pop(context, _formValues);
+                              }
                             } else {
                               print(_formKey.currentState?.value);
                               print('validation failed');
                             }
                           },
-                          child: const Text(
-                            'Submit',
+                          child: Text(
+                            widget.actionLabel,
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
@@ -97,8 +142,10 @@ class AddItemFormState extends State<AddItemForm> {
         ));
   }
 
-  getFormField(Map<String, dynamic> column) {
+  getFormField(Map<String, dynamic> column,
+      Map<String, TextEditingController> _typeAheadController, initValues) {
     final type = column["type"];
+    print(type);
     switch (type) {
       case "text":
         return FormBuilderTextField(
@@ -107,7 +154,9 @@ class AddItemFormState extends State<AddItemForm> {
           decoration: InputDecoration(
             labelText: column["label"],
           ),
-          onChanged: (val) {},
+          onChanged: (val) {
+            getFormValue(_formKey, "totalPrice");
+          },
           validator: column["isRequired"]
               ? column["keyboardType"] == TextInputType.number
                   ? FormBuilderValidators.compose([
@@ -125,7 +174,36 @@ class AddItemFormState extends State<AddItemForm> {
       case "image":
         return Text('Default'); //ProfileImage(imagePath: "");
       case "list":
-        return Text('Default');
+        String _key = column["_key"];
+        _typeAheadController[_key] = new TextEditingController();
+        _typeAheadController[_key]!.text = initValues[_key] ?? '';
+        return TypeAheadFormField(
+          textFieldConfiguration: TextFieldConfiguration(
+              controller: _typeAheadController[_key],
+              decoration: InputDecoration(labelText: column["label"])),
+          suggestionsCallback: (pattern) async {
+            return await getSuggestions(pattern, column);
+          },
+          itemBuilder: (context, suggestion) {
+            return ListTile(
+              title: Text((suggestion as Map)["name"].toString()),
+            );
+          },
+          transitionBuilder: (context, suggestionsBox, controller) {
+            print(suggestionsBox);
+            return suggestionsBox;
+          },
+          onSuggestionSelected: (suggestion) {
+            _typeAheadController[_key]!.text =
+                (suggestion as Map)["name"].toString();
+          },
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Please select a $column["label"]';
+            }
+          },
+          onSaved: (value) => _typeAheadController[_key]!.text = value ?? '',
+        );
       default:
         return FormBuilderTextField(
           autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -135,6 +213,26 @@ class AddItemFormState extends State<AddItemForm> {
           ),
           onChanged: (val) {},
         );
+    }
+  }
+
+  getSuggestions(String sugg, Map<String, dynamic> obj) async {
+    var suggestions = {"name": sugg, "id": -1};
+    try {
+      print(suggestions);
+      if (obj["type"] != null && obj["query"] != null) {
+        var query = obj["query"].replaceAll(":input", sugg);
+        List<dynamic> _quotations =
+            await DBQuotation().execDataTable(query) ?? [];
+        if (_quotations.length == 0) {
+          _quotations.add(suggestions);
+        }
+        return _quotations;
+      }
+      return [];
+    } on Exception catch (e) {
+      print(e);
+      return [];
     }
   }
 }

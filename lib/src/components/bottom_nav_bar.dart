@@ -1,27 +1,37 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:quotation/src/components/drawer.dart';
+import 'package:quotation/src/store/model/app_view_model.dart';
 
 final padding = EdgeInsets.symmetric(horizontal: 18, vertical: 12);
 double gap = 10;
-List<String> routes = ['home', 'schedule', 'favourite', 'analysis'];
+List<String> routes = ['history', 'product', 'customer', 'history'];
 List<Color> colors = [Colors.purple, Colors.pink, Colors.purple, Colors.teal];
 
 class BottomNavBar extends StatefulWidget {
-  final Widget? body;
-  BottomNavBar({this.body});
+  final Widget body;
+  final AppViewModel appState;
+  BottomNavBar({required this.body, required this.appState});
   @override
   _BottomNavBarState createState() => _BottomNavBarState();
 }
 
 class _BottomNavBarState extends State<BottomNavBar> {
   int _selectedIndex = 0;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
   void initState() {
     super.initState();
-    Modular.to.navigate(routes[0]);
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    User? user = _auth.currentUser;
+    if (user != null) {
+      Modular.to.navigate(routes[0]);
+    } else {
+      Modular.to.navigate('login');
+    }
   }
 
   @override
@@ -29,10 +39,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: this.widget.body,
-      appBar: AppBar(
-        title: Text(routes[_selectedIndex]),
-      ),
-      drawer: CustomDrawer(),
+      key: _scaffoldKey,
       bottomNavigationBar: SafeArea(
         child: Container(
           margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
@@ -61,7 +68,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   iconSize: 24,
                   padding: padding,
                   icon: LineIcons.home,
-                  text: 'Home',
+                  text: 'History',
                 ),
                 GButton(
                   gap: gap,
@@ -72,7 +79,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   iconSize: 24,
                   padding: padding,
                   icon: LineIcons.calendarCheck,
-                  text: 'Schedules',
+                  text: 'Products',
                 ),
                 GButton(
                   gap: gap,
@@ -83,7 +90,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   iconSize: 24,
                   padding: padding,
                   icon: LineIcons.heart,
-                  text: 'Likes',
+                  text: 'Customer',
                 ),
                 GButton(
                   gap: gap,
@@ -93,14 +100,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   backgroundColor: Colors.teal.withOpacity(.2),
                   iconSize: 24,
                   padding: padding,
-                  icon: LineIcons.trophy,
-                  // leading: CircleAvatar(
-                  //   radius: 12,
-                  //   backgroundImage: NetworkImage(
-                  //     'https://sooxt98.space/content/images/size/w100/2019/01/profile.png',
-                  //   ),
-                  // ),
-                  text: 'Chart',
+                  icon: LineIcons.playstation,
+                  text: 'Report',
                 )
               ],
               selectedIndex: _selectedIndex,

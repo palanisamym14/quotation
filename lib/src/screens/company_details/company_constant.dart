@@ -13,9 +13,9 @@ import 'package:flutter/material.dart';
 // }
 const List<Map<String, dynamic>> formColumns = [
   {
-    "type": "text",
+    "type": "list",
     "label": "Company Name",
-    "_key": "companyName",
+    "_key": "name",
     "width": "30",
     "isVisible": true,
     "labelAlign": "center",
@@ -23,6 +23,7 @@ const List<Map<String, dynamic>> formColumns = [
     "allowAddScreen": true,
     "keyboardType": TextInputType.text,
     "isRequired": true,
+    "query": 'SELECT name, id FROM company where name like "%:input%" LIMIT 100',
   },
   {
     "type": "text",
