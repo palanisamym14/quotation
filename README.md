@@ -31,4 +31,4 @@ cd /data/user/0/com.quotation.quotation/databases
 sqlite3 test.db
 ```
 
-![Alt text](relative/path/to/img.jpg?raw=true "Title")
+![Alt text](samples/main.jpeg?raw=true "Title")
